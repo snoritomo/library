@@ -66,7 +66,6 @@ function Goround(args){
 	
 	this.setleft = function(tgt, lft, toleft){
 		var cnt = tgt.nowidx;
-//	$('#console').html(toleft+' > '+tgt.upper);
 		var plus = toleft==tgt.upper?-1:1;
 		var lft2 = lft + tgt.left;
 		while(true){
@@ -78,7 +77,6 @@ function Goround(args){
 		}
 		tgt.nowidx = cnt;
 		tgt.left = lft2;
-//		tgt.view.get(0).replaceChild(tgt.images[tgt.nowidx], tgt._img);
 		tgt.view.children().detach();
 		tgt.view.append(tgt.images[tgt.nowidx]);
 		tgt._img = tgt.images[tgt.nowidx];
@@ -113,33 +111,6 @@ function Goround(args){
 	this.toleft = true;//animation時に使用する左向きの回転かどうか
 	
 	this.view.css({position: 'relative', overflow: 'hidden'});
-	this.view.css('overflow', 'hidden');
-//	$(document).on('touchend', '#'+this._id+' *', {tgt: this}, function(evt){
-//		var ta = $(this);
-//		var href = ta.attr("href");
-//		var t = evt.data.tgt;
-////		var ed_time = evt.timeStamp;
-////		if(t.clickplay >= Math.abs(t.ed_x - t.st_x) && t.clickplaytime >= (ed_time - t.st_time)){
-//alert('aa');
-//		if(!t.moved){
-//			ta.click();
-//			window.open(href, "_self");
-//		}
-//	});
-//	if(this.handlemouse){
-//		$(document).on('mouseup', '#'+this._id+' *', {tgt: this}, function(evt){
-//			var ta = $(this);
-//			var href = ta.attr("href");
-//			var t = evt.data.tgt;
-////			var ed_time = evt.timeStamp;
-////			if(t.clickplay >= Math.abs(t.ed_x - t.st_x) && t.clickplaytime >= (ed_time - t.st_time)){
-//alert('aa');
-//			if(!t.moved){
-//				ta.click();
-//				window.open(href, "_self");
-//			}
-//		});
-//	}
 
 	this.view.on('touchstart', {tgt: this}, this.page_touchstart);
 	this.view.on('touchend', {tgt: this}, this.page_touchend);
@@ -148,10 +119,6 @@ function Goround(args){
 		this.view.on('mouseup', {tgt: this}, this.page_touchend);
 	}
 	this.view.on('click', {tgt: this}, function(evt){evt.preventDefault();});
-//	this.view.on('touchmove', {tgt: this}, this.page_touchmove);
-//	if(this.handlemouse){
-//		this.view.on('mousemove', {tgt: this}, this.page_touchmove);
-//	}
 	
 	this.zero = '';
 	for(var i = 0; i < this.digit; i++)
@@ -168,11 +135,6 @@ function Goround(args){
 	}
 	this._img = this.images[0];
 	this.view.append(this._img);
-//	this.view.height(this._img.innerHeight);
-//	var top = parseInt(this.view.offset().top);
-//	var height = parseInt(this._img.innerHeight);
-//	$('#console').html(top+' + ('+height+' / 2)');
-//	this.half = this.view.offset().top+(this._img.innerHeight/2);
 }
 Goround.prototype.rolling_notate = function(d, once){
 	var t = this;
@@ -186,7 +148,6 @@ Goround.prototype.rolling_notate = function(d, once){
 		t.rolling_anime = null;
 		return;
 	}
-	//$('#console').html(t.rolling_speed+' -= '+t.move_friction);
 	var dt = new Date();
 	var tim = dt.getTime();
 	if(tim >= (t.move_freetime + t.st_time)){
@@ -211,7 +172,6 @@ Goround.prototype.page_touchstart = function(evt){
 	t.st_time = evt.timeStamp;
 	t.ed_x = t.st_x;
 	t.ed_y = t.st_y;
-//	t._through = 0;
 	t.view.on('touchmove', {tgt: t}, t.page_touchmove);
 	if(t.handlemouse){
 		t.view.on('mousemove', {tgt: t}, t.page_touchmove);
@@ -220,7 +180,6 @@ Goround.prototype.page_touchstart = function(evt){
 		p.page_touchstart(evt);
 	}
 	evt.preventDefault();
-//	if(t.prevent_touch_start)evt.preventDefault();//子要素の処理を抑制するために必要だが、子要素側でタッチスタート時にスルーしてほしい旨を伝えられたらpreventDefaultしない
 }
 Goround.prototype.page_touchend = function(evt){
 	var t = evt.data.tgt;
@@ -229,12 +188,8 @@ Goround.prototype.page_touchend = function(evt){
 	if(t.handlemouse){
 		t.view.off('mousemove', t.page_touchmove);
 	}
-//	if(t._through == 2){
-//		return true;
-//	}
 	t.ed_time = evt.timeStamp;
 	var len = Math.sqrt(Math.pow(t.ed_x - t.st_x, 2) + Math.pow(t.ed_y - t.st_y, 2));
-//	t._through = 0;
 	t.rolling_speed = len / ((t.ed_time - t.st_time) / 1000);
 
 	var isclick = true;//クリックを子要素に伝えるか。この処理はクリックなどページ遷移をしない時に必要
@@ -275,7 +230,6 @@ Goround.prototype.page_touchmove = function(evt){
 	t.rolling(mgl, 'once');
 	t.move_x = t.ed_x;
 	t.move_y = t.ed_y;
-//	t.prevent_touch_start = true;
 	evt.preventDefault();
 	return false;
 }
