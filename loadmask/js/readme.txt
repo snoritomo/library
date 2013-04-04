@@ -1,0 +1,47 @@
+ロードマスク
+
+このAPIは指定されたブロック要素内の画像全てがロードされるまで
+マスキングするためのAPIです。
+
+このAPIはjqueryをロードしている事を前提に作成されています。
+その状態で、main.jsとscroller.jsをロードしてください
+
+<script src="js/jquery.js" type="text/javascript" ></script>
+<script src="js/main.js" type="text/javascript" ></script>
+<script src="js/loadmask.js" type="text/javascript" ></script>
+
+【実装方法】
+<div id="xxx">リテラルリテラル<img src="bbb.png"/><img src="aaa.jpg"/></div>
+
+のようなタグに対し、上記が読み込まれた時点（最初から記述されているならjQueryロードかつ記述後、
+JavaScriptで追加したらなら追加直後）に以下のように呼び出して使用します
+
+new Loadmask(id, 'yellow', 10000, function(mask){
+			mask.fadeOut();
+			container.setBar();//マスク除去後の処理
+		});
+
+と記述します。引数はそれぞれ
+
+	マスクしたいブロック要素のID
+	マスクのスタイルを記述したclass
+	タイムアウトとみなしてマスクを外すまでの時間
+	マスク除去のアニメーション関数
+	
+です。
+
+このAPIは指定したブロック要素にposition:relativeのCSSを設定します
+ので注意してください
+
+指定したブロック要素の中身に画像がない場合は即座にアニメーションを
+発動します。
+
+画像のリンク切れや読み込み先が画像でない場合等のためにマスキングタイムアウト時間を
+設定します。この時間を経過すると必ずアニメーションを発動します。
+
+マスクのスタイルはclassを作成して引数に与えるようにしてください（デフォルトスタイルはありません）
+
+アニメーションは関数を指定します。内部ではマスク除去のアニメーションだけでなく、
+コールバックのような処理を記述する事もできます。
+
+

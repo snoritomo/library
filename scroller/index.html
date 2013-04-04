@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html lang="ja-JP">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>スクロールプラグイン</title>
+<style type="text/css">
+.clearfix:after{
+	content: ".";
+	display: block;
+	visibility: hidden;
+	height: 0.1px;
+	font-size: 0.1em;
+	line-height: 0;
+	clear:both;
+}
+.yellow{
+	background-color: #CC33CC;
+}
+</style>
+</head>
+<body style="margin:0;">
+<div style="height: 60px;width:100%; background-color: #9999DD;" id="hd"></div>
+<div style="float:left;width:60px;height:600px;background-color: #CCAAAA;">
+	<button onclick="appendItem();">追加</button>
+	<button onclick="appendText();">文字追加</button>
+	<div id="abab">
+		<div id="box" style="width:20px;height:20px;background-color:#FFF0F0;">
+		</div>
+	</div>
+</div>
+<div id="view" ><div id="fld" style="float:left;"></div></div>
+</body>
+<script src="js/jquery.js" type="text/javascript" ></script>
+<script src="js/main.js" type="text/javascript" ></script>
+<script src="js/scroller.js" type="text/javascript" ></script>
+<script src="js/loadmask.js" type="text/javascript" ></script>
+<script type="text/javascript">
+	var times = Math.round(new Date().getTime()/50);
+	var container;
+	function getImageSrc(){
+		var t = Math.round(new Date().getTime()/50);
+		return 'img/hiyoko_animation0'+('000'+((t-times) % 401)).slice(-3)+'.png';
+	}
+	function getDBImageSrc(){
+		var t = Math.round(new Date().getTime()/50);
+		return 'http://192.168.3.73/ffdb/getdatafile.php?id='+(((t-times) % 24)+1);
+	}
+	$(document).ready(function(){
+		container = new Scroller('view', 'fld', 30, 10, 1, null, true, 1, 100, 40, false, null);
+		container.setViewHeightFunction(function(){
+			$('#hd').html($(window).height());
+			$('#view').height($(window).height()-60);
+		});
+		//container.setOnTop(function(){alert(container.rolling_anime);});
+		container.setOnBottom(function(){appendItem();});
+		
+		$('#box').css('-webkit-transform', 'translate3d(1px,2px,3px)');
+		$('#box').css('-moz-transform', 'translate3d(1px,2px,3px)');
+//		var m = new WebKitCSSMatrix($('#box').css('-webkit-transform'));
+//		alert(m.f);
+		var trn = $('#box').css('-webkit-transform');
+//		alert(trn);
+		var mtrn = $('#box').css('-moz-transform');
+//		alert(mtrn);
+		var jsn = '';
+		for(var aa in trn){
+			jsn += ','+aa+':'+trn[aa];
+		}
+//		alert(jsn);
+	});
+	function appendItem(){
+		var id = new Date().getTime();
+		$('#fld').append('<p id="'+id+'" style="border: solid 1px #666666;padding:5px;"><img src="'+getImageSrc()+'"/><a href="www.flexfirm.jp">アイテム</a><br/><img src="'+getDBImageSrc()+'"/></p>');
+		new Loadmask(id, 'yellow', 10000, function(mask){
+			mask.fadeOut();
+			container.setBar();
+		});
+	}
+	function appendText(){
+		var id = new Date().getTime();
+		$('#fld').append('<p id="'+id+'" style="border: solid 1px #666666;padding:5px;height:80px;"><a href="www.flexfirm.jp">アイテム</a><br/>もじもじ文字もじもじも陣も野路文字直代お空やん育代大変肩あオオ</p>');
+		new Loadmask(id, 'yellow', 10000, function(mask){
+			mask.fadeOut();
+			container.setBar();
+		});
+	}
+</script>
+</html>
