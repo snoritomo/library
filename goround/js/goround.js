@@ -5,36 +5,42 @@
 		jqueryがincludeされている事
 		main.jsがincludeされている事
 	引数
-		ビューID
-		コンテナID
-		アニメーションレート
-		自動回転の速度
-		アニメーションモード（0:margin-left 1:translate3d）
-		親がいる場合は引数に渡すこと。ないならnull
-		超過スクロールの遊びを許すか
-		クリックとみなす遊びの範囲
-		クリックと認識する時間の範囲
-		マウスホイール一回でスクロールする量
-		マウススワイプでスクロールするか
-		スクロールバーを独自にデザインしたい場合はクラス名を入れる。デフォルトにしたいならnull
-		resize時にスクロールバーを設定し直すか判定する関数
+		id: ビューID
+		path: 画像ディレクトリへのパスURL
+		prefix: ファイル名プレフィックス
+		safix: ファイル名サフィックス
+		startnum: ファイル名フレーム開始数
+		endnum: ファイル名フレーム最終数
+		digit: フレーム０桁埋め
+		movepx: 画像を回転させるスワイプ量
+		framerate: アニメーションレート
+		clickplay: クリックとみなすスワイプ量
+		clickplaytime: クリックとみなす操作時間
+		move_friction: 自動移動の減速加速度。
+		move_freetime: 自動移動の減速が発動するまでの時間
+		handlemouse: マウスイベントを拾うか
+		reverse: 逆回転
+		basezindex: ビュー部分のz-index
+		imgzindex: 画像部分のz-index
 **/
 function Goround(args){
-	this._id = '';
-	this.path = 'img/';
-	this.prefix = 'frm';
-	this.safix = '.png';
-	this.startnum = 0;
-	this.endnum = 20;
-	this.digit = 3;
+	this._id = '';//ビューID
+	this.path = 'img/';//画像ディレクトリへのパスURL
+	this.prefix = 'frm';//ファイル名プレフィックス
+	this.safix = '.png';//ファイル名サフィックス
+	this.startnum = 0;//ファイル名フレーム開始数
+	this.endnum = 20;//ファイル名フレーム最終数
+	this.digit = 3;//フレーム０桁埋め
 	this.movepx = 10;//画像を回転させるスワイプ量
 	this.framerate = 40;//アニメーションレート
 	this.clickplay = 1;//クリックとみなすスワイプ量
 	this.clickplaytime = 100;//クリックとみなす操作時間
 	this.move_friction = 20.0;//自動移動の減速加速度。
 	this.move_freetime = 100;//自動移動の減速が発動するまでの時間
-	this.handlemouse = true;
-	this.reverse = false;
+	this.handlemouse = true;//マウスイベントを拾うか
+	this.reverse = false;//逆回転
+	this.basezindex = 2;//ビュー部分のz-index
+	this.imgzindex = 1;//画像部分のz-index
 	
 	if(args!=null){
 		if(args.id!=undefined)this._id = args.id;
@@ -52,6 +58,8 @@ function Goround(args){
 		if(args.freetime!=undefined)this.move_freetime = args.freetime;//自動移動の減速が発動するまでの時間
 		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;//
 		if(args.reverse!=undefined)this.reverse = args.reverse;//
+		if(args.basezindex!=undefined)this.basezindex = args.basezindex;//
+		if(args.imgzindex!=undefined)this.imgzindex = args.imgzindex;//
 	}
 	this.view = $('#' + this._id);
 	this.left = 0;
@@ -110,7 +118,7 @@ function Goround(args){
 	this.rolling_anime = null;//setTimeOutの戻り値
 	this.toleft = true;//animation時に使用する左向きの回転かどうか
 	
-	this.view.css({position: 'relative', overflow: 'hidden'});
+	this.view.css({position: 'relative', overflow: 'hidden', zIndex: this.basezindex});
 
 	this.view.on('touchstart', {tgt: this}, this.page_touchstart);
 	this.view.on('touchend', {tgt: this}, this.page_touchend);
@@ -130,7 +138,7 @@ function Goround(args){
 		igwk = new Image();
 		igwk.src = this.path + this.prefix + (this.zero+(this.startnum + i)).slice(keisu)+this.safix;
 		igwk.style.position = 'relative';
-		igwk.style.zIndex = -1;
+		igwk.style.zIndex = this.imgzindex;
 		this.images.push($(igwk));
 	}
 	this._img = this.images[0];
