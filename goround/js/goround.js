@@ -20,8 +20,6 @@
 		move_freetime: 自動移動の減速が発動するまでの時間
 		handlemouse: マウスイベントを拾うか
 		reverse: 逆回転
-		basezindex: ビュー部分のz-index
-		imgzindex: 画像部分のz-index
 **/
 function Goround(args){
 	this._id = '';//ビューID
@@ -39,8 +37,6 @@ function Goround(args){
 	this.move_freetime = 100;//自動移動の減速が発動するまでの時間
 	this.handlemouse = true;//マウスイベントを拾うか
 	this.reverse = false;//逆回転
-	this.basezindex = 2;//ビュー部分のz-index
-	this.imgzindex = 1;//画像部分のz-index
 	
 	if(args!=null){
 		if(args.id!=undefined)this._id = args.id;
@@ -58,8 +54,6 @@ function Goround(args){
 		if(args.freetime!=undefined)this.move_freetime = args.freetime;//自動移動の減速が発動するまでの時間
 		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;//
 		if(args.reverse!=undefined)this.reverse = args.reverse;//
-		if(args.basezindex!=undefined)this.basezindex = args.basezindex;//
-		if(args.imgzindex!=undefined)this.imgzindex = args.imgzindex;//
 	}
 	this.view = $('#' + this._id);
 	this.left = 0;
@@ -85,9 +79,7 @@ function Goround(args){
 		}
 		tgt.nowidx = cnt;
 		tgt.left = lft2;
-		tgt.view.children().detach();
-		tgt.view.append(tgt.images[tgt.nowidx]);
-		tgt._img = tgt.images[tgt.nowidx];
+		tgt._img.attr('src', tgt.images[tgt.nowidx].attr('src'));
 		tgt.view.height(tgt.images[tgt.nowidx].innerHeight);
 	};
 	this.getleft = function(tgt){return parseInt(this.left);};
@@ -118,8 +110,6 @@ function Goround(args){
 	this.rolling_anime = null;//setTimeOutの戻り値
 	this.toleft = true;//animation時に使用する左向きの回転かどうか
 	
-	this.view.css({position: 'relative', overflow: 'hidden', zIndex: this.basezindex});
-
 	this.view.on('touchstart', {tgt: this}, this.page_touchstart);
 	this.view.on('touchend', {tgt: this}, this.page_touchend);
 	if(this.handlemouse){
@@ -137,8 +127,7 @@ function Goround(args){
 	for(var i = 0; i < this.frmnum; i++){
 		igwk = new Image();
 		igwk.src = this.path + this.prefix + (this.zero+(this.startnum + i)).slice(keisu)+this.safix;
-		igwk.style.position = 'relative';
-		igwk.style.zIndex = this.imgzindex;
+		var jqimg = $(igwk);
 		this.images.push($(igwk));
 	}
 	this._img = this.images[0];
