@@ -4,10 +4,9 @@
 マスキングするためのAPIです。
 
 このAPIはjqueryをロードしている事を前提に作成されています。
-その状態で、main.jsとscroller.jsをロードしてください
+その状態でscroller.jsをロードしてください
 
 <script src="js/jquery.js" type="text/javascript" ></script>
-<script src="js/main.js" type="text/javascript" ></script>
 <script src="js/loadmask.js" type="text/javascript" ></script>
 
 【実装方法】
@@ -16,17 +15,14 @@
 のようなタグに対し、上記が読み込まれた時点（最初から記述されているならjQueryロードかつ記述後、
 JavaScriptで追加したらなら追加直後）に以下のように呼び出して使用します
 
-new Loadmask(id, 'yellow', 10000, function(mask){
-			mask.fadeOut();
-			container.setBar();//マスク除去後の処理
-		});
+new Loadmask(args);
 
 と記述します。引数はそれぞれ
 
-	マスクしたいブロック要素のID
-	マスクのスタイルを記述したclass
-	タイムアウトとみなしてマスクを外すまでの時間
-	マスク除去のアニメーション関数
+		id: マスクしたいブロック要素のID
+		class: マスクのスタイルを記述したclass
+		loadingtimeout: マスク除去のアニメーション関数
+		animate: タイムアウトとみなしてマスクを外すまでの時間
 	
 です。
 
