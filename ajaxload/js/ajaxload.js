@@ -2,7 +2,6 @@
 	Ajaxloadインジケータ
 	auth: noritomo.suzuki@flexfirm.ksk.co.jp
 	条件
-		main.jsがincludeされている事
 		表示する画像ファイル名は０で桁埋めされたフレーム数を含む事
 	引数
 		id: ID（img、もしくはコンテナの）
@@ -15,6 +14,56 @@
 		framerate: 画像を変更する秒間の回数
 		digit: フレーム番号の桁数
 **/
+if(!Array.indexOf){
+	Array.prototype.indexOf = function(object){
+		for(var i = 0; i < this.length; i++){
+			if(this[i] == object){ 
+				return i;
+			}
+		}
+		return -1;
+	}
+}
+if(!Function.applyTimeout){
+	Function.prototype.applyTimeout = function (ms, self, args)
+	{
+		var f = this;
+		return setTimeout(
+		function () {
+			f.apply(self, args);
+		},
+		ms);
+	};
+}
+if(!Function.callTimeout){
+	Function.prototype.callTimeout = function (ms, self)
+	{
+		return this.applyTimeout(
+			ms,
+			self,
+			Array.prototype.slice.call(arguments, 2));
+	};
+}
+if(!Function.applyInterval){
+	Function.prototype.applyInterval = function (ms, self, args)
+	{
+		var f = this;
+		return setInterval(
+			function () {
+				f.apply(self, args);
+			},
+		ms);
+	};
+}
+if(!Function.callInterval){
+	Function.prototype.callInterval = function (ms, self)
+	{
+		return this.applyInterval(
+			ms,
+			self,
+			Array.prototype.slice.call(arguments, 2));
+	};
+}
 function Ajaxload(arg){
 	this.id = '';
 	this.path = 'img/';
@@ -91,18 +140,8 @@ Ajaxload.prototype.getImageObject = function(){
 }
 Ajaxload.prototype.animate = function(){
 	if(this.anime == null)return;
-	
-	if(this.isimage){
-		var wk = this.getImageObject();
-		this._this.parentNode.replaceChild(wk, this._img);
-		this._img = wk;
-		this._this = wk;
-	}
-	else{
-		var wk = this.getImageObject();
-		this._this.replaceChild(wk, this._img);
-		this._img = wk;
-	}
+	var wk = this.getImageObject();
+	this._img.src = wk.src;
 	this.anime = this.animate.applyTimeout(this.interval, this, []);
 }
 

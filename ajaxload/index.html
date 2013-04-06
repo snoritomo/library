@@ -17,21 +17,19 @@
 <img id="bbb"/>
 <br/>
 <br/>
-<button onclick="aaa.stop();bbb.stop();">止める</button><br/>
+<button onclick="aaa.stop();bbbb.stop();">止める</button><br/>
 
 <br/>
-<button onclick="aaa.start();bbb.start();">開始</button><br/><br/><br/><br/>
+<button onclick="aaa.start();bbbb.start();">開始</button><br/><br/><br/><br/>
 
 
-<script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/main.js"></script>
 <script type="text/javascript" src="js/ajaxload.js"></script>
 <script type="text/javascript">
 var aaa = new Ajaxload({id: "aaa", path: "img/ajaxload/", startnum: 1, endnum:12, framerate: 20, rotaterate: 14});
-var bbb = new Ajaxload({id: "bbb", path: "img/ajaxload/", startnum: 1, endnum:12});
+var bbbb = new Ajaxload({id: "bbb", path: "img/ajaxload/", startnum: 1, endnum:12});
 
 aaa.start();
-bbb.start();
+bbbb.start();
 </script>
 </body>
 </html>

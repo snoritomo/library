@@ -9,7 +9,7 @@
 その状態でgoround.jsをロードしてください
 
 <script src="js/jquery.js" type="text/javascript" ></script>
-<script src="js/scroller.js" type="text/javascript" ></script>
+<script src="js/goround.js" type="text/javascript" ></script>
 
 【実装方法】
 <div id="xxxx" >
