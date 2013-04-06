@@ -21,6 +21,56 @@
 		handlemouse: マウスイベントを拾うか
 		reverse: 逆回転
 **/
+if(!Array.indexOf){
+	Array.prototype.indexOf = function(object){
+		for(var i = 0; i < this.length; i++){
+			if(this[i] == object){ 
+				return i;
+			}
+		}
+		return -1;
+	}
+}
+if(!Function.applyTimeout){
+	Function.prototype.applyTimeout = function (ms, self, args)
+	{
+		var f = this;
+		return setTimeout(
+		function () {
+			f.apply(self, args);
+		},
+		ms);
+	};
+}
+if(!Function.callTimeout){
+	Function.prototype.callTimeout = function (ms, self)
+	{
+		return this.applyTimeout(
+			ms,
+			self,
+			Array.prototype.slice.call(arguments, 2));
+	};
+}
+if(!Function.applyInterval){
+	Function.prototype.applyInterval = function (ms, self, args)
+	{
+		var f = this;
+		return setInterval(
+			function () {
+				f.apply(self, args);
+			},
+		ms);
+	};
+}
+if(!Function.callInterval){
+	Function.prototype.callInterval = function (ms, self)
+	{
+		return this.applyInterval(
+			ms,
+			self,
+			Array.prototype.slice.call(arguments, 2));
+	};
+}
 function Goround(args){
 	this._id = '';//ビューID
 	this.path = 'img/';//画像ディレクトリへのパスURL

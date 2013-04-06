@@ -6,7 +6,6 @@
 	<meta name="format-detection" content="telephone=no" />
 	<meta name="viewport" content="width=device-width,maximum-scale=1.0,minimum-scale=1.0,user-scalable=0" />
 	<title></title>
-	<script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
 <div id="console"></div>
@@ -20,12 +19,11 @@
 
 
 <script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/main.js"></script>
 <script type="text/javascript" src="js/goround.js"></script>
 <script type="text/javascript" >
 var goround = null;
 $(document).ready(function(){
-	goround = new Goround({id:'showcase', path:'img/about/', prefix:'frm', safix:'.jpg?xln_imgw=640', startnum: 1, endnum: 25});
+	goround = new Goround({id:'showcase', path:'img/about/', prefix:'frm', safix:'.jpg', reverse: true, startnum: 1, endnum: 25});
 });
 </script>
 </body>
