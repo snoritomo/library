@@ -1,13 +1,14 @@
 スクローラー
 
+※このライブラリの実態はjs/scroller.jsのみで、あとはサンプルです。
+
 このAPIはビューとコンテナとして記述した入れ子になったタグに対して、
 ビューの領域内をコンテナがスクローリングするような効果を持たせるものです。
 
 このAPIはjqueryをロードしている事を前提に作成されています。
-その状態で、main.jsとscroller.jsをロードしてください
+その状態でscroller.jsをロードしてください
 
 <script src="js/jquery.js" type="text/javascript" ></script>
-<script src="js/main.js" type="text/javascript" ></script>
 <script src="js/scroller.js" type="text/javascript" ></script>
 
 【実装方法】

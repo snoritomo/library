@@ -21,6 +21,56 @@
 		barclass: スクロールバーを独自にデザインしたい場合はクラス名を入れる。デフォルトにしたいならnull
 		issetbar: resize時にスクロールバーを設定し直すか判定する関数
 **/
+if(!Array.indexOf){
+	Array.prototype.indexOf = function(object){
+		for(var i = 0; i < this.length; i++){
+			if(this[i] == object){ 
+				return i;
+			}
+		}
+		return -1;
+	}
+}
+if(!Function.applyTimeout){
+	Function.prototype.applyTimeout = function (ms, self, args)
+	{
+		var f = this;
+		return setTimeout(
+		function () {
+			f.apply(self, args);
+		},
+		ms);
+	};
+}
+if(!Function.callTimeout){
+	Function.prototype.callTimeout = function (ms, self)
+	{
+		return this.applyTimeout(
+			ms,
+			self,
+			Array.prototype.slice.call(arguments, 2));
+	};
+}
+if(!Function.applyInterval){
+	Function.prototype.applyInterval = function (ms, self, args)
+	{
+		var f = this;
+		return setInterval(
+			function () {
+				f.apply(self, args);
+			},
+		ms);
+	};
+}
+if(!Function.callInterval){
+	Function.prototype.callInterval = function (ms, self)
+	{
+		return this.applyInterval(
+			ms,
+			self,
+			Array.prototype.slice.call(arguments, 2));
+	};
+}
 function Scroller(args){
 	//初めの移動で、縦より横の方が大きくスライドしていたら機能発動
 	//機能発動したら内部コンテンツへのイベントバブリングをキャンセルする
@@ -58,7 +108,6 @@ function Scroller(args){
 	if(args.issetbar!=undefined)this.issetbar = args.issetbar;//resize時にスクロールバーを設定し直すか判定する関数
 	
 	this._container._scroller = this;//コンテナにスクローラへの参照を持たせる
-	//this._through = 0;//最初は0、ページング中は1、何もせずイベント処理を子要素に任せる場合は2。
 
 	this.interval = 1 / this.framerate;
 	this.move_friction = this.move_friction / this.interval;
@@ -95,6 +144,7 @@ function Scroller(args){
 	this.totop = true;//animation時に使用する左向きの回転かどうか
 	this.reverse = false;//戻り中
 	this.prevent_touch_start = true;//タッチスタートでpreventDefaultを発生させるフラグ
+	this.raise_on_wheel_event_functions = [];
 	
 	if(this.usetranslate == 1){
 		this._container.css('position', 'relative');//translate3dをする場合、コンテナをrelativeにしておかないと残像が残る
@@ -117,8 +167,6 @@ function Scroller(args){
 		var ta = $(this);
 		var href = ta.attr("href");
 		var t = evt.data.tgt._scroller;
-//		var ed_time = evt.timeStamp;
-//		if(t.clickplay >= Math.abs(t.ed_x - t.st_x) && t.clickplaytime >= (ed_time - t.st_time)){
 		if(!t.moved){
 			ta.click();
 			window.open(href, "_self");
@@ -129,8 +177,6 @@ function Scroller(args){
 			var ta = $(this);
 			var href = ta.attr("href");
 			var t = evt.data.tgt._scroller;
-//			var ed_time = evt.timeStamp;
-//			if(t.clickplay >= Math.abs(t.ed_x - t.st_x) && t.clickplaytime >= (ed_time - t.st_time)){
 			if(!t.moved){
 				ta.click();
 				window.open(href, "_self");
@@ -144,7 +190,7 @@ function Scroller(args){
 		this._container.on('mousedown', {tgt: this._container}, this.page_touchstart);
 		this._container.on('mouseup', {tgt: this._container}, this.page_touchend);
 	}
-	if(this.wheelrange>0)addWheelEventHandler(function(delta, evt, arg){
+	if(this.wheelrange>0)this.addWheelEventHandler(function(delta, evt, arg){
 		var src = arg.tgt.vpre=='-moz-' ? evt.target : evt.srcElement;
 		if(!arg.tgt.isIn(src)){
 			return;
@@ -217,6 +263,14 @@ function Scroller(args){
 			t.setBar();
 		}
 	});
+	var me = this;
+	if(document.addEventListener){
+		document.addEventListener("mousewheel", function(evt){me.wheel(me, evt);}, false);
+		document.addEventListener('DOMMouseScroll', function(evt){me.wheel(me, evt);}, false);
+	}
+	else{
+		window.onmousewheel = document.onmousewheel = function(evt){me.wheel(me, evt);};
+	}
 }
 Scroller.prototype.getY = function(obj){
 	var cc = 0;
@@ -440,12 +494,6 @@ Scroller.prototype.scroll_bottom = function(){
 	if(nw<tosize)deg *= -1;
 	t.rolling_anime = t.rolling_to.applyTimeout(t.interval * 1000, t, [deg, tosize]);
 }
-//Scroller.prototype.through_prevent_touchstart = function(){
-//	this.prevent_touch_start = false;
-//	if(this._container._parent){
-//		this._container._parent.through_prevent_touchstart();
-//	}
-//}
 Scroller.prototype.page_touchstart = function(evt){
 	var t = evt.data.tgt._scroller;
 	var p = evt.data.tgt._parent;
@@ -457,7 +505,6 @@ Scroller.prototype.page_touchstart = function(evt){
 	t.st_time = evt.timeStamp;
 	t.ed_x = t.st_x;
 	t.ed_y = t.st_y;
-//	t._through = 0;
 	t._container.on('touchmove', {tgt: t._container}, t.page_touchmove);
 	if(t.handlemouse){
 		t._container.on('mousemove', {tgt: t._container}, t.page_touchmove);
@@ -467,7 +514,6 @@ Scroller.prototype.page_touchstart = function(evt){
 		p.page_touchstart(evt);
 	}
 	evt.preventDefault();
-//	if(t.prevent_touch_start)evt.preventDefault();//子要素の処理を抑制するために必要だが、子要素側でタッチスタート時にスルーしてほしい旨を伝えられたらpreventDefaultしない
 }
 Scroller.prototype.page_touchend = function(evt){
 	var t = evt.data.tgt._scroller;
@@ -476,20 +522,14 @@ Scroller.prototype.page_touchend = function(evt){
 	if(t.handlemouse){
 		t._container.off('mousemove', t.page_touchmove);
 	}
-//	if(t._through == 2){
-//		return true;
-//	}
 	t.ed_time = evt.timeStamp;
 	var len = Math.sqrt(Math.pow(t.ed_x - t.st_x, 2) + Math.pow(t.ed_y - t.st_y, 2));
-//	t._through = 0;
 	t.rolling_speed = len / ((t.ed_time - t.st_time) / 1000);
 
 	var isclick = true;//クリックを子要素に伝えるか。この処理はクリックなどページ遷移をしない時に必要
-//	alert(t.clickplay + ' < Math.abs(' + t.ed_y+' - '+t.st_y+') || '+(t.clickplaytime)+' < ('+(t.ed_time-t.st_time)+')');
 	if(t.clickplay < Math.abs(t.ed_y - t.st_y) || t.clickplaytime < (t.ed_time - t.st_time)){//クリックの遊びの範囲内で一定時間以上タップしたならクリックさせるが、それを越えたらイベントをブロック
 		isclick = false;
 		evt.preventDefault();
-//		alert('aa');
 	}
 	t.st_time = 0;
 	if(t.ed_y == t.st_y){
@@ -517,19 +557,6 @@ Scroller.prototype.page_touchmove = function(evt){
 	t.ed_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
 	var tgt = evt.data.tgt;
 	var mgl = (t.ed_y - t.move_y);
-//	if(t._through == 0){
-//		var mglx = (t.ed_x - t.move_x);
-//		if(Math.abs(mgl) < Math.abs(mglx)){
-//			t._through = 2;
-//			return true;
-//		}
-//		else{
-//			t._through = 1;
-//		}
-//	}
-//	else if(t._through == 2){
-//		return true;
-//	}
 	t.totop = mgl>0?false:true;
 	if(t.isstopborder){
 		var cntnsize = t._container.height();//コンテナの高さ
@@ -544,7 +571,39 @@ Scroller.prototype.page_touchmove = function(evt){
 	t.rolling(mgl, 'once');
 	t.move_x = t.ed_x;
 	t.move_y = t.ed_y;
-//	t.prevent_touch_start = true;
 	evt.preventDefault();
 	return false;
+}
+Scroller.prototype.addWheelEventHandler = function(f, arg){
+	var obj = {};
+	obj.fn = f;
+	obj.arg = arg;
+	this.raise_on_wheel_event_functions.push(obj);
+}
+Scroller.prototype.wheel = function(scroller, event){
+	var delta = 0;
+	if (!event) /* For IE. */
+		event = window.event;
+	if (event.wheelDelta) { /* IE/Opera. */
+		delta = event.wheelDelta/120;
+		if (window.opera)
+			delta = delta;
+	} else if (event.detail) { /** Mozilla case. */
+		delta = -event.detail/3;
+	}
+	/** If delta is nonzero, handle it.
+	 * Basically, delta is now positive if wheel was scrolled up,
+	 * and negative, if wheel was scrolled down.
+	 */
+	if (delta){
+		for(var i = 0; i < scroller.raise_on_wheel_event_functions.length; i++){
+			var f = scroller.raise_on_wheel_event_functions[i];
+			if(f.fn == undefined)continue;
+			f.fn(delta, event, f.arg);
+		}
+	}
+	if (event.preventDefault) {
+		event.preventDefault();
+	}
+	event.returnValue = false;
 }
