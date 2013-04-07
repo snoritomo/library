@@ -139,6 +139,26 @@ function Roller(args){
 	this.rolling_anime = null;//setTimeOutの戻り値
 	this.toleft = true;//animation時に使用する左向きの回転かどうか
 	
+	$(document).on('touchend', '#'+this._cntid+' *', {tgt: this.container}, function(evt){
+		var ta = $(this);
+		var href = ta.attr("href");
+		var t = evt.data.tgt._roller;
+		if(!t.moved){
+			ta.click();
+			window.open(href, "_self");
+		}
+	});
+	if(this.handlemouse){
+		$(document).on('mouseup', '#'+this._cntid+' *', {tgt: this.container}, function(evt){
+			var ta = $(this);
+			var href = ta.attr("href");
+			var t = evt.data.tgt._roller;
+			if(!t.moved){
+				ta.click();
+				window.open(href, "_self");
+			}
+		});
+	}
 	this.container.on('touchstart', {tgt: this}, this.page_touchstart);
 	this.container.on('touchend', {tgt: this}, this.page_touchend);
 	if(this.handlemouse){
