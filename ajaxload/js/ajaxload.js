@@ -1,6 +1,6 @@
 /**
 	Ajaxloadインジケータ
-	auth: noritomo.suzuki@flexfirm.ksk.co.jp
+	auth: noritomo.suzuki@sn.jp
 	条件
 		表示する画像ファイル名は０で桁埋めされたフレーム数を含む事
 	引数

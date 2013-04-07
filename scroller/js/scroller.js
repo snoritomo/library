@@ -1,6 +1,6 @@
 /**
 	スクローラ
-	auth: noritomo.suzuki@flexfirm.ksk.co.jp
+	auth: noritomo.suzuki@sn.jp
 	条件
 		jqueryがincludeされている事
 		main.jsがincludeされている事
