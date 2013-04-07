@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+	<meta name="author" content="Noritomo Suzuki" />
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+	<script type="text/javascript" src="js/jquery.js" ></script>
+	<script type="text/javascript" src="js/roller.js" ></script>
+	<title></title>
+	<style type="text/css">
+		#container img{
+			display: block;
+			float: left;
+		}
+	</style>
+</head>
+<body>
+	<div id="view">
+		<div id="container">
+			<img src="img/0.png" />
+			<img src="img/1.png" />
+			<img src="img/2.png" />
+			<img src="img/3.png" />
+			<img src="img/4.png" />
+			<img src="img/5.png" />
+			<img src="img/6.png" />
+			<img src="img/7.png" />
+			<img src="img/8.png" />
+			<img src="img/9.png" />
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+var roller;
+$(document).ready(function(){
+	roller = new Roller({id:"view",cntid:"container",usetranslate:1});
+});
+</script>
+</html>
