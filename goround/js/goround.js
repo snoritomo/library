@@ -166,7 +166,6 @@ function Goround(args){
 		this.view.on('mousedown', {tgt: this}, this.page_touchstart);
 		this.view.on('mouseup', {tgt: this}, this.page_touchend);
 	}
-	this.view.on('click', {tgt: this}, function(evt){evt.preventDefault();});
 	
 	this.zero = '';
 	for(var i = 0; i < this.digit; i++)
