@@ -7,18 +7,14 @@
 	引数
 		id: ビューID
 		cntid: コンテナID
-		parent: 親がいる場合は引数に渡すこと。ないならnull
-		speed: 自動回転の速度
-		usetranslate: アニメーションモード（0:margin-left 1:translate3d）
-		friction: 自動移動の減速加速度。
-		freetime: 自動移動の減速が発動するまでの時間
+		usetranslate: translate3dを使うなら1。それ以外は0
 		framerate: アニメーションレート
-		clickplay: クリックとみなす遊びの範囲
-		clickplaytime: クリックと認識する時間の範囲
-		stopborder: 超過スクロールの遊びを許すか
-		handlemouse: マウススワイプでスクロールするか
-		barclass: スクロールバーを独自にデザインしたい場合はクラス名を入れる。デフォルトにしたいならnull
-		issetbar: resize時にスクロールバーを設定し直すか判定する関数
+		clickplay: クリックとみなすスワイプ量
+		clickplaytime: クリックとみなす操作時間
+		move_friction: 自動移動の減速加速度。
+		move_freetime: 自動移動の減速が発動するまでの時間
+		handlemouse: マウスイベントを拾うか
+		autotranslatemode: オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
 **/
 if(!Array.indexOf){
 	Array.prototype.indexOf = function(object){
@@ -80,6 +76,7 @@ function Roller(args){
 	this.move_friction = 1.0;//自動移動の減速加速度。
 	this.move_freetime = 1000;//自動移動の減速が発動するまでの時間
 	this.handlemouse = true;//マウスイベントを拾うか
+	this.autotranslatemode = true;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
 	
 	if(args!=null){
 		if(args.id!=undefined)this._id = args.id;
@@ -91,6 +88,7 @@ function Roller(args){
 		if(args.friction!=undefined)this.move_friction = args.friction;//自動移動の減速加速度。
 		if(args.freetime!=undefined)this.move_freetime = args.freetime;//自動移動の減速が発動するまでの時間
 		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;//
+		if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
 	}
 	this.view = $('#' + this._id);
 	this.container = $('#' + this._cntid);
@@ -110,6 +108,10 @@ function Roller(args){
 	}
 	else if(userAgent.indexOf('opera') != -1){
 		this.vpre = '-o-';
+		if(this.autotranslatemode)this.usetranslate = 0;
+	}
+	else{
+		if(this.autotranslatemode)this.usetranslate = 0;
 	}
 	
 	if(this.usetranslate == 1){

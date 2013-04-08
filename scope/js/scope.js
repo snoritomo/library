@@ -5,10 +5,20 @@
 		jqueryがincludeされている事
 		ビュー、サムネイルに使用するブロック要素に幅指定がされていること
 	引数
-		id: マスクしたいブロック要素のID
-		class: マスクのスタイルを記述したclass
-		loadingtimeout: マスク除去のアニメーション関数
-		animate: タイムアウトとみなしてマスクを外すまでの時間
+		id: ビューのID
+		samid: コンテナーのID
+		scopeid: スコープのID
+		imgid: 元画像のID
+		samimgid: サムネイル画像のID
+		src: 画像URL
+		usetranslate: translate3dを使うか
+		framerate: アニメーションレート
+		scoperate: スコープレート
+		imageclass: 元画像class
+		samimageclass:サムネイル画像class
+		scopeclass: スコープclass
+		handlemouse: マウス操作でスワイプするか
+		autotranslatemode: オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
 **/
 function Scope(args){
 	this._id = args.id;//ビューのID
@@ -23,8 +33,10 @@ function Scope(args){
 	this.framerate = 40;//アニメーションレート
 	this.scoperate = 0.2;//スコープレート
 	this.imageclass = '';
+	this.samimageclass = '';
 	this.scopeclass = '';
 	this.handlemouse = true;//マウス操作でスワイプするか
+	this.autotranslatemode = true;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
 	
 	if(args!=null){
 		if(args.scopeid!=undefined)this._scopeid = args.scopeid;
@@ -35,8 +47,10 @@ function Scope(args){
 		if(args.framerate!=undefined)this.framerate = args.framerate;
 		if(args.scoperate!=undefined)this.scoperate = args.scoperate;
 		if(args.imageclass!=undefined)this.imageclass = args.imageclass;
+		if(args.samimageclass!=undefined)this.samimageclass = args.samimageclass;
 		if(args.scopeclass!=undefined)this.scopeclass = args.scopeclass;
 		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;//マウス操作でスワイプするか
+		if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
 	}
 	this._this.append('<img id="' + this._imgid + '" src="'+this.src+'" class="' + this.imageclass + '"/>');
 	this._this.css({position: 'relative', overflow:'hidden'});
@@ -47,7 +61,7 @@ function Scope(args){
 		t._this.height(t._image.height() * t.scoperate);
 	});
 	this._image.css({position: 'absolute'});
-	this._sam.append('<img id="' + this._samimgid + '" src="'+this.src+'" class="' + this.imageclass + '"/>');
+	this._sam.append('<img id="' + this._samimgid + '" src="'+this.src+'" class="' + this.samimageclass + '"/>');
 	this._sam.append('<div id="' + this._scopeid + '" class="' + this.scopeclass + '"></div>');
 	this._sam.css({position: 'relative'});
 	this._samimage = $('#' + this._samimgid);
@@ -80,6 +94,10 @@ function Scope(args){
 	}
 	else if(userAgent.indexOf('opera') != -1){
 		this.vpre = '-o-';
+		if(this.autotranslatemode)this.usetranslate = 0;
+	}
+	else{
+		if(this.autotranslatemode)this.usetranslate = 0;
 	}
 	
 	if(this.usetranslate == 1){

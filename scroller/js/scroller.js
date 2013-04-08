@@ -20,6 +20,7 @@
 		handlemouse: マウススワイプでスクロールするか
 		barclass: スクロールバーを独自にデザインしたい場合はクラス名を入れる。デフォルトにしたいならnull
 		issetbar: resize時にスクロールバーを設定し直すか判定する関数
+		autotranslatemode: オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
 **/
 if(!Array.indexOf){
 	Array.prototype.indexOf = function(object){
@@ -92,6 +93,7 @@ function Scroller(args){
 	this.handlemouse = true;//マウス操作でスワイプするか
 	this.barclass = null;//スクロールバーのクラス名
 	this.issetbar = null;//resize時にスクロールバーを設定し直すか判定する関数
+	this.autotranslatemode = true;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
 	
 	if(args.parent!=undefined)this._container._parent = args.parent;//親にページャがいるならコンテナにページャへの参照を持たせる
 	if(args.speed!=undefined)this.move_mostslow = parseFloat(args.speed);//自動移動の速度
@@ -106,6 +108,7 @@ function Scroller(args){
 	if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;//マウス操作でスワイプするか
 	if(args.barclass!=undefined)this.barclass = args.barclass;//スクロールバーのクラス名
 	if(args.issetbar!=undefined)this.issetbar = args.issetbar;//resize時にスクロールバーを設定し直すか判定する関数
+	if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
 	
 	this._container._scroller = this;//コンテナにスクローラへの参照を持たせる
 
@@ -122,6 +125,10 @@ function Scroller(args){
 	}
 	else if(userAgent.indexOf('opera') != -1){
 		this.vpre = '-o-';
+		if(this.autotranslatemode)this.usetranslate = 0;
+	}
+	else{
+		if(this.autotranslatemode)this.usetranslate = 0;
 	}
 	
 	this.rolling = this.rolling_notate;
