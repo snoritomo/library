@@ -1,0 +1,197 @@
+/**
+	スコープ
+	auth: noritomo.suzuki@sn.jp
+	条件
+		jqueryがincludeされている事
+		ビュー、サムネイルに使用するブロック要素に幅指定がされていること
+	引数
+		id: マスクしたいブロック要素のID
+		class: マスクのスタイルを記述したclass
+		loadingtimeout: マスク除去のアニメーション関数
+		animate: タイムアウトとみなしてマスクを外すまでの時間
+**/
+function Scope(args){
+	this._id = args.id;//ビューのID
+	this._samid = args.samid;//コンテナーのID
+	this._scopeid = this._samid + '_scope';
+	this._imgid = this._id + '_image';
+	this._samimgid = this._samid + '_image';
+	this._this = $('#'+this._id);//ビューのjQueryオブジェクト
+	this._sam = $('#'+this._samid);//コンテナのjQueryオブジェクト
+	this.src = '';
+	this.usetranslate = 0;
+	this.framerate = 40;//アニメーションレート
+	this.scoperate = 0.2;//スコープレート
+	this.imageclass = '';
+	this.scopeclass = '';
+	this.handlemouse = true;//マウス操作でスワイプするか
+	
+	if(args!=null){
+		if(args.scopeid!=undefined)this._scopeid = args.scopeid;
+		if(args.imgid!=undefined)this._imgid = args.imgid;
+		if(args.samimgid!=undefined)this._samimgid = args.samimgid;
+		if(args.src!=undefined)this.src = args.src;
+		if(args.usetranslate!=undefined)this.usetranslate = args.usetranslate;
+		if(args.framerate!=undefined)this.framerate = args.framerate;
+		if(args.scoperate!=undefined)this.scoperate = args.scoperate;
+		if(args.imageclass!=undefined)this.imageclass = args.imageclass;
+		if(args.scopeclass!=undefined)this.scopeclass = args.scopeclass;
+		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;//マウス操作でスワイプするか
+	}
+	this._this.append('<img id="' + this._imgid + '" src="'+this.src+'" class="' + this.imageclass + '"/>');
+	this._this.css({position: 'relative', overflow:'hidden'});
+	this._image = $('#' + this._imgid);
+	this._image.width(this._this.width() / this.scoperate);
+	this._image.on('load', {tgt: this}, function(evt){
+		var t = evt.data.tgt;
+		t._this.height(t._image.height() * t.scoperate);
+	});
+	this._image.css({position: 'absolute'});
+	this._sam.append('<img id="' + this._samimgid + '" src="'+this.src+'" class="' + this.imageclass + '"/>');
+	this._sam.append('<div id="' + this._scopeid + '" class="' + this.scopeclass + '"></div>');
+	this._sam.css({position: 'relative'});
+	this._samimage = $('#' + this._samimgid);
+	this._samimage.width(this._sam.width());
+	this._samimage.on('load', {tgt: this}, function(evt){
+		var t = evt.data.tgt;
+		t._sam.height(t._samimage.height());
+		t._scope.height(t._sam.height() * t.scoperate);
+	});
+	this._scope = $('#' + this._scopeid);
+	this._scope.width(this._sam.width() * this.scoperate);
+	this._scope.css({position: 'absolute', top: 0, left: 0});
+	
+	this.imagerate = this._this.width() / this._sam.width() / this.scoperate;
+	
+	this._scope.on('touchstart', {tgt: this}, this.page_touchstart);
+	this._scope.on('touchend', {tgt: this}, this.page_touchend);
+	if(this.handlemouse){
+		this._scope.on('mousedown', {tgt: this}, this.page_touchstart);
+		this._scope.on('mouseup', {tgt: this}, this.page_touchend);
+	}
+	
+	var userAgent = window.navigator.userAgent.toLowerCase();
+	this.vpre = '';
+	if(userAgent.indexOf('webkit') != -1){
+		this.vpre = '-webkit-';
+	}
+	else if(userAgent.indexOf('gecko') != -1){
+		this.vpre = '-moz-';
+	}
+	else if(userAgent.indexOf('opera') != -1){
+		this.vpre = '-o-';
+	}
+	
+	if(this.usetranslate == 1){
+		this._scope.css(this.vpre+'transform-origin-x', 0);//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
+		this._scope.css(this.vpre+'transform-origin-y', 0);//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
+		this._scope.css(this.vpre+'transform', 'translate3d(0px,0px,0px)');//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
+		this._image.css(this.vpre+'transform-origin-x', 0);//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
+		this._image.css(this.vpre+'transform-origin-y', 0);//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
+		this._image.css(this.vpre+'transform', 'translate3d(0px,0px,0px)');//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
+	}
+}
+Scope.prototype.getX = function(obj){
+	var cc = 0;
+	var re = '';
+	var buf = '';
+	var len = 12;
+	for(var i = 0; i < obj.length; i++){
+		var s = obj.charAt(i);
+		if(cc>len)break;
+		if(s=='('){
+			len = buf == 'matrix3d' ? 12 : 4;
+			continue;
+		}
+		buf += s.toLowerCase();
+		if(s==','){
+			cc++;
+			continue;
+		}
+		if(cc==len && s.match(/[0-9-.]/)){
+			re += s;
+		}
+	}
+	return re;
+}
+Scope.prototype.getY = function(obj){
+	var cc = 0;
+	var re = '';
+	var buf = '';
+	var len = 13;
+	for(var i = 0; i < obj.length; i++){
+		var s = obj.charAt(i);
+		if(cc>len)break;
+		if(s=='('){
+			len = buf == 'matrix3d' ? 13 : 5;
+			continue;
+		}
+		buf += s.toLowerCase();
+		if(s==','){
+			cc++;
+			continue;
+		}
+		if(cc==len && s.match(/[0-9-.]/)){
+			re += s;
+		}
+	}
+	return re;
+}
+Scope.prototype.page_touchstart = function(evt){
+	var t = evt.data.tgt;
+	t.st_x = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenX;
+	t.move_x = t.st_x;
+	t.st_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
+	t.move_y = t.st_y;
+	t.st_time = evt.timeStamp;
+	t.ed_x = t.st_x;
+	t.ed_y = t.st_y;
+	t._scope.on('touchmove', {tgt: t}, t.page_touchmove);
+	if(t.handlemouse){
+		t._scope.on('mousemove', {tgt: t}, t.page_touchmove);
+	}
+	evt.preventDefault();
+}
+Scope.prototype.page_touchend = function(evt){
+	var t = evt.data.tgt;
+	t._scope.off('touchmove', t.page_touchmove);
+	if(t.handlemouse){
+		t._scope.off('mousemove', t.page_touchmove);
+	}
+	t.ed_time = evt.timeStamp;
+	t.st_x = 0;
+	t.st_y = 0;
+	t.st_time = 0;
+}
+Scope.prototype.page_touchmove = function(evt){
+	var t = evt.data.tgt;
+	if(t.st_time<=0)return;
+	t.ed_x = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenX;
+	t.ed_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
+	
+	if(t.usetranslate == 0){
+		var mglx = parseInt(t._scope.css('left').replace('px', '')) + (t.ed_x - t.move_x);
+		var mgly = parseInt(t._scope.css('top').replace('px', '')) + (t.ed_y - t.move_y);
+		if(mglx<0)mglx=0;
+		if(mgly<0)mgly=0;
+		t._scope.css('left', mglx);
+		t._scope.css('top', mgly);
+		
+		t._image.css('left', -1 * mglx * t.imagerate);
+		t._image.css('top', -1 * mgly * t.imagerate);
+	}
+	else{
+		var trans = t._scope.css(t.vpre+'transform');
+		var mglx = parseInt(t.getX(trans)) + (t.ed_x - t.move_x);
+		var mgly = parseInt(t.getY(trans)) + (t.ed_y - t.move_y);
+		if(mglx<0)mglx=0;
+		if(mgly<0)mgly=0;
+		t._scope.css(t.vpre+'transform', 'translate3d('+mglx+'px,'+mgly+'px,0px)');
+		t._image.css(t.vpre+'transform', 'translate3d('+(-1 * mglx * t.imagerate)+'px,'+(-1 * mgly * t.imagerate)+'px,0px)');
+	}
+	
+	t.move_x = t.ed_x;
+	t.move_y = t.ed_y;
+	evt.preventDefault();
+	return false;
+}
