@@ -183,6 +183,12 @@ Roller.prototype.setWidth = function(){
 	var w = 0;
 	for(var i = 0; i < this.items.length; i++){
 		w += this.items[i].width();
+        w += parseInt(this.items[i].css("padding-left").replace('px', ''));
+        w += parseInt(this.items[i].css("padding-right").replace('px', ''));
+        w += parseInt(this.items[i].css("margin-left").replace('px', ''));
+        w += parseInt(this.items[i].css("margin-right").replace('px', ''));
+        w += parseInt(this.items[i].css("border-left-width").replace('px', ''));
+        w += parseInt(this.items[i].css("border-right-width").replace('px', ''));
 	}
 	this.container.width(w);
 }
