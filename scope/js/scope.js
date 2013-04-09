@@ -3,7 +3,8 @@
 	auth: noritomo.suzuki@sn.jp
 	条件
 		jqueryがincludeされている事
-		ビュー、サムネイルに使用するブロック要素に幅指定がされていること
+		ビューに使用するブロック要素に幅と高さが指定されている事
+		サムネイルに使用するブロック要素に幅が指定されている事
 	引数
 		id: ビューのID
 		samid: コンテナーのID
@@ -58,7 +59,6 @@ function Scope(args){
 	this._image.width(this._this.width() / this.scoperate);
 	this._image.on('load', {tgt: this}, function(evt){
 		var t = evt.data.tgt;
-		t._this.height(t._image.height() * t.scoperate);
 	});
 	this._image.css({position: 'absolute'});
 	this._sam.append('<img id="' + this._samimgid + '" src="'+this.src+'" class="' + this.samimageclass + '"/>');
@@ -69,10 +69,10 @@ function Scope(args){
 	this._samimage.on('load', {tgt: this}, function(evt){
 		var t = evt.data.tgt;
 		t._sam.height(t._samimage.height());
-		t._scope.height(t._sam.height() * t.scoperate);
 	});
 	this._scope = $('#' + this._scopeid);
 	this._scope.width(this._sam.width() * this.scoperate);
+	this._scope.height(this._scope.width() * (this._this.height() / this._this.width()));
 	this._scope.css({position: 'absolute', top: 0, left: 0});
 	
 	this.imagerate = this._this.width() / this._sam.width() / this.scoperate;
