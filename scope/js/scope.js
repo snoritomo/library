@@ -5,6 +5,7 @@
 		jqueryがincludeされている事
 		ビューに使用するブロック要素に幅と高さが指定されている事
 		サムネイルに使用するブロック要素に幅が指定されている事
+		上記、設定もできるようにした
 	引数
 		id: ビューのID
 		samid: コンテナーのID
@@ -20,6 +21,9 @@
 		scopeclass: スコープclass
 		handlemouse: マウス操作でスワイプするか
 		autotranslatemode: オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
+		viewheight: ビューに設定する高さ
+		viewwidth: ビューに設定する横幅
+		samwidth: サムネイルに設定する横幅
 **/
 function Scope(args){
 	this._id = args.id;//ビューのID
@@ -52,6 +56,9 @@ function Scope(args){
 		if(args.scopeclass!=undefined)this.scopeclass = args.scopeclass;
 		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;//マウス操作でスワイプするか
 		if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
+		if(args.viewheight!=undefined)this._this.height(args.viewheight);
+		if(args.viewwidth!=undefined)this._this.width(args.viewwidth);
+		if(args.samwidth!=undefined)this._sam.width(args.samwidth);
 	}
 	this._this.append('<img id="' + this._imgid + '" src="'+this.src+'" class="' + this.imageclass + '"/>');
 	this._this.css({position: 'relative', overflow:'hidden'});
