@@ -42,7 +42,7 @@ function Scope(args){
 	this.scopeclass = '';
 	this.handlemouse = true;//マウス操作でスワイプするか
 	this.autotranslatemode = true;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
-	
+
 	if(args!=null){
 		if(args.scopeid!=undefined)this._scopeid = args.scopeid;
 		if(args.imgid!=undefined)this._imgid = args.imgid;
@@ -81,16 +81,16 @@ function Scope(args){
 	this._scope.width(this._sam.width() * this.scoperate);
 	this._scope.height(this._scope.width() * (this._this.height() / this._this.width()));
 	this._scope.css({position: 'absolute', top: 0, left: 0});
-	
+
 	this.imagerate = this._this.width() / this._sam.width() / this.scoperate;
-	
+
 	this._scope.on('touchstart', {tgt: this}, this.page_touchstart);
 	this._scope.on('touchend', {tgt: this}, this.page_touchend);
 	if(this.handlemouse){
 		this._scope.on('mousedown', {tgt: this}, this.page_touchstart);
 		this._scope.on('mouseup', {tgt: this}, this.page_touchend);
 	}
-	
+
 	var userAgent = window.navigator.userAgent.toLowerCase();
 	this.vpre = '';
 	if(userAgent.indexOf('webkit') != -1){
@@ -106,7 +106,7 @@ function Scope(args){
 	else{
 		if(this.autotranslatemode)this.usetranslate = 0;
 	}
-	
+
 	if(this.usetranslate == 1){
 		this._scope.css(this.vpre+'transform-origin-x', 0);//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
 		this._scope.css(this.vpre+'transform-origin-y', 0);//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
@@ -193,7 +193,7 @@ Scope.prototype.page_touchmove = function(evt){
 	if(t.st_time<=0)return;
 	t.ed_x = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenX;
 	t.ed_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
-	
+
 	if(t.usetranslate == 0){
 		var mglx = parseInt(t._scope.css('left').replace('px', '')) + (t.ed_x - t.move_x);
 		var mgly = parseInt(t._scope.css('top').replace('px', '')) + (t.ed_y - t.move_y);
@@ -201,7 +201,7 @@ Scope.prototype.page_touchmove = function(evt){
 		if(mgly<0)mgly=0;
 		t._scope.css('left', mglx);
 		t._scope.css('top', mgly);
-		
+
 		t._image.css('left', -1 * mglx * t.imagerate);
 		t._image.css('top', -1 * mgly * t.imagerate);
 	}
@@ -214,7 +214,7 @@ Scope.prototype.page_touchmove = function(evt){
 		t._scope.css(t.vpre+'transform', 'translate3d('+mglx+'px,'+mgly+'px,0px)');
 		t._image.css(t.vpre+'transform', 'translate3d('+(-1 * mglx * t.imagerate)+'px,'+(-1 * mgly * t.imagerate)+'px,0px)');
 	}
-	
+
 	t.move_x = t.ed_x;
 	t.move_y = t.ed_y;
 	evt.preventDefault();
