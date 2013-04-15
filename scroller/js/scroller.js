@@ -117,7 +117,25 @@ function Scroller(args){
 	
 	var userAgent = window.navigator.userAgent.toLowerCase();
 	this.vpre = '';
-	if(userAgent.indexOf('webkit') != -1){
+	if(userAgent.indexOf('android') != -1){
+		this.vpre = '-webkit-';
+		if(userAgent.indexOf('android 2') != -1){
+			if(this.autotranslatemode)this.usetranslate = 0;
+		}
+		else if(userAgent.indexOf('android 3') != -1){
+			if(this.autotranslatemode)this.usetranslate = 0;
+		}
+	}
+	else if(userAgent.indexOf('iphone os') != -1){
+		this.vpre = '-webkit-';
+		if(userAgent.indexOf('iphone os 4') != -1){
+			if(this.autotranslatemode)this.usetranslate = 0;
+		}
+	}
+	else if(userAgent.indexOf('ipad;') != -1){
+		this.vpre = '-webkit-';
+	}
+	else if(userAgent.indexOf('webkit') != -1){
 		this.vpre = '-webkit-';
 	}
 	else if(userAgent.indexOf('gecko') != -1){
@@ -192,10 +210,12 @@ function Scroller(args){
 	}
 
 	this._container.on('touchstart', {tgt: this._container}, this.page_touchstart);
-	this._container.on('touchend', {tgt: this._container}, this.page_touchend);
+	$(document).on('touchend', {tgt: this._container}, this.page_touchend);
+//	this._container.on('touchend', {tgt: this._container}, this.page_touchend);
 	if(this.handlemouse){
 		this._container.on('mousedown', {tgt: this._container}, this.page_touchstart);
-		this._container.on('mouseup', {tgt: this._container}, this.page_touchend);
+		$(document).on('mouseup', {tgt: this._container}, this.page_touchend);
+//		this._container.on('mouseup', {tgt: this._container}, this.page_touchend);
 	}
 	if(this.wheelrange>0)this.addWheelEventHandler(function(delta, evt, arg){
 		var src = arg.tgt.vpre=='-moz-' ? evt.target : evt.srcElement;
@@ -524,6 +544,7 @@ Scroller.prototype.page_touchstart = function(evt){
 }
 Scroller.prototype.page_touchend = function(evt){
 	var t = evt.data.tgt._scroller;
+	if(t.st_time==0)return;
 	t.moved = false;
 	t._container.off('touchmove', t.page_touchmove);
 	if(t.handlemouse){

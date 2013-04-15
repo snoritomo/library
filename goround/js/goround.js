@@ -134,18 +134,6 @@ function Goround(args){
 	};
 	this.getleft = function(tgt){return parseInt(this.left);};
 	
-	var userAgent = window.navigator.userAgent.toLowerCase();
-	this.vpre = '';
-	if(userAgent.indexOf('webkit') != -1){
-		this.vpre = '-webkit-';
-	}
-	else if(userAgent.indexOf('gecko') != -1){
-		this.vpre = '-moz-';
-	}
-	else if(userAgent.indexOf('opera') != -1){
-		this.vpre = '-o-';
-	}
-	
 	this.rolling = this.rolling_notate;
 	
 	this.moved = false;//スクロールしたか
@@ -161,10 +149,12 @@ function Goround(args){
 	this.toleft = true;//animation時に使用する左向きの回転かどうか
 	
 	this.view.on('touchstart', {tgt: this}, this.page_touchstart);
-	this.view.on('touchend', {tgt: this}, this.page_touchend);
+	$(document).on('touchend', {tgt: this}, this.page_touchend);
+//	this.view.on('touchend', {tgt: this}, this.page_touchend);
 	if(this.handlemouse){
 		this.view.on('mousedown', {tgt: this}, this.page_touchstart);
-		this.view.on('mouseup', {tgt: this}, this.page_touchend);
+		$(document).on('mouseup', {tgt: this}, this.page_touchend);
+//		this.view.on('mouseup', {tgt: this}, this.page_touchend);
 	}
 	
 	this.zero = '';

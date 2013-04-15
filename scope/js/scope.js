@@ -76,6 +76,7 @@ function Scope(args){
 	this._samimage.on('load', {tgt: this}, function(evt){
 		var t = evt.data.tgt;
 		t._sam.height(t._samimage.height());
+		t.maxtop = t._sam.height() - t._scope.height();
 	});
 	this._scope = $('#' + this._scopeid);
 	this._scope.width(this._sam.width() * this.scoperate);
@@ -84,16 +85,38 @@ function Scope(args){
 
 	this.imagerate = this._this.width() / this._sam.width() / this.scoperate;
 
+	this.maxleft = this._sam.width() - this._scope.width();
+	
 	this._scope.on('touchstart', {tgt: this}, this.page_touchstart);
-	this._scope.on('touchend', {tgt: this}, this.page_touchend);
+	$(document).on('touchend', {tgt: this}, this.page_touchend);
+//	this._scope.on('touchend', {tgt: this}, this.page_touchend);
 	if(this.handlemouse){
 		this._scope.on('mousedown', {tgt: this}, this.page_touchstart);
-		this._scope.on('mouseup', {tgt: this}, this.page_touchend);
+		$(document).on('mouseup', {tgt: this}, this.page_touchend);
+//		this._scope.on('mouseup', {tgt: this}, this.page_touchend);
 	}
 
 	var userAgent = window.navigator.userAgent.toLowerCase();
 	this.vpre = '';
-	if(userAgent.indexOf('webkit') != -1){
+	if(userAgent.indexOf('android') != -1){
+		this.vpre = '-webkit-';
+		if(userAgent.indexOf('android 2') != -1){
+			if(this.autotranslatemode)this.usetranslate = 0;
+		}
+		else if(userAgent.indexOf('android 3') != -1){
+			if(this.autotranslatemode)this.usetranslate = 0;
+		}
+	}
+	else if(userAgent.indexOf('iphone os') != -1){
+		this.vpre = '-webkit-';
+		if(userAgent.indexOf('iphone os 4') != -1){
+			if(this.autotranslatemode)this.usetranslate = 0;
+		}
+	}
+	else if(userAgent.indexOf('ipad;') != -1){
+		this.vpre = '-webkit-';
+	}
+	else if(userAgent.indexOf('webkit') != -1){
 		this.vpre = '-webkit-';
 	}
 	else if(userAgent.indexOf('gecko') != -1){
@@ -199,6 +222,8 @@ Scope.prototype.page_touchmove = function(evt){
 		var mgly = parseInt(t._scope.css('top').replace('px', '')) + (t.ed_y - t.move_y);
 		if(mglx<0)mglx=0;
 		if(mgly<0)mgly=0;
+		if(mglx>t.maxleft)mglx = t.maxleft;
+		if(mgly>t.maxtop)mgly = t.maxtop;
 		t._scope.css('left', mglx);
 		t._scope.css('top', mgly);
 
@@ -211,6 +236,8 @@ Scope.prototype.page_touchmove = function(evt){
 		var mgly = parseInt(t.getY(trans)) + (t.ed_y - t.move_y);
 		if(mglx<0)mglx=0;
 		if(mgly<0)mgly=0;
+		if(mglx>t.maxleft)mglx = t.maxleft;
+		if(mgly>t.maxtop)mgly = t.maxtop;
 		t._scope.css(t.vpre+'transform', 'translate3d('+mglx+'px,'+mgly+'px,0px)');
 		t._image.css(t.vpre+'transform', 'translate3d('+(-1 * mglx * t.imagerate)+'px,'+(-1 * mgly * t.imagerate)+'px,0px)');
 	}

@@ -15,6 +15,7 @@
 		move_freetime: 自動移動の減速が発動するまでの時間
 		handlemouse: マウスイベントを拾うか
 		autotranslatemode: オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
+		nothidden: viewのoverflow:hiddenを抑制する
 **/
 if(!Array.indexOf){
 	Array.prototype.indexOf = function(object){
@@ -77,6 +78,7 @@ function Roller(args){
 	this.move_freetime = 1000;//自動移動の減速が発動するまでの時間
 	this.handlemouse = true;//マウスイベントを拾うか
 	this.autotranslatemode = true;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
+	this.nothidden = false;
 	
 	if(args!=null){
 		if(args.id!=undefined)this._id = args.id;
@@ -89,18 +91,39 @@ function Roller(args){
 		if(args.freetime!=undefined)this.move_freetime = args.freetime;//自動移動の減速が発動するまでの時間
 		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;//
 		if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
+		if(args.nothidden!=undefined)this.nothidden = args.nothidden;//viewのoverflow:hiddenを抑制する
 	}
 	this.view = $('#' + this._id);
 	this.container = $('#' + this._cntid);
 	this.container._roller = this;
 	this.rolling_anime = null;
 	
+	if(!this.nothidden)this.view.css('overflow', 'hidden');
+	
 	this.interval = 1 / this.framerate;
 	this.move_friction = this.move_friction / this.interval;
 	
 	var userAgent = window.navigator.userAgent.toLowerCase();
 	this.vpre = '';
-	if(userAgent.indexOf('webkit') != -1){
+	if(userAgent.indexOf('android') != -1){
+		this.vpre = '-webkit-';
+		if(userAgent.indexOf('android 2') != -1){
+			if(this.autotranslatemode)this.usetranslate = 0;
+		}
+		else if(userAgent.indexOf('android 3') != -1){
+			if(this.autotranslatemode)this.usetranslate = 0;
+		}
+	}
+	else if(userAgent.indexOf('iphone os') != -1){
+		this.vpre = '-webkit-';
+		if(userAgent.indexOf('iphone os 4') != -1){
+			if(this.autotranslatemode)this.usetranslate = 0;
+		}
+	}
+	else if(userAgent.indexOf('ipad;') != -1){
+		this.vpre = '-webkit-';
+	}
+	else if(userAgent.indexOf('webkit') != -1){
 		this.vpre = '-webkit-';
 	}
 	else if(userAgent.indexOf('gecko') != -1){
@@ -162,10 +185,12 @@ function Roller(args){
 		});
 	}
 	this.container.on('touchstart', {tgt: this}, this.page_touchstart);
-	this.container.on('touchend', {tgt: this}, this.page_touchend);
+//	this.container.on('touchend', {tgt: this}, this.page_touchend);
+	$(document).on('touchend', {tgt: this}, this.page_touchend);
 	if(this.handlemouse){
 		this.container.on('mousedown', {tgt: this}, this.page_touchstart);
-		this.container.on('mouseup', {tgt: this}, this.page_touchend);
+//		this.container.on('mouseup', {tgt: this}, this.page_touchend);
+		$(document).on('mouseup', {tgt: this}, this.page_touchend);
 	}
 	this.container.on('click', {tgt: this}, function(evt){evt.preventDefault();});
 	
