@@ -609,6 +609,10 @@ Scroller.prototype.addWheelEventHandler = function(f, arg){
 	this.raise_on_wheel_event_functions.push(obj);
 }
 Scroller.prototype.wheel = function(scroller, event){
+	var ofset = scroller._this.offset();
+	if(event.pageX < ofset.left || event.pageX > (ofset.left + scroller._this.width()) || event.pageY < ofset.top || event.pageY > (ofset.top + scroller._this.height())){
+		return;
+	}
 	var delta = 0;
 	if (!event) /* For IE. */
 		event = window.event;
