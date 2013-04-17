@@ -224,6 +224,7 @@ Goround.prototype.page_touchend = function(evt){
 	if(t.handlemouse){
 		t.view.off('mousemove', t.page_touchmove);
 	}
+	if(t.st_time == 0)return;
 	t.ed_time = evt.timeStamp;
 	var len = Math.sqrt(Math.pow(t.ed_x - t.st_x, 2) + Math.pow(t.ed_y - t.st_y, 2));
 	t.rolling_speed = len / ((t.ed_time - t.st_time) / 1000);

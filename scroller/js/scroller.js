@@ -544,12 +544,12 @@ Scroller.prototype.page_touchstart = function(evt){
 }
 Scroller.prototype.page_touchend = function(evt){
 	var t = evt.data.tgt._scroller;
-	if(t.st_time==0)return;
 	t.moved = false;
 	t._container.off('touchmove', t.page_touchmove);
 	if(t.handlemouse){
 		t._container.off('mousemove', t.page_touchmove);
 	}
+	if(t.st_time==0)return;
 	t.ed_time = evt.timeStamp;
 	var len = Math.sqrt(Math.pow(t.ed_x - t.st_x, 2) + Math.pow(t.ed_y - t.st_y, 2));
 	t.rolling_speed = len / ((t.ed_time - t.st_time) / 1000);
