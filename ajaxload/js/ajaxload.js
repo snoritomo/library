@@ -116,11 +116,13 @@ function Ajaxload(arg){
 	for(var i = 0; i < this.frmnum; i++){
 		igwk = new Image();
 		igwk.src = this.path + this.prefix + (this.zero+(this.startnum + i)).slice(keisu)+this.safix
-		this.images.push(igwk);
+		this.images[i] = igwk;
 	}
 	this.starttime = new Date().getTime();
 	if(this._img==null){
-		this._img = this.images[0];
+		igwk = new Image();
+		igwk.src = this.images[0].src;
+		this._img = igwk;
 		this._this.appendChild(this._img);
 	}
 	this._this.style.display = 'none';
