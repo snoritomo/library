@@ -1,9 +1,8 @@
 /**
 	ロードマスク
-	auth: noritomo.suzuki@sn.jp
+	auth: noritomo.suzuki@nolib.jp
 	条件
 		jqueryがincludeされている事
-		main.jsがincludeされている事
 	引数
 		id: マスクしたいブロック要素のID
 		class: マスクのスタイルを記述したclass
@@ -19,7 +18,7 @@ if(!Array.indexOf){
 		}
 		return -1;
 	}
-}
+};
 if(!Function.applyTimeout){
 	Function.prototype.applyTimeout = function (ms, self, args)
 	{
@@ -30,7 +29,7 @@ if(!Function.applyTimeout){
 		},
 		ms);
 	};
-}
+};
 if(!Function.callTimeout){
 	Function.prototype.callTimeout = function (ms, self)
 	{
@@ -39,7 +38,7 @@ if(!Function.callTimeout){
 			self,
 			Array.prototype.slice.call(arguments, 2));
 	};
-}
+};
 if(!Function.applyInterval){
 	Function.prototype.applyInterval = function (ms, self, args)
 	{
@@ -50,7 +49,7 @@ if(!Function.applyInterval){
 			},
 		ms);
 	};
-}
+};
 if(!Function.callInterval){
 	Function.prototype.callInterval = function (ms, self)
 	{
@@ -59,7 +58,7 @@ if(!Function.callInterval){
 			self,
 			Array.prototype.slice.call(arguments, 2));
 	};
-}
+};
 function Loadmask(args){
 	this.id = '';
 	this.class = '';
@@ -89,9 +88,9 @@ function Loadmask(args){
 	var timeout = function(evt){
 		this.loadedcnt = this.imagecnt;
 		this.loaded(evt);
-	}
+	};
 	timeout.applyTimeout(this.loadingtimeout, this, [{data:{ldmask:this}}]);
-}
+};
 Loadmask.prototype.loaded = function(evt){
 	if(evt.data==undefined)return;
 	var t = evt.data.ldmask;
@@ -101,4 +100,4 @@ Loadmask.prototype.loaded = function(evt){
 	if(t.imagecnt<=t.loadedcnt){
 		if(t.animate!=null)t.animate(t.mask);
 	}
-}
+};

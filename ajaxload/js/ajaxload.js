@@ -1,6 +1,6 @@
 /**
 	Ajaxloadインジケータ
-	auth: noritomo.suzuki@sn.jp
+	auth: noritomo.suzuki@nolib.jp
 	条件
 		表示する画像ファイル名は０で桁埋めされたフレーム数を含む事
 	引数
@@ -22,7 +22,7 @@ if(!Array.indexOf){
 			}
 		}
 		return -1;
-	}
+	};
 }
 if(!Function.applyTimeout){
 	Function.prototype.applyTimeout = function (ms, self, args)
@@ -94,7 +94,7 @@ function Ajaxload(arg){
 	
 	this._this = document.getElementById(this.id);
 	if(this._this.tagName.toLowerCase()=='img'){
-		this._img = this._this
+		this._img = this._this;
 		this.isimage = true;
 	}
 	else{
@@ -108,14 +108,15 @@ function Ajaxload(arg){
 		this.isimage = false;
 	}
 	this.zero = '';
-	for(var i = 0; i < this.digit; i++)
+	for(var i = 0; i < this.digit; i++){
 		this.zero += '0';
+	}
 	this.images = [];
 	var igwk;
 	var keisu = this.digit * -1;
 	for(var i = 0; i < this.frmnum; i++){
 		igwk = new Image();
-		igwk.src = this.path + this.prefix + (this.zero+(this.startnum + i)).slice(keisu)+this.safix
+		igwk.src = this.path + this.prefix + (this.zero+(this.startnum + i)).slice(keisu)+this.safix;
 		this.images[i] = igwk;
 	}
 	this.starttime = new Date().getTime();
@@ -130,20 +131,20 @@ function Ajaxload(arg){
 Ajaxload.prototype.start = function(){
 	this._this.style.display = 'block';
 	this.anime = this.animate.applyTimeout(this.interval, this, []);
-}
+};
 Ajaxload.prototype.stop = function(){
 	this._this.style.display = 'none';
 	this.anime = null;
-}
+};
 Ajaxload.prototype.getImageObject = function(){
 	var t = Math.round((new Date().getTime()-this.starttime) * this.rotaterate / 1000);
 	var ig = this.images[t % this.frmnum];
 	return ig;
-}
+};
 Ajaxload.prototype.animate = function(){
 	if(this.anime == null)return;
 	var wk = this.getImageObject();
 	this._img.src = wk.src;
 	this.anime = this.animate.applyTimeout(this.interval, this, []);
-}
+};
 

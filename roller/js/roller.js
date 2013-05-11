@@ -1,6 +1,6 @@
 /**
 	ローラー
-	auth: noritomo.suzuki@sn.jp
+	auth: noritomo.suzuki@nolib.jp
 	条件
 		jqueryがincludeされている事
 		main.jsがincludeされている事
@@ -20,13 +20,13 @@
 if(!Array.indexOf){
 	Array.prototype.indexOf = function(object){
 		for(var i = 0; i < this.length; i++){
-			if(this[i] == object){ 
+			if(this[i] == object){
 				return i;
 			}
 		}
 		return -1;
 	}
-}
+};
 if(!Function.applyTimeout){
 	Function.prototype.applyTimeout = function (ms, self, args)
 	{
@@ -37,7 +37,7 @@ if(!Function.applyTimeout){
 		},
 		ms);
 	};
-}
+};
 if(!Function.callTimeout){
 	Function.prototype.callTimeout = function (ms, self)
 	{
@@ -46,7 +46,7 @@ if(!Function.callTimeout){
 			self,
 			Array.prototype.slice.call(arguments, 2));
 	};
-}
+};
 if(!Function.applyInterval){
 	Function.prototype.applyInterval = function (ms, self, args)
 	{
@@ -57,7 +57,7 @@ if(!Function.applyInterval){
 			},
 		ms);
 	};
-}
+};
 if(!Function.callInterval){
 	Function.prototype.callInterval = function (ms, self)
 	{
@@ -66,32 +66,32 @@ if(!Function.callInterval){
 			self,
 			Array.prototype.slice.call(arguments, 2));
 	};
-}
+};
 function Roller(args){
-	this._id = '';//ビューID
-	this._cntid = '';//コンテナID
-	this.usetranslate = 0;//
-	this.framerate = 40;//アニメーションレート
-	this.clickplay = 1;//クリックとみなすスワイプ量
-	this.clickplaytime = 100;//クリックとみなす操作時間
-	this.move_friction = 1.0;//自動移動の減速加速度。
-	this.move_freetime = 1000;//自動移動の減速が発動するまでの時間
-	this.handlemouse = true;//マウスイベントを拾うか
-	this.autotranslatemode = true;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
+	this._id = '';
+	this._cntid = '';
+	this.usetranslate = 0;
+	this.framerate = 40;
+	this.clickplay = 1;
+	this.clickplaytime = 100;
+	this.move_friction = 1.0;
+	this.move_freetime = 1000;
+	this.handlemouse = true;
+	this.autotranslatemode = true;
 	this.nothidden = false;
 	
 	if(args!=null){
 		if(args.id!=undefined)this._id = args.id;
 		if(args.cntid!=undefined)this._cntid = args.cntid;
-		if(args.usetranslate!=undefined)this.usetranslate = args.usetranslate;//
-		if(args.framerate!=undefined)this.framerate = parseFloat(args.framerate);//アニメーションレート
-		if(args.clickplay!=undefined)this.clickplay = args.clickplay;//クリックとみなすスワイプ量
-		if(args.clickplaytime!=undefined)this.clickplaytime = args.clickplaytime;//クリックとみなす操作時間
-		if(args.friction!=undefined)this.move_friction = args.friction;//自動移動の減速加速度。
-		if(args.freetime!=undefined)this.move_freetime = args.freetime;//自動移動の減速が発動するまでの時間
-		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;//
-		if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
-		if(args.nothidden!=undefined)this.nothidden = args.nothidden;//viewのoverflow:hiddenを抑制する
+		if(args.usetranslate!=undefined)this.usetranslate = args.usetranslate;
+		if(args.framerate!=undefined)this.framerate = parseFloat(args.framerate);
+		if(args.clickplay!=undefined)this.clickplay = args.clickplay;
+		if(args.clickplaytime!=undefined)this.clickplaytime = args.clickplaytime;
+		if(args.friction!=undefined)this.move_friction = args.friction;
+		if(args.freetime!=undefined)this.move_freetime = args.freetime;
+		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;
+		if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;
+		if(args.nothidden!=undefined)this.nothidden = args.nothidden;
 	}
 	this.view = $('#' + this._id);
 	this.container = $('#' + this._cntid);
@@ -138,31 +138,31 @@ function Roller(args){
 	}
 	
 	if(this.usetranslate == 1){
-		this.container.css('position', 'relative');//translate3dをする場合、コンテナをrelativeにしておかないと残像が残る
-		this.setleft = function(tgt, lft){tgt.css(tgt._roller.vpre+"transform", "translate3d("+lft+"px,0px,0px)");};//, tgt._roller.vpre+'transition':tgt._roller.vpre+'transform '+this.framerate+'ms linear'});};
-		this.getleft = function(tgt){return parseInt(tgt._roller.getX(tgt.css(tgt._roller.vpre+'transform')));};//var m = new WebKitCSSMatrix(tgt.css(tgt._roller.vpre+'transform'));return parseInt(m.f);};
-		this.container.css(this.vpre+'transform-origin-x', 0);//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
-		this.container.css(this.vpre+'transform-origin-y', 0);//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
-		this.container.css(this.vpre+'transform', 'translate3d(0px,0px,0px)');//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
+		this.container.css('position', 'relative');
+		this.setleft = function(tgt, lft){tgt.css(tgt._roller.vpre+"transform", "translate3d("+lft+"px,0px,0px)");};
+		this.getleft = function(tgt){return parseInt(tgt._roller.getX(tgt.css(tgt._roller.vpre+'transform')));};
+		this.container.css(this.vpre+'transform-origin-x', 0);
+		this.container.css(this.vpre+'transform-origin-y', 0);
+		this.container.css(this.vpre+'transform', 'translate3d(0px,0px,0px)');
 	}
 	else if(this.usetranslate == 0){
-		this.setleft = function(tgt, lft){tgt.css('marginLeft', lft);}
+		this.setleft = function(tgt, lft){tgt.css('marginLeft', lft);};
 		this.getleft = function(tgt){return parseInt(tgt.css('marginLeft').replace('px', ''));};
 	}
 	
 	this.rolling = this.rolling_notate;
 	
-	this.moved = false;//スクロールしたか
-	this.st_x = 0;//タッチスタートx座標
-	this.move_x = 0;//ドラッグ中x座標
-	this.move_y = 0;//ドラッグ中y座標
-	this.st_y = 0;//タッチスタートy座標
-	this.st_time = 0;//タッチスタート時刻
-	this.ed_x = 0;//タッチエンドx座標
-	this.ed_y = 0;//タッチエンドy座標
-	this.rolling_speed = 0.0;//現在の回転速度
-	this.rolling_anime = null;//setTimeOutの戻り値
-	this.toleft = true;//animation時に使用する左向きの回転かどうか
+	this.moved = false;
+	this.st_x = 0;
+	this.move_x = 0;
+	this.move_y = 0;
+	this.st_y = 0;
+	this.st_time = 0;
+	this.ed_x = 0;
+	this.ed_y = 0;
+	this.rolling_speed = 0.0;
+	this.rolling_anime = null;
+	this.toleft = true;
 	
 	$(document).on('touchend', '#'+this._cntid+' *', {tgt: this.container}, function(evt){
 		var ta = $(this);
@@ -185,11 +185,11 @@ function Roller(args){
 		});
 	}
 	this.container.on('touchstart', {tgt: this}, this.page_touchstart);
-//	this.container.on('touchend', {tgt: this}, this.page_touchend);
+
 	$(document).on('touchend', {tgt: this}, this.page_touchend);
 	if(this.handlemouse){
 		this.container.on('mousedown', {tgt: this}, this.page_touchstart);
-//		this.container.on('mouseup', {tgt: this}, this.page_touchend);
+
 		$(document).on('mouseup', {tgt: this}, this.page_touchend);
 	}
 	this.container.on('click', {tgt: this}, function(evt){evt.preventDefault();});
@@ -218,7 +218,7 @@ Roller.prototype.setWidth = function(){
         w += parseInt(this.items[i].css("border-right-width").replace('px', ''));
 	}
 	this.container.width(w);
-}
+};
 Roller.prototype.getX = function(obj){
 	var cc = 0;
 	var re = '';
@@ -241,21 +241,21 @@ Roller.prototype.getX = function(obj){
 		}
 	}
 	return re;
-}
+};
 Roller.prototype.rolling_notate = function(d, once){
 	var t = this;
 	var to = t.getleft(t.container) + d;
 	var firstchild = t.container.children(':first');
 	var secondchild = t.container.children(':eq(1)');
-	var tool = (to * -1) - (firstchild.width()+secondchild.width());//0以上ならスイッチオン
-	var toor = firstchild.width() + to;//0以上ならスイッチオン
+	var tool = (to * -1) - (firstchild.width()+secondchild.width());
+	var toor = firstchild.width() + to;
 	if(tool > 0){
 		while(tool > 0){
 			to += firstchild.width();
 			firstchild.detach();
 			t.container.append(firstchild);
 			tool = (to * -1) - (firstchild.width()+secondchild.width());
-		}
+		};
 	}
 	else if(toor > 0){
 		var lastchild = t.container.children(':last');
@@ -264,7 +264,7 @@ Roller.prototype.rolling_notate = function(d, once){
 			lastchild.detach();
 			t.container.prepend(lastchild);
 			toor = firstchild.width() + to;
-		}
+		};
 	}
 	t.setleft(t.container, to);
 	
@@ -285,7 +285,7 @@ Roller.prototype.rolling_notate = function(d, once){
 	}
 	deg = t.rolling_speed * t.interval * (t.toleft?-1:1);
 	t.rolling_anime = t.rolling.applyTimeout(t.interval * 1000, t, [deg, null]);
-}
+};
 Roller.prototype.page_touchstart = function(evt){
 	var t = evt.data.tgt;
 	var p = evt.data.tgt._parent;
@@ -305,7 +305,7 @@ Roller.prototype.page_touchstart = function(evt){
 		p.page_touchstart(evt);
 	}
 	evt.preventDefault();
-}
+};
 Roller.prototype.page_touchend = function(evt){
 	var t = evt.data.tgt;
 	t.moved = false;
@@ -318,18 +318,18 @@ Roller.prototype.page_touchend = function(evt){
 	var len = Math.sqrt(Math.pow(t.ed_x - t.st_x, 2) + Math.pow(t.ed_y - t.st_y, 2));
 	t.rolling_speed = len / ((t.ed_time - t.st_time) / 1000);
 
-	var isclick = true;//クリックを子要素に伝えるか。この処理はクリックなどページ遷移をしない時に必要
-	if(t.clickplay < Math.abs(t.ed_x - t.st_x) || t.clickplaytime < (t.ed_time - t.st_time)){//クリックの遊びの範囲内で一定時間以上タップしたならクリックさせるが、それを越えたらイベントをブロック
+	var isclick = true;
+	if(t.clickplay < Math.abs(t.ed_x - t.st_x) || t.clickplaytime < (t.ed_time - t.st_time)){
 		isclick = false;
 		evt.preventDefault();
 	}
 	t.st_time = 0;
 	if(t.ed_x == t.st_x){
-		return isclick;//動いていない時はアニメーションしない
+		return isclick;
 	}
 	var tgt = evt.data.tgt;
-	//左向きか右向きかを決定する要素は真ん中より右か左かとスピード
-	//スピードは位置より優先される
+	
+	
 	t.toleft = true;
 	if(t.st_x > t.ed_x){
 		t.toleft = true;
@@ -341,7 +341,7 @@ Roller.prototype.page_touchend = function(evt){
 
 	t.rolling_anime = t.rolling.applyTimeout(t.interval * 1000, t, [deg, null]);
 	return isclick;
-}
+};
 Roller.prototype.page_touchmove = function(evt){
 	var t = evt.data.tgt;
 	if(t.st_time<=0)return;
@@ -356,6 +356,6 @@ Roller.prototype.page_touchmove = function(evt){
 	t.move_y = t.ed_y;
 	evt.preventDefault();
 	return false;
-}
+};
 
 

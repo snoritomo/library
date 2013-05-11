@@ -1,6 +1,6 @@
-/**
+**
 	スコープ
-	auth: noritomo.suzuki@sn.jp
+	auth: noritomo.suzuki@nolib.jp
 	条件
 		jqueryがincludeされている事
 		ビューに使用するブロック要素に幅と高さが指定されている事
@@ -26,22 +26,22 @@
 		samwidth: サムネイルに設定する横幅
 **/
 function Scope(args){
-	this._id = args.id;//ビューのID
-	this._samid = args.samid;//コンテナーのID
+	this._id = args.id;
+	this._samid = args.samid;
 	this._scopeid = this._samid + '_scope';
 	this._imgid = this._id + '_image';
 	this._samimgid = this._samid + '_image';
-	this._this = $('#'+this._id);//ビューのjQueryオブジェクト
-	this._sam = $('#'+this._samid);//コンテナのjQueryオブジェクト
+	this._this = $('#'+this._id);
+	this._sam = $('#'+this._samid);
 	this.src = '';
 	this.usetranslate = 0;
-	this.framerate = 40;//アニメーションレート
-	this.scoperate = 0.2;//スコープレート
+	this.framerate = 40;
+	this.scoperate = 0.2;
 	this.imageclass = '';
 	this.samimageclass = '';
 	this.scopeclass = '';
-	this.handlemouse = true;//マウス操作でスワイプするか
-	this.autotranslatemode = true;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
+	this.handlemouse = true;
+	this.autotranslatemode = true;
 
 	if(args!=null){
 		if(args.scopeid!=undefined)this._scopeid = args.scopeid;
@@ -54,8 +54,8 @@ function Scope(args){
 		if(args.imageclass!=undefined)this.imageclass = args.imageclass;
 		if(args.samimageclass!=undefined)this.samimageclass = args.samimageclass;
 		if(args.scopeclass!=undefined)this.scopeclass = args.scopeclass;
-		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;//マウス操作でスワイプするか
-		if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;//オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
+		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;
+		if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;
 		if(args.viewheight!=undefined)this._this.height(args.viewheight);
 		if(args.viewwidth!=undefined)this._this.width(args.viewwidth);
 		if(args.samwidth!=undefined)this._sam.width(args.samwidth);
@@ -89,11 +89,11 @@ function Scope(args){
 	
 	this._scope.on('touchstart', {tgt: this}, this.page_touchstart);
 	$(document).on('touchend', {tgt: this}, this.page_touchend);
-//	this._scope.on('touchend', {tgt: this}, this.page_touchend);
+
 	if(this.handlemouse){
 		this._scope.on('mousedown', {tgt: this}, this.page_touchstart);
 		$(document).on('mouseup', {tgt: this}, this.page_touchend);
-//		this._scope.on('mouseup', {tgt: this}, this.page_touchend);
+
 	}
 
 	var userAgent = window.navigator.userAgent.toLowerCase();
@@ -131,14 +131,14 @@ function Scope(args){
 	}
 
 	if(this.usetranslate == 1){
-		this._scope.css(this.vpre+'transform-origin-x', 0);//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
-		this._scope.css(this.vpre+'transform-origin-y', 0);//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
-		this._scope.css(this.vpre+'transform', 'translate3d(0px,0px,0px)');//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
-		this._image.css(this.vpre+'transform-origin-x', 0);//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
-		this._image.css(this.vpre+'transform-origin-y', 0);//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
-		this._image.css(this.vpre+'transform', 'translate3d(0px,0px,0px)');//iphoneでtranslate3dを使う時に初めにこれを指定しておかないとちらつく
+		this._scope.css(this.vpre+'transform-origin-x', 0);
+		this._scope.css(this.vpre+'transform-origin-y', 0);
+		this._scope.css(this.vpre+'transform', 'translate3d(0px,0px,0px)');
+		this._image.css(this.vpre+'transform-origin-x', 0);
+		this._image.css(this.vpre+'transform-origin-y', 0);
+		this._image.css(this.vpre+'transform', 'translate3d(0px,0px,0px)');
 	}
-}
+};
 Scope.prototype.getX = function(obj){
 	var cc = 0;
 	var re = '';
@@ -161,7 +161,7 @@ Scope.prototype.getX = function(obj){
 		}
 	}
 	return re;
-}
+};
 Scope.prototype.getY = function(obj){
 	var cc = 0;
 	var re = '';
@@ -184,7 +184,7 @@ Scope.prototype.getY = function(obj){
 		}
 	}
 	return re;
-}
+};
 Scope.prototype.page_touchstart = function(evt){
 	var t = evt.data.tgt;
 	t.st_x = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenX;
@@ -199,7 +199,7 @@ Scope.prototype.page_touchstart = function(evt){
 		t._scope.on('mousemove', {tgt: t}, t.page_touchmove);
 	}
 	evt.preventDefault();
-}
+};
 Scope.prototype.page_touchend = function(evt){
 	var t = evt.data.tgt;
 	t._scope.off('touchmove', t.page_touchmove);
@@ -210,7 +210,7 @@ Scope.prototype.page_touchend = function(evt){
 	t.st_x = 0;
 	t.st_y = 0;
 	t.st_time = 0;
-}
+};
 Scope.prototype.page_touchmove = function(evt){
 	var t = evt.data.tgt;
 	if(t.st_time<=0)return;
@@ -246,4 +246,5 @@ Scope.prototype.page_touchmove = function(evt){
 	t.move_y = t.ed_y;
 	evt.preventDefault();
 	return false;
-}
+};
+
