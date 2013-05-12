@@ -145,6 +145,9 @@ function Goround(args){
 	
 	this.rolling = this.rolling_notate;
 	
+	this.onstop = [];
+	this.onmove = [];
+	
 	this.moved = false;
 	this.st_x = 0;
 	this.move_x = 0;
@@ -182,12 +185,31 @@ function Goround(args){
 	this._img = this.images[0];
 	this.view.append(this._img);
 };
+Goround.prototype.setOnMove = function(f){
+	this.onmove.push(f);
+};
+Goround.prototype.doMove = function(f){
+	for(var i = 0; i < this.onmove.length; i++){
+		var f = this.onmove[i];
+		f(this.nowidx, this._img);
+	}
+};
+Goround.prototype.setOnStop = function(f){
+	this.onstop.push(f);
+};
+Goround.prototype.doStop = function(f){
+	for(var i = 0; i < this.onstop.length; i++){
+		var f = this.onstop[i];
+		f(this.nowidx, this._img);
+	}
+};
 Goround.prototype.rolling_notate = function(d, once){
 	var t = this;
 	var toleft = d<0?true:false;
 	var deg = Math.abs(parseInt(d));
 	
 	t.setleft(t, deg, toleft);
+	t.doMove();
 	
 	if(once!=null){
 		clearTimeout(t.rolling_anime);
@@ -202,6 +224,7 @@ Goround.prototype.rolling_notate = function(d, once){
 	if(t.rolling_speed<=0){
 		clearTimeout(t.rolling_anime);
 		t.rolling_anime = null;
+		t.doStop();
 		return;
 	}
 	deg = t.rolling_speed * t.interval * (t.toleft?-1:1);
