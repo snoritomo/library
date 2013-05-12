@@ -182,7 +182,9 @@ function Goround(args){
 		var jqimg = $(igwk);
 		this.images.push($(igwk));
 	}
-	this._img = this.images[0];
+	igwk = new Image();
+	igwk.src = this.images[0].attr('src');
+	this._img = $(igwk);
 	this.view.append(this._img);
 };
 Goround.prototype.setOnMove = function(f){
@@ -269,6 +271,7 @@ Goround.prototype.page_touchend = function(evt){
 	}
 	t.st_time = 0;
 	if((t.horizontal?t.ed_x == t.st_x:false) || (t.vertical?t.ed_y == t.st_y:false)){
+		t.doStop();
 		return isclick;
 	}
 	var tgt = evt.data.tgt;
