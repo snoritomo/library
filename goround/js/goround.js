@@ -19,7 +19,10 @@
 		move_friction: 自動移動の減速加速度。
 		move_freetime: 自動移動の減速が発動するまでの時間
 		handlemouse: マウスイベントを拾うか
-		reverse: 逆回転
+		reverse: 逆回転させる
+		vertical: 縦感知
+		horizontal: 横感知
+		cycle: 半分で逆回転
 **/
 if(!Array.indexOf){
 	Array.prototype.indexOf = function(object){
@@ -87,6 +90,9 @@ function Goround(args){
 	this.move_freetime = 100;
 	this.handlemouse = true;
 	this.reverse = false;
+	this.vertical = false;
+	this.horizontal = true;
+	this.cycle = false;
 	
 	if(args!=null){
 		if(args.id!=undefined)this._id = args.id;
@@ -104,6 +110,9 @@ function Goround(args){
 		if(args.freetime!=undefined)this.move_freetime = args.freetime;
 		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;
 		if(args.reverse!=undefined)this.reverse = args.reverse;
+		if(args.vertical!=undefined)this.vertical = args.vertical;
+		if(args.horizontal!=undefined)this.horizontal = args.horizontal;
+		if(args.cycle!=undefined)this.cycle = args.cycle;
 	}
 	this.view = $('#' + this._id);
 	this.left = 0;
@@ -227,31 +236,44 @@ Goround.prototype.page_touchend = function(evt){
 	}
 	if(t.st_time == 0)return;
 	t.ed_time = evt.timeStamp;
-	var len = Math.sqrt(Math.pow(t.ed_x - t.st_x, 2) + Math.pow(t.ed_y - t.st_y, 2));
+	var len = Math.sqrt((t.horizontal?Math.pow(t.ed_x - t.st_x, 2):0) + (t.vertical?Math.pow(t.ed_y - t.st_y, 2):0));
 	t.rolling_speed = len / ((t.ed_time - t.st_time) / 1000);
 
 	var isclick = true;
-	if(t.clickplay < Math.abs(t.ed_x - t.st_x) || t.clickplaytime < (t.ed_time - t.st_time)){
+	if(t.clickplay < len || t.clickplaytime < (t.ed_time - t.st_time)){
 		isclick = false;
 		evt.preventDefault();
 	}
 	t.st_time = 0;
-	if(t.ed_x == t.st_x){
+	if((t.horizontal?t.ed_x == t.st_x:false) || (t.vertical?t.ed_y == t.st_y:false)){
 		return isclick;
 	}
 	var tgt = evt.data.tgt;
 	
 	
 	t.toleft = true;
-	if(t.st_x > t.ed_x){
-		t.toleft = true;
+	var dx = t.st_x - t.ed_x;
+	var dy = t.st_y - t.ed_y;
+	if((t.vertical && t.horizontal && Math.abs(dy)>Math.abs(dx)) || (t.vertical && !t.horizontal)){
+		if(t.st_y > t.ed_y){
+			t.toleft = true;
+		}
+		else{
+			t.toleft = false;
+		}
+		t.upper = t.cycle?(t.ed_x>(parseInt(t.view.offset().left)+parseInt(t.view.width()/2))?!t.reverse:t.reverse):t.reverse;
 	}
 	else{
-		t.toleft = false;
+		if(t.st_x < t.ed_x){
+			t.toleft = true;
+		}
+		else{
+			t.toleft = false;
+		}
+		t.upper = t.cycle?(t.ed_y>(parseInt(t.view.offset().top)+parseInt(t.view.height()/2))?!t.reverse:t.reverse):t.reverse;
 	}
 	var deg = t.rolling_speed * t.interval * (t.toleft?-1:1);
 
-	t.upper = t.ed_y>(parseInt(t.view.offset().top)+parseInt(t.view.height()/2))?!t.reverse:t.reverse;
 	t.rolling_anime = t.rolling.applyTimeout(t.interval * 1000, t, [deg, null]);
 	return isclick;
 };
@@ -261,10 +283,29 @@ Goround.prototype.page_touchmove = function(evt){
 	t.ed_x = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).pageX;
 	t.ed_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).pageY;
 	var tgt = evt.data.tgt;
-	var mgl = (t.ed_x - t.move_x);
-	t.toleft = mgl<0?false:true;
+	var mgl = Math.sqrt((t.horizontal?Math.pow(t.ed_x - t.move_x, 2):0) + (t.vertical?Math.pow(t.ed_y - t.move_y, 2):0));
+	var dx = t.move_x - t.ed_x;
+	var dy = t.move_y - t.ed_y;
+	if((t.vertical && t.horizontal && Math.abs(dy)>Math.abs(dx)) || (t.vertical && !t.horizontal)){
+		if(t.move_y > t.ed_y){
+			t.toleft = true;
+		}
+		else{
+			t.toleft = false;
+		}
+		t.upper = t.cycle?(t.ed_x>(parseInt(t.view.offset().left)+parseInt(t.view.width()/2))?!t.reverse:t.reverse):t.reverse;
+	}
+	else{
+		if(t.move_x < t.ed_x){
+			t.toleft = true;
+		}
+		else{
+			t.toleft = false;
+		}
+		t.upper = t.cycle?(t.ed_y>(parseInt(t.view.offset().top)+parseInt(t.view.height()/2))?!t.reverse:t.reverse):t.reverse;
+	}
+	mgl = mgl * (t.toleft?-1:1);
 	t.moved = true;
-	t.upper = t.ed_y>(parseInt(t.view.offset().top)+parseInt(t.view.height()/2))?!t.reverse:t.reverse;
 	t.rolling(mgl, 'once');
 	t.move_x = t.ed_x;
 	t.move_y = t.ed_y;

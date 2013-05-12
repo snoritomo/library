@@ -1,4 +1,4 @@
-**
+/**
 	スコープ
 	auth: noritomo.suzuki@nolib.jp
 	条件
