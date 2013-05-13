@@ -3,7 +3,6 @@
 	auth: noritomo.suzuki@nolib.jp
 	条件
 		jqueryがincludeされている事
-		main.jsがincludeされている事
 	引数
 		id: ビューID
 		path: 画像ディレクトリへのパスURL
@@ -16,8 +15,8 @@
 		framerate: アニメーションレート
 		clickplay: クリックとみなすスワイプ量
 		clickplaytime: クリックとみなす操作時間
-		move_friction: 自動移動の減速加速度。
-		move_freetime: 自動移動の減速が発動するまでの時間
+		friction: 自動移動の減速加速度
+		freetime: 自動移動の減速が発動するまでの時間
 		handlemouse: マウスイベントを拾うか
 		reverse: 逆回転させる
 		vertical: 縦感知
@@ -190,7 +189,7 @@ function Goround(args){
 Goround.prototype.setOnMove = function(f){
 	this.onmove.push(f);
 };
-Goround.prototype.doMove = function(f){
+Goround.prototype.doMove = function(){
 	for(var i = 0; i < this.onmove.length; i++){
 		var f = this.onmove[i];
 		f(this.nowidx, this._img);
@@ -199,7 +198,7 @@ Goround.prototype.doMove = function(f){
 Goround.prototype.setOnStop = function(f){
 	this.onstop.push(f);
 };
-Goround.prototype.doStop = function(f){
+Goround.prototype.doStop = function(){
 	for(var i = 0; i < this.onstop.length; i++){
 		var f = this.onstop[i];
 		f(this.nowidx, this._img);

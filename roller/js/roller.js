@@ -96,7 +96,6 @@ function Roller(args){
 	this.view = $('#' + this._id);
 	this.container = $('#' + this._cntid);
 	this.container._roller = this;
-	this.rolling_anime = null;
 	
 	if(!this.nothidden)this.view.css('overflow', 'hidden');
 	
@@ -152,6 +151,9 @@ function Roller(args){
 	
 	this.rolling = this.rolling_notate;
 	
+	this.onstop = [];
+	this.onskip = [];
+	
 	this.moved = false;
 	this.st_x = 0;
 	this.move_x = 0;
@@ -205,17 +207,40 @@ function Roller(args){
 			evt.data.tgt.setWidth();
 		});
 	}
-}
+};
+Roller.prototype.stopAnimation = function(){
+	clearTimeout(this.rolling_anime);
+	this.rolling_anime = null;
+	this.doStop(this.container.children(':eq(1)'));
+};
+Roller.prototype.setOnSkip = function(f){
+	this.onskip.push(f);
+};
+Roller.prototype.doSkip = function(swipe, fchild){
+	for(var i = 0; i < this.onskip.length; i++){
+		var f = this.onskip[i];
+		f(swipe, fchild);
+	}
+};
+Roller.prototype.setOnStop = function(f){
+	this.onstop.push(f);
+};
+Roller.prototype.doStop = function(fchild){
+	for(var i = 0; i < this.onstop.length; i++){
+		var f = this.onstop[i];
+		f(fchild);
+	}
+};
 Roller.prototype.setWidth = function(){
 	var w = 0;
 	for(var i = 0; i < this.items.length; i++){
 		w += this.items[i].width();
-        w += parseInt(this.items[i].css("padding-left").replace('px', ''));
-        w += parseInt(this.items[i].css("padding-right").replace('px', ''));
-        w += parseInt(this.items[i].css("margin-left").replace('px', ''));
-        w += parseInt(this.items[i].css("margin-right").replace('px', ''));
-        w += parseInt(this.items[i].css("border-left-width").replace('px', ''));
-        w += parseInt(this.items[i].css("border-right-width").replace('px', ''));
+		w += parseInt(this.items[i].css("padding-left").replace('px', ''));
+		w += parseInt(this.items[i].css("padding-right").replace('px', ''));
+		w += parseInt(this.items[i].css("margin-left").replace('px', ''));
+		w += parseInt(this.items[i].css("margin-right").replace('px', ''));
+		w += parseInt(this.items[i].css("border-left-width").replace('px', ''));
+		w += parseInt(this.items[i].css("border-right-width").replace('px', ''));
 	}
 	this.container.width(w);
 };
@@ -255,7 +280,10 @@ Roller.prototype.rolling_notate = function(d, once){
 			firstchild.detach();
 			t.container.append(firstchild);
 			tool = (to * -1) - (firstchild.width()+secondchild.width());
+			firstchild = secondchild;
+			secondchild = t.container.children(':eq(1)');
 		};
+		t.doSkip(once!=null, secondchild);
 	}
 	else if(toor > 0){
 		var lastchild = t.container.children(':last');
@@ -264,10 +292,14 @@ Roller.prototype.rolling_notate = function(d, once){
 			lastchild.detach();
 			t.container.prepend(lastchild);
 			toor = firstchild.width() + to;
+			firstchild = secondchild;
+			secondchild = t.container.children(':eq(1)');
 		};
+		t.doSkip(once!=null, secondchild);
 	}
 	t.setleft(t.container, to);
 	
+	if(once==null && t.rolling_anime==null){return;}
 	if(once!=null){
 		clearTimeout(t.rolling_anime);
 		t.rolling_anime = null;
@@ -281,6 +313,7 @@ Roller.prototype.rolling_notate = function(d, once){
 	if(t.rolling_speed<=0){
 		clearTimeout(t.rolling_anime);
 		t.rolling_anime = null;
+		t.doStop(secondchild);
 		return;
 	}
 	deg = t.rolling_speed * t.interval * (t.toleft?-1:1);

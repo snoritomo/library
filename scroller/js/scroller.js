@@ -333,19 +333,19 @@ Scroller.prototype.setOnTop = function(f){
 Scroller.prototype.setOnMove = function(f){
 	this.onmove.push(f);
 };
-Scroller.prototype.doBottom = function(f){
+Scroller.prototype.doBottom = function(){
 	for(var i = 0; i < this.onbottom.length; i++){
 		var f = this.onbottom[i];
 		f();
 	}
 };
-Scroller.prototype.doTop = function(f){
+Scroller.prototype.doTop = function(){
 	for(var i = 0; i < this.ontop.length; i++){
 		var f = this.ontop[i];
 		f();
 	}
 };
-Scroller.prototype.doMove = function(f){
+Scroller.prototype.doMove = function(){
 	for(var i = 0; i < this.onmove.length; i++){
 		var f = this.onmove[i];
 		f();
