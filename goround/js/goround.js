@@ -146,6 +146,9 @@ function Goround(args){
 	
 	this.onstop = [];
 	this.onmove = [];
+	this.onclick = [];
+	
+	this.touchstartidx = this.nowidx;
 	
 	this.moved = false;
 	this.st_x = 0;
@@ -204,6 +207,15 @@ Goround.prototype.doStop = function(){
 		f(this.nowidx, this._img);
 	}
 };
+Goround.prototype.setOnClick = function(f){
+	this.onclick.push(f);
+};
+Goround.prototype.doClick = function(){
+	for(var i = 0; i < this.onclick.length; i++){
+		var f = this.onclick[i];
+		f(this.nowidx, this._img);
+	}
+};
 Goround.prototype.rolling_notate = function(d, once){
 	var t = this;
 	var toleft = d<0?true:false;
@@ -249,6 +261,7 @@ Goround.prototype.page_touchstart = function(evt){
 	if(p!=undefined && p!=null){
 		p.page_touchstart(evt);
 	}
+	t.touchstartidx = t.nowidx;
 	evt.preventDefault();
 };
 Goround.prototype.page_touchend = function(evt){
@@ -269,6 +282,9 @@ Goround.prototype.page_touchend = function(evt){
 		evt.preventDefault();
 	}
 	t.st_time = 0;
+	if(t.touchstartidx == t.nowidx){
+		t.doClick();
+	}
 	if((t.horizontal?t.ed_x == t.st_x:false) || (t.vertical?t.ed_y == t.st_y:false)){
 		t.doStop();
 		return isclick;
