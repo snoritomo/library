@@ -83,8 +83,10 @@ function Scroller(args){
 	this.move_friction = 2.0;
 	this.move_freetime = 200;
 	this.framerate = 40;
+	/**
 	this.clickplay = 1;
 	this.clickplaytime = 100;
+	**/
 	this.isstopborder = true;
 	this.wheelrange = 40;
 	this.handlemouse = true;
@@ -98,8 +100,10 @@ function Scroller(args){
 	if(args.friction!=undefined)this.move_friction = parseFloat(args.friction);
 	if(args.freetime!=undefined)this.move_freetime = parseFloat(args.freetime);
 	if(args.framerate!=undefined)this.framerate = parseFloat(args.framerate);
+	/**
 	if(args.clickplay!=undefined)this.clickplay = args.clickplay;
 	if(args.clickplaytime!=undefined)this.clickplaytime = args.clickplaytime;
+	**/
 	if(args.stopborder!=undefined)this.isstopborder = args.stopborder;
 	if(args.onwheelrange!=undefined)this.wheelrange = args.onwheelrange;
 	if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;
@@ -431,7 +435,7 @@ Scroller.prototype.rolling_notate = function(d, once){
 	}
 	var dt = new Date();
 	var tim = dt.getTime();
-	if(tim >= (t.move_freetime + t.st_time) && !t.reverse){
+	if(tim >= (t.move_freetime + t.ed_time) && !t.reverse){
 		t.rolling_speed -= t.move_friction;
 	}
 	if(t.rolling_speed<=0 || isborder){
@@ -540,6 +544,7 @@ Scroller.prototype.page_touchstart = function(evt){
 };
 Scroller.prototype.page_touchend = function(evt){
 	var t = evt.data.tgt._scroller;
+	var mve = t.moved;
 	t.moved = false;
 	t._container.off('touchmove', t.page_touchmove);
 	if(t.handlemouse){
@@ -551,10 +556,16 @@ Scroller.prototype.page_touchend = function(evt){
 	t.rolling_speed = len / ((t.ed_time - t.st_time) / 1000);
 
 	var isclick = true;
+	if(!mve){
+		isclick = false;
+		evt.preventDefault();
+	}
+	/**
 	if(t.clickplay < Math.abs(t.ed_y - t.st_y) || t.clickplaytime < (t.ed_time - t.st_time)){
 		isclick = false;
 		evt.preventDefault();
 	}
+	**/
 	t.st_time = 0;
 	if(t.ed_y == t.st_y){
 		return isclick;

@@ -83,8 +83,10 @@ function Goround(args){
 	this.digit = 3;
 	this.movepx = 10;
 	this.framerate = 40;
+	/**
 	this.clickplay = 1;
 	this.clickplaytime = 100;
+	**/
 	this.move_friction = 20.0;
 	this.move_freetime = 100;
 	this.handlemouse = true;
@@ -103,8 +105,10 @@ function Goround(args){
 		if(args.digit != undefined)this.digit = args.digit;
 		if(args.movepx!=undefined)this.movepx = args.movepx;
 		if(args.framerate!=undefined)this.framerate = parseFloat(args.framerate);
+		/**
 		if(args.clickplay!=undefined)this.clickplay = args.clickplay;
 		if(args.clickplaytime!=undefined)this.clickplaytime = args.clickplaytime;
+		**/
 		if(args.friction!=undefined)this.move_friction = args.friction;
 		if(args.freetime!=undefined)this.move_freetime = args.freetime;
 		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;
@@ -231,7 +235,7 @@ Goround.prototype.rolling_notate = function(d, once){
 	}
 	var dt = new Date();
 	var tim = dt.getTime();
-	if(tim >= (t.move_freetime + t.st_time)){
+	if(tim >= (t.move_freetime + t.ed_time)){
 		t.rolling_speed -= t.move_friction;
 	}
 	if(t.rolling_speed<=0){
@@ -266,6 +270,7 @@ Goround.prototype.page_touchstart = function(evt){
 };
 Goround.prototype.page_touchend = function(evt){
 	var t = evt.data.tgt;
+	var mve = t.moved;
 	t.moved = false;
 	t.view.off('touchmove', t.page_touchmove);
 	if(t.handlemouse){
@@ -277,6 +282,13 @@ Goround.prototype.page_touchend = function(evt){
 	t.rolling_speed = len / ((t.ed_time - t.st_time) / 1000);
 
 	var isclick = true;
+	if(!mve){
+		isclick = false;
+		evt.preventDefault();
+		t.doClick();
+	}
+	t.st_time = 0;
+	/**
 	if(t.clickplay < len || t.clickplaytime < (t.ed_time - t.st_time)){
 		isclick = false;
 		evt.preventDefault();
@@ -285,6 +297,7 @@ Goround.prototype.page_touchend = function(evt){
 	if(t.touchstartidx == t.nowidx){
 		t.doClick();
 	}
+	**/
 	if((t.horizontal?t.ed_x == t.st_x:false) || (t.vertical?t.ed_y == t.st_y:false)){
 		t.doStop();
 		return isclick;
