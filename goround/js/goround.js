@@ -16,7 +16,7 @@
 		throwtime: 投げる判定誤差（ミリ秒）
 		friction: 自動移動の減速加速度(px/秒)
 		freetime: 自動移動の減速が発動するまでの時間(ミリ秒)
-		handlemouse: マウスイベントを拾うか
+		handlemode: 0:全て 1:マウス 2:タッチ
 		reverse: 逆回転させる
 		vertical: 縦感知
 		horizontal: 横感知
@@ -85,7 +85,7 @@ function Goround(args){
 	this.throwtime = 0;
 	this.move_friction = 20.0;
 	this.move_freetime = 100;
-	this.handlemouse = true;
+	this.handlemode = 0;
 	this.reverse = false;
 	this.vertical = false;
 	this.horizontal = true;
@@ -104,7 +104,7 @@ function Goround(args){
 		if(args.throwtime!=undefined)this.throwtime = args.throwtime;
 		if(args.friction!=undefined)this.move_friction = args.friction;
 		if(args.freetime!=undefined)this.move_freetime = args.freetime;
-		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;
+		if(args.handlemode!=undefined)this.handlemode = args.handlemode;
 		if(args.reverse!=undefined)this.reverse = args.reverse;
 		if(args.vertical!=undefined)this.vertical = args.vertical;
 		if(args.horizontal!=undefined)this.horizontal = args.horizontal;
@@ -115,6 +115,11 @@ function Goround(args){
 	this.nowidx = 0;
 	this.rolling_anime = null;
 	this.upper = this.reverse;
+	
+	this.handlemouse = true;
+	this.handletouch = true;
+	if(this.handlemode==1)this.handletouch = false;
+	if(this.handlemode==2)this.handlemouse = false;
 	
 	this.interval = 1 / this.framerate * 1000;/**アニメーション間隔（ミリ秒）**/
 	this.move_friction = this.move_friction / 1000 * this.interval;/**摩擦係数（px毎フレーム）**/
@@ -161,9 +166,10 @@ function Goround(args){
 	this.rolling_anime = null;
 	this.toleft = true;
 	
-	this.view.on('touchstart', {tgt: this}, this.page_touchstart);
-	$(document).on('touchend', {tgt: this}, this.page_touchend);
-
+	if(this.handletouch){
+		this.view.on('touchstart', {tgt: this}, this.page_touchstart);
+		$(document).on('touchend', {tgt: this}, this.page_touchend);
+	}
 	if(this.handlemouse){
 		this.view.on('mousedown', {tgt: this}, this.page_touchstart);
 		$(document).on('mouseup', {tgt: this}, this.page_touchend);
@@ -256,7 +262,9 @@ Goround.prototype.page_touchstart = function(evt){
 	t.ed_time = d.getTime();
 	t.ed_x = t.st_x;
 	t.ed_y = t.st_y;
-	t.view.on('touchmove', {tgt: t}, t.page_touchmove);
+	if(t.handletouch){
+		t.view.on('touchmove', {tgt: t}, t.page_touchmove);
+	}
 	if(t.handlemouse){
 		t.view.on('mousemove', {tgt: t}, t.page_touchmove);
 	}
@@ -270,7 +278,9 @@ Goround.prototype.page_touchend = function(evt){
 	var t = evt.data.tgt;
 	var mve = t.moved;
 	t.moved = false;
-	t.view.off('touchmove', t.page_touchmove);
+	if(t.handletouch){
+		t.view.off('touchmove', t.page_touchmove);
+	}
 	if(t.handlemouse){
 		t.view.off('mousemove', t.page_touchmove);
 	}
@@ -294,8 +304,8 @@ Goround.prototype.page_touchend = function(evt){
 	
 	
 	t.toleft = true;
-	var dx = t.st_x - t.ed_x;
-	var dy = t.st_y - t.ed_y;
+	var dx = t.move_x - t.ed_x;
+	var dy = t.move_y - t.ed_y;
 	if((t.vertical && t.horizontal && Math.abs(dy)>Math.abs(dx)) || (t.vertical && !t.horizontal)){
 		if(t.move_y > t.ed_y){
 			t.toleft = true;

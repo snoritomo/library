@@ -16,7 +16,7 @@
 		throwtime: 投げる判定誤差（ミリ秒）
 		stopborder: 超過スクロールの遊びを許すか
 		onwheelrange: マウスホイール一回でスクロールする量
-		handlemouse: マウススワイプでスクロールするか
+		handlemode: 0:全て 1:マウス 2:タッチ
 		barclass: スクロールバーを独自にデザインしたい場合はクラス名を入れる。デフォルトにしたいならnull
 		issetbar: resize時にスクロールバーを設定し直すか判定する関数
 		autotranslatemode: オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
@@ -85,7 +85,7 @@ function Scroller(args){
 	this.throwtime = 0;
 	this.isstopborder = true;
 	this.wheelrange = 40;
-	this.handlemouse = true;
+	this.handlemode = 0;
 	this.barclass = null;
 	this.issetbar = null;
 	this.autotranslatemode = true;
@@ -99,13 +99,18 @@ function Scroller(args){
 	if(args.throwtime!=undefined)this.throwtime = args.throwtime;
 	if(args.stopborder!=undefined)this.isstopborder = args.stopborder;
 	if(args.onwheelrange!=undefined)this.wheelrange = args.onwheelrange;
-	if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;
+		if(args.handlemode!=undefined)this.handlemode = args.handlemode;
 	if(args.barclass!=undefined)this.barclass = args.barclass;
 	if(args.issetbar!=undefined)this.issetbar = args.issetbar;
 	if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;
 	
 	this._container._scroller = this;
 
+	this.handlemouse = true;
+	this.handletouch = true;
+	if(this.handlemode==1)this.handletouch = false;
+	if(this.handlemode==2)this.handlemouse = false;
+	
 	this.interval = 1 / this.framerate * 1000;/**アニメーション間隔（ミリ秒）**/
 	this.move_friction = this.move_friction / 1000 * this.interval;/**摩擦係数（px毎フレーム）**/
 	
@@ -183,15 +188,19 @@ function Scroller(args){
 	this._this.css('position', 'relative');
 	
 	var cntn = this._container;
-	$(document).on('touchend', '#'+this._cntid+' *', {tgt: this._container}, function(evt){
-		var ta = $(this);
-		var href = ta.attr("href");
-		var t = evt.data.tgt._scroller;
-		if(!t.moved){
-			ta.click();
-			window.open(href, "_self");
-		}
-	});
+	if(this.handletouch){
+		$(document).on('touchend', '#'+this._cntid+' *', {tgt: this._container}, function(evt){
+			var ta = $(this);
+			var href = ta.attr("href");
+			var t = evt.data.tgt._scroller;
+			if(!t.moved){
+				ta.click();
+				window.open(href, "_self");
+			}
+		});
+		this._container.on('touchstart', {tgt: this._container}, this.page_touchstart);
+		$(document).on('touchend', {tgt: this._container}, this.page_touchend);
+	}
 	if(this.handlemouse){
 		$(document).on('mouseup', '#'+this._cntid+' *', {tgt: this._container}, function(evt){
 			var ta = $(this);
@@ -202,15 +211,10 @@ function Scroller(args){
 				window.open(href, "_self");
 			}
 		});
-	}
-
-	this._container.on('touchstart', {tgt: this._container}, this.page_touchstart);
-	$(document).on('touchend', {tgt: this._container}, this.page_touchend);
-
-	if(this.handlemouse){
 		this._container.on('mousedown', {tgt: this._container}, this.page_touchstart);
 		$(document).on('mouseup', {tgt: this._container}, this.page_touchend);
 	}
+
 	if(this.wheelrange>0)this.addWheelEventHandler(function(delta, evt, arg){
 		var src = arg.tgt.vpre=='-moz-' ? evt.target : evt.srcElement;
 		if(!arg.tgt.isIn(src)){
@@ -245,39 +249,76 @@ function Scroller(args){
 	
 	this.movebar = false;
 	this.bar_y = 0;
-	this.bar.on('mousedown', {tgt: this._container}, function(evt){
-		var t = evt.data.tgt._scroller;
-		t.bar_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
-		t.movebar = true;
-		evt.preventDefault();
-	});
-	$(window).on('mousemove', {tgt: this._container}, function(evt){
-		var t = evt.data.tgt._scroller;
-		if(t.movebar){
-			var pre_y = t.bar_y;
+	if(this.handletouch){
+		this.bar.on('touchstart', {tgt: this._container}, function(evt){
+			var t = evt.data.tgt._scroller;
 			t.bar_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
-			var cntnsize = t._container.height();
-			var viewsize = t._this.height();
-			if(cntnsize<=viewsize)return;
-			var nw = t.gettop(t._container);
-			if(pre_y > t.bar_y){
-				var to = nw + ((pre_y - t.bar_y)*(cntnsize/viewsize));
-				if(to>0)to = 0;
-				if(nw!=0||to!=0)t.rolling_to(nw-to, to);
+			t.movebar = true;
+			evt.preventDefault();
+		});
+		$(window).on('touchmove', {tgt: this._container}, function(evt){
+			var t = evt.data.tgt._scroller;
+			if(t.movebar){
+				var pre_y = t.bar_y;
+				t.bar_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
+				var cntnsize = t._container.height();
+				var viewsize = t._this.height();
+				if(cntnsize<=viewsize)return;
+				var nw = t.gettop(t._container);
+				if(pre_y > t.bar_y){
+					var to = nw + ((pre_y - t.bar_y)*(cntnsize/viewsize));
+					if(to>0)to = 0;
+					if(nw!=0||to!=0)t.rolling_to(nw-to, to);
+				}
+				else{
+					var mx = viewsize - cntnsize;
+					var to = nw - ((t.bar_y - pre_y)*(cntnsize/viewsize));
+					if(to<mx)to = mx;
+					if(nw!=mx||to!=mx)t.rolling_to(nw-to, to);
+				}
 			}
-			else{
-				var mx = viewsize - cntnsize;
-				var to = nw - ((t.bar_y - pre_y)*(cntnsize/viewsize));
-				if(to<mx)to = mx;
-				if(nw!=mx||to!=mx)t.rolling_to(nw-to, to);
+		});
+		$(document).on('touchend', {tgt: this._container}, function(evt){
+			var t = evt.data.tgt._scroller;
+			t.movebar = false;
+			t.bar_y = 0;
+		});
+	}
+	if(this.handlemouse){
+		this.bar.on('mousedown', {tgt: this._container}, function(evt){
+			var t = evt.data.tgt._scroller;
+			t.bar_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
+			t.movebar = true;
+			evt.preventDefault();
+		});
+		$(window).on('mousemove', {tgt: this._container}, function(evt){
+			var t = evt.data.tgt._scroller;
+			if(t.movebar){
+				var pre_y = t.bar_y;
+				t.bar_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
+				var cntnsize = t._container.height();
+				var viewsize = t._this.height();
+				if(cntnsize<=viewsize)return;
+				var nw = t.gettop(t._container);
+				if(pre_y > t.bar_y){
+					var to = nw + ((pre_y - t.bar_y)*(cntnsize/viewsize));
+					if(to>0)to = 0;
+					if(nw!=0||to!=0)t.rolling_to(nw-to, to);
+				}
+				else{
+					var mx = viewsize - cntnsize;
+					var to = nw - ((t.bar_y - pre_y)*(cntnsize/viewsize));
+					if(to<mx)to = mx;
+					if(nw!=mx||to!=mx)t.rolling_to(nw-to, to);
+				}
 			}
-		}
-	});
-	$(document).on('mouseup', {tgt: this._container}, function(evt){
-		var t = evt.data.tgt._scroller;
-		t.movebar = false;
-		t.bar_y = 0;
-	});
+		});
+		$(document).on('mouseup', {tgt: this._container}, function(evt){
+			var t = evt.data.tgt._scroller;
+			t.movebar = false;
+			t.bar_y = 0;
+		});
+	}
 	$(window).on('resize', {tgt: this._container}, function(evt){
 		var t = evt.data.tgt._scroller;
 		if(t.issetbar==null || t.issetbar()){
@@ -529,7 +570,9 @@ Scroller.prototype.page_touchstart = function(evt){
 	t.ed_time = d.getTime();
 	t.ed_x = t.st_x;
 	t.ed_y = t.st_y;
-	t._container.on('touchmove', {tgt: t._container}, t.page_touchmove);
+	if(t.handletouch){
+		t._container.on('touchmove', {tgt: t._container}, t.page_touchmove);
+	}
 	if(t.handlemouse){
 		t._container.on('mousemove', {tgt: t._container}, t.page_touchmove);
 	}
@@ -543,7 +586,9 @@ Scroller.prototype.page_touchend = function(evt){
 	var t = evt.data.tgt._scroller;
 	var mve = t.moved;
 	t.moved = false;
-	t._container.off('touchmove', t.page_touchmove);
+	if(t.handletouch){
+		t._container.off('touchmove', t.page_touchmove);
+	}
 	if(t.handlemouse){
 		t._container.off('mousemove', t.page_touchmove);
 	}
