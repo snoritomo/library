@@ -11,12 +11,11 @@
 		startnum: ファイル名フレーム開始数
 		endnum: ファイル名フレーム最終数
 		digit: フレーム０桁埋め
-		movepx: 画像を回転させるスワイプ量
-		framerate: アニメーションレート
-		clickplay: クリックとみなすスワイプ量
-		clickplaytime: クリックとみなす操作時間
-		friction: 自動移動の減速加速度
-		freetime: 自動移動の減速が発動するまでの時間
+		movepx: 画像を回転させるスワイプ量(pxcel)
+		framerate: アニメーションレート(秒間のコマ数）
+		throwtime: 投げる判定誤差（ミリ秒）
+		friction: 自動移動の減速加速度(px/秒)
+		freetime: 自動移動の減速が発動するまでの時間(ミリ秒)
 		handlemouse: マウスイベントを拾うか
 		reverse: 逆回転させる
 		vertical: 縦感知
@@ -83,10 +82,7 @@ function Goround(args){
 	this.digit = 3;
 	this.movepx = 10;
 	this.framerate = 40;
-	/**
-	this.clickplay = 1;
-	this.clickplaytime = 100;
-	**/
+	this.throwtime = 0;
 	this.move_friction = 20.0;
 	this.move_freetime = 100;
 	this.handlemouse = true;
@@ -105,10 +101,7 @@ function Goround(args){
 		if(args.digit != undefined)this.digit = args.digit;
 		if(args.movepx!=undefined)this.movepx = args.movepx;
 		if(args.framerate!=undefined)this.framerate = parseFloat(args.framerate);
-		/**
-		if(args.clickplay!=undefined)this.clickplay = args.clickplay;
-		if(args.clickplaytime!=undefined)this.clickplaytime = args.clickplaytime;
-		**/
+		if(args.throwtime!=undefined)this.throwtime = args.throwtime;
 		if(args.friction!=undefined)this.move_friction = args.friction;
 		if(args.freetime!=undefined)this.move_freetime = args.freetime;
 		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;
@@ -123,8 +116,8 @@ function Goround(args){
 	this.rolling_anime = null;
 	this.upper = this.reverse;
 	
-	this.interval = 1 / this.framerate;
-	this.move_friction = this.move_friction / this.interval;
+	this.interval = 1 / this.framerate * 1000;/**アニメーション間隔（ミリ秒）**/
+	this.move_friction = this.move_friction / 1000 * this.interval;/**摩擦係数（px毎フレーム）**/
 	
 	this.frmnum = this.endnum - this.startnum + 1;
 	
@@ -160,6 +153,8 @@ function Goround(args){
 	this.move_y = 0;
 	this.st_y = 0;
 	this.st_time = 0;
+	this.mv_time = 0;
+	this.ed_time = 0;
 	this.ed_x = 0;
 	this.ed_y = 0;
 	this.rolling_speed = 0.0;
@@ -244,8 +239,8 @@ Goround.prototype.rolling_notate = function(d, once){
 		t.doStop();
 		return;
 	}
-	deg = t.rolling_speed * t.interval * (t.toleft?-1:1);
-	t.rolling_anime = t.rolling.applyTimeout(t.interval * 1000, t, [deg, null]);
+	deg = t.rolling_speed * (t.toleft?-1:1);
+	t.rolling_anime = t.rolling.applyTimeout(t.interval, t, [deg, null]);
 };
 Goround.prototype.page_touchstart = function(evt){
 	var t = evt.data.tgt;
@@ -255,7 +250,10 @@ Goround.prototype.page_touchstart = function(evt){
 	t.move_x = t.st_x;
 	t.st_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).pageY;
 	t.move_y = t.st_y;
-	t.st_time = evt.timeStamp;
+	var d = new Date();
+	t.st_time = d.getTime();
+	t.mv_time = d.getTime();
+	t.ed_time = d.getTime();
 	t.ed_x = t.st_x;
 	t.ed_y = t.st_y;
 	t.view.on('touchmove', {tgt: t}, t.page_touchmove);
@@ -277,28 +275,18 @@ Goround.prototype.page_touchend = function(evt){
 		t.view.off('mousemove', t.page_touchmove);
 	}
 	if(t.st_time == 0)return;
-	t.ed_time = evt.timeStamp;
-	var len = Math.sqrt((t.horizontal?Math.pow(t.ed_x - t.st_x, 2):0) + (t.vertical?Math.pow(t.ed_y - t.st_y, 2):0));
-	t.rolling_speed = len / ((t.ed_time - t.st_time) / 1000);
-
+	t.st_time = 0;
+	var d = new Date();
+	var nw = d.getTime();
+	var len = Math.sqrt((t.horizontal?Math.pow(t.ed_x - t.move_x, 2):0) + (t.vertical?Math.pow(t.ed_y - t.move_y, 2):0));
+	t.rolling_speed = len / (t.ed_time - t.mv_time) * t.interval;/**初期スピード（px毎フレーム）**/
 	var isclick = true;
 	if(!mve){
 		isclick = false;
 		evt.preventDefault();
 		t.doClick();
 	}
-	t.st_time = 0;
-	/**
-	if(t.clickplay < len || t.clickplaytime < (t.ed_time - t.st_time)){
-		isclick = false;
-		evt.preventDefault();
-	}
-	t.st_time = 0;
-	if(t.touchstartidx == t.nowidx){
-		t.doClick();
-	}
-	**/
-	if((t.horizontal?t.ed_x == t.st_x:false) || (t.vertical?t.ed_y == t.st_y:false)){
+	if((t.ed_time - t.mv_time) < (nw - t.ed_time + t.throwtime)){
 		t.doStop();
 		return isclick;
 	}
@@ -309,7 +297,7 @@ Goround.prototype.page_touchend = function(evt){
 	var dx = t.st_x - t.ed_x;
 	var dy = t.st_y - t.ed_y;
 	if((t.vertical && t.horizontal && Math.abs(dy)>Math.abs(dx)) || (t.vertical && !t.horizontal)){
-		if(t.st_y > t.ed_y){
+		if(t.move_y > t.ed_y){
 			t.toleft = true;
 		}
 		else{
@@ -318,7 +306,7 @@ Goround.prototype.page_touchend = function(evt){
 		t.upper = t.cycle?(t.ed_x>(parseInt(t.view.offset().left)+parseInt(t.view.width()/2))?!t.reverse:t.reverse):t.reverse;
 	}
 	else{
-		if(t.st_x < t.ed_x){
+		if(t.move_x < t.ed_x){
 			t.toleft = true;
 		}
 		else{
@@ -326,14 +314,19 @@ Goround.prototype.page_touchend = function(evt){
 		}
 		t.upper = t.cycle?(t.ed_y>(parseInt(t.view.offset().top)+parseInt(t.view.height()/2))?!t.reverse:t.reverse):t.reverse;
 	}
-	var deg = t.rolling_speed * t.interval * (t.toleft?-1:1);
+	var deg = t.rolling_speed * (t.toleft?-1:1);
 
-	t.rolling_anime = t.rolling.applyTimeout(t.interval * 1000, t, [deg, null]);
+	t.rolling_anime = t.rolling.applyTimeout(t.interval, t, [deg, null]);
 	return isclick;
 };
 Goround.prototype.page_touchmove = function(evt){
 	var t = evt.data.tgt;
 	if(t.st_time<=0)return;
+	var d = new Date();
+	t.mv_time = t.ed_time;
+	t.ed_time = d.getTime();
+	t.move_x = t.ed_x;
+	t.move_y = t.ed_y;
 	t.ed_x = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).pageX;
 	t.ed_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).pageY;
 	var tgt = evt.data.tgt;
@@ -361,8 +354,6 @@ Goround.prototype.page_touchmove = function(evt){
 	mgl = mgl * (t.toleft?-1:1);
 	t.moved = true;
 	t.rolling(mgl, 'once');
-	t.move_x = t.ed_x;
-	t.move_y = t.ed_y;
 	evt.preventDefault();
 	return false;
 };

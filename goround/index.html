@@ -10,12 +10,14 @@
 <body>
 <div id="console"></div>
 <style>
-.showcase img{
-	width: 640px;
+.showcase {
+	width: 200px;
 }
 </style>
+<div id="console"></div>
 <div id="showcase" class="showcase" >
 </div>
+<div id="output"></div>
 
 
 <script type="text/javascript" src="js/jquery.js"></script>
@@ -23,7 +25,27 @@
 <script type="text/javascript" >
 var goround = null;
 $(document).ready(function(){
-	goround = new Goround({id:'showcase', path:'img/about/', prefix:'frm', safix:'.jpg', reverse: true, startnum: 1, endnum: 25});
+	goround = new Goround({
+		id:'showcase',
+		path:'img/goround/',
+		cycle: true,
+		horizontal: true,
+		vertical: true,
+		prefix: 'dial',
+		safix: '.png',
+		digit: 3,
+		movepx: 13,
+		reverse: false,
+		startnum: 1,
+		endnum: 36,
+		freetime: 500,
+		friction: 80.0});
+	goround.setOnStop(function(){
+		$('#output').html($('#output').html()+'stop!');
+	});
+	goround.setOnClick(function(){
+		$('#output').html($('#output').html()+'click!');
+	});
 });
 </script>
 </body>

@@ -8,13 +8,12 @@
 		id: ビューID
 		cntid: コンテナID
 		parent: 親がいる場合は引数に渡すこと。ないならnull
-		speed: 自動回転の速度
+		speed: 自動回転の速度(px/秒)
 		usetranslate: アニメーションモード（0:margin-left 1:translate3d）
-		friction: 自動移動の減速加速度。
-		freetime: 自動移動の減速が発動するまでの時間
-		framerate: アニメーションレート
-		clickplay: クリックとみなす遊びの範囲
-		clickplaytime: クリックと認識する時間の範囲
+		friction: 自動移動の減速加速度(px/秒)
+		freetime: 自動移動の減速が発動するまでの時間(ミリ秒)
+		framerate: アニメーションレート(秒間のコマ数）
+		throwtime: 投げる判定誤差（ミリ秒）
 		stopborder: 超過スクロールの遊びを許すか
 		onwheelrange: マウスホイール一回でスクロールする量
 		handlemouse: マウススワイプでスクロールするか
@@ -80,13 +79,10 @@ function Scroller(args){
 	this._container._parent = null;
 	this.move_mostslow = 20;
 	this.usetranslate = 0;
-	this.move_friction = 2.0;
+	this.move_friction = 40.0;
 	this.move_freetime = 200;
 	this.framerate = 40;
-	/**
-	this.clickplay = 1;
-	this.clickplaytime = 100;
-	**/
+	this.throwtime = 0;
 	this.isstopborder = true;
 	this.wheelrange = 40;
 	this.handlemouse = true;
@@ -100,10 +96,7 @@ function Scroller(args){
 	if(args.friction!=undefined)this.move_friction = parseFloat(args.friction);
 	if(args.freetime!=undefined)this.move_freetime = parseFloat(args.freetime);
 	if(args.framerate!=undefined)this.framerate = parseFloat(args.framerate);
-	/**
-	if(args.clickplay!=undefined)this.clickplay = args.clickplay;
-	if(args.clickplaytime!=undefined)this.clickplaytime = args.clickplaytime;
-	**/
+	if(args.throwtime!=undefined)this.throwtime = args.throwtime;
 	if(args.stopborder!=undefined)this.isstopborder = args.stopborder;
 	if(args.onwheelrange!=undefined)this.wheelrange = args.onwheelrange;
 	if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;
@@ -113,8 +106,8 @@ function Scroller(args){
 	
 	this._container._scroller = this;
 
-	this.interval = 1 / this.framerate;
-	this.move_friction = this.move_friction / this.interval;
+	this.interval = 1 / this.framerate * 1000;/**アニメーション間隔（ミリ秒）**/
+	this.move_friction = this.move_friction / 1000 * this.interval;/**摩擦係数（px毎フレーム）**/
 	
 	var userAgent = window.navigator.userAgent.toLowerCase();
 	this.vpre = '';
@@ -162,6 +155,7 @@ function Scroller(args){
 	this.move_y = 0;
 	this.st_y = 0;
 	this.st_time = 0;
+	this.mv_time = 0;
 	this.ed_time = 0;
 	this.ed_x = 0;
 	this.ed_y = 0;
@@ -444,8 +438,8 @@ Scroller.prototype.rolling_notate = function(d, once){
 		t.doMove();
 		return;
 	}
-	deg = t.rolling_speed * t.interval * (t.totop?-1:1);
-	t.rolling_anime = t.rolling.applyTimeout(t.interval * 1000, t, [deg, null]);
+	deg = t.rolling_speed * (t.totop?-1:1);
+	t.rolling_anime = t.rolling.applyTimeout(t.interval, t, [deg, null]);
 };
 
 Scroller.prototype.rolling_to = function(d, to){
@@ -484,7 +478,7 @@ Scroller.prototype.rolling_to = function(d, to){
 		t.doMove();
 		return;
 	}
-	t.rolling_anime = t.rolling_to.applyTimeout(t.interval * 1000, t, [d, to]);
+	t.rolling_anime = t.rolling_to.applyTimeout(t.interval, t, [d, to]);
 };
 Scroller.prototype.adjust_position = function(){
 	var t = this;
@@ -505,9 +499,9 @@ Scroller.prototype.scroll_top = function(){
 	if(nw==0)return;
 	t.reverse = true;
 	t.rolling_speed = t.move_mostslow;
-	var deg = t.move_mostslow * t.interval;
+	var deg = t.move_mostslow / 1000 * t.interval;
 	if(nw>0)deg *= -1;
-	t.rolling_anime = t.rolling_to.applyTimeout(t.interval * 1000, t, [deg, 0]);
+	t.rolling_anime = t.rolling_to.applyTimeout(t.interval, t, [deg, 0]);
 };
 Scroller.prototype.scroll_bottom = function(){
 	var t = this;
@@ -515,11 +509,11 @@ Scroller.prototype.scroll_bottom = function(){
 	var nw = t.gettop(tgt);
 	t.reverse = true;
 	t.rolling_speed = t.move_mostslow;
-	var deg = t.move_mostslow * t.interval * -1;
+	var deg = t.move_mostslow / 1000 * t.interval * -1;
 	var tosize = t._this.height() - t._container.height();
 	if(nw==tosize)return;
 	if(nw<tosize)deg *= -1;
-	t.rolling_anime = t.rolling_to.applyTimeout(t.interval * 1000, t, [deg, tosize]);
+	t.rolling_anime = t.rolling_to.applyTimeout(t.interval, t, [deg, tosize]);
 };
 Scroller.prototype.page_touchstart = function(evt){
 	var t = evt.data.tgt._scroller;
@@ -529,7 +523,10 @@ Scroller.prototype.page_touchstart = function(evt){
 	t.move_x = t.st_x;
 	t.st_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
 	t.move_y = t.st_y;
-	t.st_time = evt.timeStamp;
+	var d = new Date();
+	t.st_time = d.getTime();
+	t.mv_time = d.getTime();
+	t.ed_time = d.getTime();
 	t.ed_x = t.st_x;
 	t.ed_y = t.st_y;
 	t._container.on('touchmove', {tgt: t._container}, t.page_touchmove);
@@ -551,42 +548,43 @@ Scroller.prototype.page_touchend = function(evt){
 		t._container.off('mousemove', t.page_touchmove);
 	}
 	if(t.st_time==0)return;
-	t.ed_time = evt.timeStamp;
-	var len = Math.sqrt(Math.pow(t.ed_x - t.st_x, 2) + Math.pow(t.ed_y - t.st_y, 2));
-	t.rolling_speed = len / ((t.ed_time - t.st_time) / 1000);
+	t.st_time = 0;
+	var d = new Date();
+	var nw = d.getTime();
+	var len = Math.sqrt(Math.pow(t.ed_x - t.move_x, 2) + Math.pow(t.ed_y - t.move_y, 2));
+	t.rolling_speed = len / (t.ed_time - t.mv_time) * t.interval;/**初期スピード（px毎フレーム）**/
 
 	var isclick = true;
 	if(!mve){
 		isclick = false;
 		evt.preventDefault();
 	}
-	/**
-	if(t.clickplay < Math.abs(t.ed_y - t.st_y) || t.clickplaytime < (t.ed_time - t.st_time)){
-		isclick = false;
-		evt.preventDefault();
-	}
-	**/
-	t.st_time = 0;
-	if(t.ed_y == t.st_y){
+	if((t.ed_time - t.mv_time) < (nw - t.ed_time + t.throwtime)){
+		t.doStop();
 		return isclick;
 	}
 	var tgt = evt.data.tgt;
 	
 	t.totop = true;
-	if(t.st_y > t.ed_y){
+	if(t.move_y > t.ed_y){
 		t.totop = true;
 	}
 	else{
 		t.totop = false;
 	}
-	var deg = t.rolling_speed * t.interval * (t.totop?-1:1);
+	var deg = t.rolling_speed * (t.totop?-1:1);
 
-	t.rolling_anime = t.rolling.applyTimeout(t.interval * 1000, t, [deg, null]);
+	t.rolling_anime = t.rolling.applyTimeout(t.interval, t, [deg, null]);
 	return isclick;
 };
 Scroller.prototype.page_touchmove = function(evt){
 	var t = evt.data.tgt._scroller;
 	if(t.st_time<=0)return;
+	var d = new Date();
+	t.mv_time = t.ed_time;
+	t.ed_time = d.getTime();
+	t.move_x = t.ed_x;
+	t.move_y = t.ed_y;
 	t.ed_x = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenX;
 	t.ed_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
 	var tgt = evt.data.tgt;
@@ -603,8 +601,6 @@ Scroller.prototype.page_touchmove = function(evt){
 	}
 	t.moved = true;
 	t.rolling(mgl, 'once');
-	t.move_x = t.ed_x;
-	t.move_y = t.ed_y;
 	evt.preventDefault();
 	return false;
 };
