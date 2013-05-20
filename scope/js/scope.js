@@ -14,16 +14,16 @@
 		samimgid: サムネイル画像のID
 		src: 画像URL
 		usetranslate: translate3dを使うか
-		framerate: アニメーションレート
 		scoperate: スコープレート
 		imageclass: 元画像class
 		samimageclass:サムネイル画像class
 		scopeclass: スコープclass
-		handlemouse: マウス操作でスワイプするか
+		handlemode: 0:全て 1:マウス 2:タッチ
 		autotranslatemode: オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
 		viewheight: ビューに設定する高さ
 		viewwidth: ビューに設定する横幅
 		samwidth: サムネイルに設定する横幅
+		fixedview: ビューを動かせないようにする
 **/
 function Scope(args){
 	this._id = args.id;
@@ -35,13 +35,13 @@ function Scope(args){
 	this._sam = $('#'+this._samid);
 	this.src = '';
 	this.usetranslate = 0;
-	this.framerate = 40;
 	this.scoperate = 0.2;
 	this.imageclass = '';
 	this.samimageclass = '';
 	this.scopeclass = '';
-	this.handlemouse = true;
+	this.handlemode = 0;
 	this.autotranslatemode = true;
+	this.fixedview = false;
 
 	if(args!=null){
 		if(args.scopeid!=undefined)this._scopeid = args.scopeid;
@@ -49,18 +49,26 @@ function Scope(args){
 		if(args.samimgid!=undefined)this._samimgid = args.samimgid;
 		if(args.src!=undefined)this.src = args.src;
 		if(args.usetranslate!=undefined)this.usetranslate = args.usetranslate;
-		if(args.framerate!=undefined)this.framerate = args.framerate;
 		if(args.scoperate!=undefined)this.scoperate = args.scoperate;
 		if(args.imageclass!=undefined)this.imageclass = args.imageclass;
 		if(args.samimageclass!=undefined)this.samimageclass = args.samimageclass;
 		if(args.scopeclass!=undefined)this.scopeclass = args.scopeclass;
-		if(args.handlemouse!=undefined)this.handlemouse = args.handlemouse;
+		if(args.handlemode!=undefined)this.handlemode = args.handlemode;
 		if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;
+		if(args.fixedview!=undefined)this.fixedview = args.fixedview;
 		if(args.viewheight!=undefined)this._this.height(args.viewheight);
 		if(args.viewwidth!=undefined)this._this.width(args.viewwidth);
 		if(args.samwidth!=undefined)this._sam.width(args.samwidth);
 	}
-	this._this.append('<img id="' + this._imgid + '" src="'+this.src+'" class="' + this.imageclass + '"/>');
+	
+	this.handlemouse = true;
+	this.handletouch = true;
+	if(this.handlemode==1)this.handletouch = false;
+	if(this.handlemode==2)this.handlemouse = false;
+	
+	this.onmove = [];
+	
+	if($('#'+this._imgid).size()<=0)this._this.append('<img id="' + this._imgid + '" src="'+this.src+'" class="' + this.imageclass + '"/>');
 	this._this.css({position: 'relative', overflow:'hidden'});
 	this._image = $('#' + this._imgid);
 	this._image.width(this._this.width() / this.scoperate);
@@ -68,8 +76,8 @@ function Scope(args){
 		var t = evt.data.tgt;
 	});
 	this._image.css({position: 'absolute'});
-	this._sam.append('<img id="' + this._samimgid + '" src="'+this.src+'" class="' + this.samimageclass + '"/>');
-	this._sam.append('<div id="' + this._scopeid + '" class="' + this.scopeclass + '"></div>');
+	if($('#'+this._samimgid).size()<=0)this._sam.append('<img id="' + this._samimgid + '" src="'+this.src+'" class="' + this.samimageclass + '"/>');
+	if($('#'+this._scopeid).size()<=0)this._sam.append('<div id="' + this._scopeid + '" class="' + this.scopeclass + '"></div>');
 	this._sam.css({position: 'relative'});
 	this._samimage = $('#' + this._samimgid);
 	this._samimage.width(this._sam.width());
@@ -87,13 +95,15 @@ function Scope(args){
 
 	this.maxleft = this._sam.width() - this._scope.width();
 	
-	this._scope.on('touchstart', {tgt: this}, this.page_touchstart);
-	$(document).on('touchend', {tgt: this}, this.page_touchend);
-
-	if(this.handlemouse){
-		this._scope.on('mousedown', {tgt: this}, this.page_touchstart);
-		$(document).on('mouseup', {tgt: this}, this.page_touchend);
-
+	if(!this.fixedview){
+		if(this.handletouch){
+			this._scope.on('touchstart', {tgt: this}, this.page_touchstart);
+			$(document).on('touchend', {tgt: this}, this.page_touchend);
+		}
+		if(this.handlemouse){
+			this._scope.on('mousedown', {tgt: this}, this.page_touchstart);
+			$(document).on('mouseup', {tgt: this}, this.page_touchend);
+		}
 	}
 
 	var userAgent = window.navigator.userAgent.toLowerCase();
@@ -130,7 +140,7 @@ function Scope(args){
 		if(this.autotranslatemode)this.usetranslate = 0;
 	}
 
-	if(this.usetranslate == 1){
+	if(!this.fixedview && this.usetranslate == 1){
 		this._scope.css(this.vpre+'transform-origin-x', 0);
 		this._scope.css(this.vpre+'transform-origin-y', 0);
 		this._scope.css(this.vpre+'transform', 'translate3d(0px,0px,0px)');
@@ -138,6 +148,36 @@ function Scope(args){
 		this._image.css(this.vpre+'transform-origin-y', 0);
 		this._image.css(this.vpre+'transform', 'translate3d(0px,0px,0px)');
 	}
+};
+Scope.prototype.setOnMove = function(f){
+	this.onmove.push(f);
+};
+Scope.prototype.doMove = function(scopeleft, scopetop, imageleft, imagetop){
+	for(var i = 0; i < this.onmove.length; i++){
+		var f = this.onmove[i];
+		f(scopeleft, scopetop, imageleft, imagetop);
+	}
+};
+Scope.prototype.moveScope = function(left, top){
+	var t = this;
+	var imgleft = 0;
+	var imgtop = 0;
+	if(t.usetranslate == 0){
+		t._scope.css('left', left);
+		t._scope.css('top', top);
+
+		imgleft = -1 * left * t.imagerate;
+		imgtop = -1 * top * t.imagerate;
+		t._image.css('left', imgleft);
+		t._image.css('top', imgtop);
+	}
+	else{
+		imgleft = -1 * left * t.imagerate;
+		imgtop = -1 * top * t.imagerate;
+		t._scope.css(t.vpre+'transform', 'translate3d('+left+'px,'+top+'px,0px)');
+		t._image.css(t.vpre+'transform', 'translate3d('+imgleft+'px,'+imgtop+'px,0px)');
+	}
+	t.doMove(left, top, imgleft, imgtop);
 };
 Scope.prototype.getX = function(obj){
 	var cc = 0;
@@ -194,7 +234,9 @@ Scope.prototype.page_touchstart = function(evt){
 	t.st_time = evt.timeStamp;
 	t.ed_x = t.st_x;
 	t.ed_y = t.st_y;
-	t._scope.on('touchmove', {tgt: t}, t.page_touchmove);
+	if(t.handletouch){
+		t._scope.on('touchmove', {tgt: t}, t.page_touchmove);
+	}
 	if(t.handlemouse){
 		t._scope.on('mousemove', {tgt: t}, t.page_touchmove);
 	}
@@ -202,7 +244,9 @@ Scope.prototype.page_touchstart = function(evt){
 };
 Scope.prototype.page_touchend = function(evt){
 	var t = evt.data.tgt;
-	t._scope.off('touchmove', t.page_touchmove);
+	if(t.handletouch){
+		t._scope.off('touchmove', t.page_touchmove);
+	}
 	if(t.handlemouse){
 		t._scope.off('mousemove', t.page_touchmove);
 	}
@@ -217,9 +261,13 @@ Scope.prototype.page_touchmove = function(evt){
 	t.ed_x = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenX;
 	t.ed_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
 
+	var mglx = 0;
+	var mgly = 0;
+	var imgleft = 0;
+	var imgtop = 0;
 	if(t.usetranslate == 0){
-		var mglx = parseInt(t._scope.css('left').replace('px', '')) + (t.ed_x - t.move_x);
-		var mgly = parseInt(t._scope.css('top').replace('px', '')) + (t.ed_y - t.move_y);
+		mglx = parseFloat(t._scope.css('left').replace('px', '')) + (t.ed_x - t.move_x);
+		mgly = parseFloat(t._scope.css('top').replace('px', '')) + (t.ed_y - t.move_y);
 		if(mglx<0)mglx=0;
 		if(mgly<0)mgly=0;
 		if(mglx>t.maxleft)mglx = t.maxleft;
@@ -227,20 +275,25 @@ Scope.prototype.page_touchmove = function(evt){
 		t._scope.css('left', mglx);
 		t._scope.css('top', mgly);
 
-		t._image.css('left', -1 * mglx * t.imagerate);
-		t._image.css('top', -1 * mgly * t.imagerate);
+		imgleft = -1 * mglx * t.imagerate;
+		imgtop = -1 * mgly * t.imagerate;
+		t._image.css('left', imgleft);
+		t._image.css('top', imgtop);
 	}
 	else{
 		var trans = t._scope.css(t.vpre+'transform');
-		var mglx = parseInt(t.getX(trans)) + (t.ed_x - t.move_x);
-		var mgly = parseInt(t.getY(trans)) + (t.ed_y - t.move_y);
+		var mglx = parseFloat(t.getX(trans)) + (t.ed_x - t.move_x);
+		var mgly = parseFloat(t.getY(trans)) + (t.ed_y - t.move_y);
 		if(mglx<0)mglx=0;
 		if(mgly<0)mgly=0;
 		if(mglx>t.maxleft)mglx = t.maxleft;
 		if(mgly>t.maxtop)mgly = t.maxtop;
+		imgleft = -1 * mglx * t.imagerate;
+		imgtop = -1 * mgly * t.imagerate;
 		t._scope.css(t.vpre+'transform', 'translate3d('+mglx+'px,'+mgly+'px,0px)');
-		t._image.css(t.vpre+'transform', 'translate3d('+(-1 * mglx * t.imagerate)+'px,'+(-1 * mgly * t.imagerate)+'px,0px)');
+		t._image.css(t.vpre+'transform', 'translate3d('+imgleft+'px,'+imgtop+'px,0px)');
 	}
+	t.doMove(mglx, mgly, imgleft, imgtop);
 
 	t.move_x = t.ed_x;
 	t.move_y = t.ed_y;
