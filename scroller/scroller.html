@@ -1,0 +1,409 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=820" />
+	<meta name="author" content="Noritomo Suzuki" />
+	<meta name="description" content="JavaScriptアニメーションライブラリブランドサイト「nolib」" />
+	<meta name="keywords" content="javascript,jquery,ライブラリ,library,アニメーション,html5,android,ios,iphone,ipad" />
+	<link rel="icon" type="image/vnd.microsoft.icon" href="nolib.ico">
+	<link rel="stylesheet" type="text/css" href="css/html5reset-1.6.1.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="css/yui3.9.1.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="css/common.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="css/libs.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="css/scroller.css" media="all" />
+	<title>scroller - nolib</title>
+</head>
+<body>
+<div id="scrolltotop"></div>
+<header>
+<div class="logo_ground" >
+	<div class="pagecanvas logo clearfix">
+		<h1><a href="index.html"><img src="img/icon_b.png" class="headerlogo" alt="icon image" /><img src="img/logo_b.png" class="headerlogo" alt="Logo image" /></a></h1>
+		<menu class="grandnavi">
+			<nav>
+				<a href="index.html">home</a>
+			</nav>
+			<nav>
+				<a href="about.html">about</a>
+			</nav>
+			<nav>
+				<a href="thoughts.html">thoughts</a>
+			</nav>
+			<nav>
+				<a href="http://ctklab.blogspot.jp/">blog</a>
+			</nav>
+			<nav>
+				<a href="https://github.com/snoritomo/library">github</a>
+			</nav>
+			<nav>
+				<a href="policy.html">policy</a>
+			</nav>
+			<nav>
+				<a href="rights.html">rights</a>
+			</nav>
+		</menu>
+	</div>
+</div>
+</header>
+<div class="contentbody">
+<section class="pageheader">
+<div class="pagecanvas">
+	<h2>Scroller</h2>
+</div>
+</section>
+<article class="pagebody">
+<section class="areas download">
+<section class="whitearea">
+<div class="pagecanvas">
+	<h3>ダウンロード</h3>
+	<div class="dllinks">
+		<a href="http://nolib.jp/js/arc/scroller.1.0.0.min.js">1.0.0</a>
+	</div>
+</div>
+</section>
+<section>
+<div class="pagecanvas">
+	<h3>埋め込み</h3>
+	<div class="pastes">
+		<form action="#">
+		<h4>常に最新</h4>
+		<input type="text" id="latest" name="latest" value="<script type=&quot;text/javascript&quot; src=&quot;http://nolib.jp/js/scroller.min.js&quot; ></script>" />
+		<h4>1.0.0</h4>
+		<input type="text" id="v100" name="v100" value="<script type=&quot;text/javascript&quot; src=&quot;http://nolib.jp/js/arc/scroller.1.0.0.min.js&quot; ></script>" />
+		</form>
+	</div>
+</div>
+</section>
+</section>
+<section class="areas conditions">
+<div class="pagecanvas">
+	<h3>必要なライブラリ</h3>
+	<div>
+		<h4><a href="http://jquery.com/">jQuery</a></h4>
+		<h5>ライブラリ内でのjQueryの利用範囲</h5>
+		<ul>
+			<li>DOM要素の取得</li>
+			<li>属性の設定</li>
+			<li>スタイルの設定</li>
+			<li>イベントハンドラの登録</li>
+		</ul>
+	</div>
+</div>
+</section>
+<section class="whitearea">
+<div class="pagecanvas areas summary">
+<h3>概要</h3>
+<p>
+	Scrollerはiframeやoverflowを使わずにコンテンツの一部をスクロールさせることで、自由なスタイルのスクロールバーを使えるようにします。
+</p>
+<p>
+	スワイプやマウスホイールはもちろん、スワイプのようなイメージでマウスのドラッグ操作でもスクロールさせることができます。
+</p>
+<p>
+	投げるような動作をしたときの動きを細かく指定することができます。また、スクロール上端、下端に達したときに一度行き過ぎてから戻るような効果も追加することができます。
+</p>
+<p>
+	上端、下端にそれぞれ達したとき、スクロールが止まったとき、マウスホイールでスクロールさせたときにそれぞれのイベントハンドラを登録することができます。
+</p>
+</div>
+</section>
+<section class="pagecanvas areas samples">
+<form action="#">
+<h3>サンプル</h3>
+<div>
+	<h4>横スワイプ</h4>
+	<div id="console" style="width: 800px;height:60px;overflow:scroll;"></div>
+	<div id="samp1v" style="height: 100px;" >
+		<div id="samp1c">
+			<div style="padding: 10px 0 10px 0;">
+			<a href="./" >ハイパーリンク。ホームへ</a>
+			</div>
+			<div style="padding: 10px 0 10px 0;">
+			<a href="javascript:$('#console').html($('#console').html()+'href!;');" onclick="$('#console').html($('#console').html()+'クリック発動');">アンカーのクリックハンドラ</a>
+			</div>
+			<div style="padding: 10px 0 10px 0;">
+			<div onclick="$('#console').html($('#console').html()+'クリック発動');">divのクリックハンドラ</div>
+			</div>
+			<div style="padding: 10px 0 10px 0;">
+			<button type="button" onclick="$('#console').html($('#console').html()+'ボタンクリック');">ボタン</button>
+			</div>
+			<div style="padding: 10px 0 10px 0;">
+			<input type="text" name="txt" />
+			</div>
+			<div style="padding: 10px 0 10px 0;">
+			<input type="checkbox" name="chk" />
+			</div>
+			<div style="padding: 10px 0 10px 0;">
+			<input type="radio" name="rd" /><br/>
+			<input type="radio" name="rd" /><br/>
+			<input type="radio" name="rd" /><br/>
+			</div>
+			<div style="padding: 10px 0 10px 0;">
+			<textarea name="tarea"></textarea>
+			</div>
+		</div>
+	</div>
+	<div id="debug" style="width: 800px;height:60px;overflow:scroll;"></div>
+	<textarea id="sample1"><div id="samp1" style="width: 100px;"></div>
+
+//以下をscriptに記述します。画像のパスやファイル名は存在するものに変更する必要があります
+var goround = new Goround({
+id:'samp1',
+path:'img/goround/samp1/',
+cycle: false,
+horizontal: true,
+vertical: false,
+prefix: 'hcoin',
+safix: '.png',
+digit: 2,
+movepx: 5,
+reverse: false,
+startnum: 1,
+endnum: 10,
+freetime: 500,
+friction: 80});</textarea>
+</div>
+<div>
+	<h4>縦スワイプ</h4>
+	<div id="samp2" style="width: 100px;"></div>
+	<textarea id="sample2"><div id="samp2" style="width: 100px;"></div>
+
+//以下をscriptに記述します。画像のパスやファイル名は存在するものに変更する必要があります
+var goround = new Goround({
+id:'samp2',
+path:'img/goround/samp2/',
+cycle: false,
+horizontal: false,
+vertical: true,
+prefix: 'vcoin',
+safix: '.png',
+digit: 2,
+movepx: 5,
+reverse: false,
+startnum: 1,
+endnum: 10,
+freetime: 500,
+friction: 80});</textarea>
+</div>
+<div>
+	<h4>回転</h4>
+	<div id="samp3" style="width: 200px;"></div>
+	<textarea id="sample3"><div id="samp3" style="width: 200px;"></div>
+
+//以下をscriptに記述します。画像のパスやファイル名は存在するものに変更する必要があります
+var goround = new Goround({
+id:'samp3',
+path:'img/goround/',
+cycle: true,
+horizontal: true,
+vertical: true,
+prefix: 'dial',
+safix: '.png',
+digit: 3,
+movepx: 13,
+reverse: false,
+startnum: 1,
+endnum: 36,
+freetime: 500,
+friction: 120});</textarea>
+</div>
+</form>
+</section>
+<section class="whitearea">
+<div class="pagecanvas areas args">
+<h3>設定</h3>
+<dl>
+	<dt><div class="property">未指定：<span class="require">必須</span><span class="boundary">条件：文字列</span></div>id</dt>
+	<dd>goroundに設定する要素のid属性値を指定します。idのない要素をgoroundにすることはできません。</dd>
+	
+	<dt><div class="property">未指定：'img/'<span class="boundary">条件：文字列</span></div>path</dt>
+	<dd>画像ファイルを保存したディレクトリへのパスを指定します。コマ割りで用意した画像は一つのディレクトリの下に保存しておく必要があります。ディレクトリへのパスは絶対パスもしくはページディレクトリからの相対パスで指定します。</dd>
+	
+	<dt><div class="property">未指定：'frm'<span class="boundary">条件：文字列</span></div>prefix</dt>
+	<dd>連番以前のファイル名を指定します。</dd>
+	
+	<dt><div class="property">未指定：'.png'<span class="boundary">条件：文字列</span></div>safix</dt>
+	<dd>連番以後のファイル名を指定します。</dd>
+	
+	<dt><div class="property">未指定：0<span class="boundary">条件：0以上の整数</span></div>startnum</dt>
+	<dd>画像ファイル名に使用している連番の最小値を指定します。</dd>
+	
+	<dt><div class="property">未指定：20<span class="boundary">条件：0以上の整数</span></div>endnum</dt>
+	<dd>画像ファイル名に使用している連番の最大値を指定します。</dd>
+	
+	<dt><div class="property">未指定：3<span class="boundary">条件：1以上の整数</span></div>digit</dt>
+	<dd>連番の桁数を指定します。連番は指定した桁数で0埋めされているものと解釈されます。</dd>
+	
+	<dt><div class="property">未指定：10<span class="boundary">条件：0より上の整数</span></div>movepx</dt>
+	<dd class="clearfix">ここで指定したピクセル分スワイプやドラッグが発生すると画像を１コマ切り替えます。
+		<div class="sample">
+			<div id="move10" class="goround"></div>
+			<div class="caption">10pxスワイプで画像切り替えの例</div>
+		</div>
+		<div class="sample">
+			<div id="move30" class="goround"></div>
+			<div class="caption">30pxスワイプで画像切り替えの例</div>
+		</div>
+	</dd>
+	
+	<dt><div class="property">未指定：40<span class="boundary">条件：0より上の整数</span></div>framerate</dt>
+	<dd>１秒間にアニメーションするコマ数を指定します。この設定はスワイプ中ではなく慣性動作（スワイプで投げるような動作）時に適用されます。</dd>
+	
+	<dt><div class="property">未指定：0<span class="boundary">条件：ミリ秒単位の整数</span></div>throwtime</dt>
+	<dd>このライブラリでは止めたか投げたかを直前のスワイプハンドラの時間間隔と、最後のスワイプハンドラと指を離した時間の間隔を比較して判定しています。この判定の後者側に加算する値を指定します。</dd>
+	
+	<dt><div class="property">未指定：20<span class="boundary">条件：px/秒単位の0以上の整数</span></div>friction</dt>
+	<dd>慣性動作時に１秒間あたりに減速する速さを指定します。</dd>
+	
+	<dt><div class="property">未指定：100<span class="boundary">条件：ミリ秒単位の0以上の整数</span></div>freetime</dt>
+	<dd>慣性動作時に指定したミリ秒間、減速されずにアニメーションし続けます。</dd>
+	
+	<dt><div class="property">未指定：0<span class="boundary">条件：0->全て　1->マウス　2->タッチ</span></div>handlemode</dt>
+	<dd>使用するイベントハンドラを決定します。これが0の状態だとマウスとタッチ両方のイベントを拾うので、Android4.1の標準ブラウザなどでイベントハンドラが重複して発動し、setOnClickで登録した関数が２回呼ばれるなどの現象が確認されているので注意してください。</dd>
+	
+	<dt><div class="property">未指定：false<span class="boundary">条件：true|false</span></div>reverse</dt>
+	<dd>trueに設定するとアニメーションフレームのコマ送りを逆にします。通常、右にスワイプするとフレームを加算しますが、tureにすることで減算するようになります。</dd>
+	
+	<dt><div class="property">未指定：false<span class="boundary">条件：true|false</span></div>vertical</dt>
+	<dd>縦方向スワイプやドラッグを認識してアニメーションします。横感知もともにtrueと設定した時はどちらか大きい方が優先されます。</dd>
+	
+	<dt><div class="property">未指定：false<span class="boundary">条件：true|false</span></div>horizontal</dt>
+	<dd>横方向スワイプやドラッグを認識してアニメーションします。縦感知もともにtrueと設定した時はどちらか大きい方が優先されます。</dd>
+	
+	<dt><div class="property">未指定：false<span class="boundary">条件：true|false</span></div>cycle</dt>
+	<dd>横感知であれば上下半分、縦感知であれば左右半分でアニメーションコマ送り方向を反転します。vertical, horizontalと合わせてtrue設定にすると、周期のある画像群を円形スワイプ、ドラッグ操作でアニメーションさせることができます。</dd>
+	
+	<dt><div class="property">未指定：-<span class="boundary">条件：-</span></div>setOnMove(function(index, image){})</dt>
+	<dd>引数にコールバック関数を指定することで、アニメーションのコマ送りが発生した時点で処理を記述することができます。引数はそれぞれindex: 表示されている画像の内部インデックス（０オリジン）、image: 表示されているimgタグのjQueryオブジェクト</dd>
+	
+	<dt><div class="property">未指定：-<span class="boundary">条件：-</span></div>setOnStop(function(index, image){})</dt>
+	<dd>引数にコールバック関数を指定することで、アニメーションが終了した時点で処理を記述することができます。引数はそれぞれindex: 表示されている画像の内部インデックス（０オリジン）、image: 表示されているimgタグのjQueryオブジェクト</dd>
+	
+	<dt><div class="property">未指定：-<span class="boundary">条件：-</span></div>setOnClick(function(index, image){})</dt>
+	<dd>引数にコールバック関数を指定することで、クリックしたときの処理を記述することができます。引数はそれぞれindex: 表示されている画像の内部インデックス（０オリジン）、image: 表示されているimgタグのjQueryオブジェクト</dd>
+	
+	<dt><div class="property">未指定：読み取り専用<span class="boundary">条件：-</span></div>nowidx</dt>
+	<dd>現在表示されている画像のフレーム番号</dd>
+	
+	<dt><div class="property">未指定：読み取り専用<span class="boundary">条件：-</span></div>_img</dt>
+	<dd>ImageのjQueryオブジェクト</dd>
+</dl>
+</div>
+</section>
+</article>
+</div>
+<footer class="pagefooter">
+	<div class="sitemapfield pagecanvas">
+		Site Map
+		<menu class="sitemap">
+			<nav>
+				<a href="index.html">home</a>
+			</nav>
+			<nav>
+				<a href="about.html">about</a>
+			</nav>
+			<nav>
+				<a href="thoughts.html">thoughts</a>
+			</nav>
+			<nav>
+				<a href="http://ctklab.blogspot.jp/">blog</a>
+			</nav>
+			<nav>
+				<a href="https://github.com/snoritomo/library">github</a>
+			</nav>
+			<nav>
+				<a href="policy.html">policy</a>
+			</nav>
+			<nav>
+				<a href="rights.html">rights</a>
+			</nav>
+		</menu>
+	</div>
+	<div class="copyrightfield pagecanvas">
+		<div class="copyright">Copyright &copy; 2013 nolib.jp All rights Reserved.</div>
+	</div>
+</footer>
+
+<script type="text/javascript" src="js/jquery.js" ></script>
+<script type="text/javascript" src="js/scroller.js" ></script>
+<script type="text/javascript">
+var latesttxt = '<script type="text/javascript" src="http://nolib.jp/js/scroller.min.js" >&lt;/script>';
+var v100txt = '<script type="text/javascript" src="http://nolib.jp/js/arc/scroller.1.0.0.min.js" >&lt;/script>';
+var samptxt1 = '<div id="samp1" style="width: 100px;"></div>\n\n//以下をscriptに記述します。画像のパスやファイル名は存在するものに変更する必要があります\nvar goround = new Goround({\nid:\'samp1\',\npath:\'img/goround/samp1/\',\ncycle: false,\nhorizontal: true,\nvertical: false,\nprefix: \'hcoin\',\nsafix: \'.png\',\ndigit: 2,\nmovepx: 5,\nreverse: false,\nstartnum: 1,\nendnum: 10,\nfreetime: 500,\nfriction: 80});';
+var samptxt2 = '<div id="samp2" style="width: 100px;"></div>\n\n//以下をscriptに記述します。画像のパスやファイル名は存在するものに変更する必要があります\nvar goround = new Goround({\nid:\'samp2\',\npath:\'img/goround/samp2/\',\ncycle: false,\nhorizontal: false,\nvertical: true,\nprefix: \'vcoin\',\nsafix: \'.png\',\ndigit: 2,\nmovepx: 5,\nreverse: false,\nstartnum: 1,\nendnum: 10,\nfreetime: 500,\nfriction: 80});';
+var samptxt3 = '<div id="samp3" style="width: 200px;"></div>\n\n//以下をscriptに記述します。画像のパスやファイル名は存在するものに変更する必要があります\nvar goround = new Goround({\nid:\'samp3\',\npath:\'img/goround/\',\ncycle: true,\nhorizontal: true,\nvertical: true,\nprefix: \'dial\',\nsafix: \'.png\',\ndigit: 3,\nmovepx: 13,\nreverse: false,\nstartnum: 1,\nendnum: 36,\nfreetime: 500,\nfriction: 120});';
+$(document).ready(function(){
+	$(window).scroll(function(){
+		if($(window).scrollTop()==0){
+			$('#scrolltotop').css('top', $(window).scrollTop()+$(window).height()-160);
+			$('#scrolltotop').fadeOut();
+		}
+		else if($('#scrolltotop').css('display')=='none'){
+			$('#scrolltotop').fadeIn();
+			$('#scrolltotop').css('top', $(window).scrollTop()+$(window).height()-160);
+		}
+		else{
+			$('#scrolltotop').css('top', $(window).scrollTop()+$(window).height()-160);
+		}
+	});
+	$('#scrolltotop').on('touchstart', function(evt){
+		$($.browser.webkit ? 'body' : 'html').animate({scrollTop: 0}, {duration: 200});
+		evt.preventDefault();
+	});
+	$('#scrolltotop').on('mousedown', function(evt){
+		$($.browser.webkit ? 'body' : 'html').animate({scrollTop: 0}, {duration: 200});
+		evt.preventDefault();
+	});
+	$('.pastes input').on('mouseup', function(evt){
+		this.select(0,this.value.length);
+	});
+	$('.pastes input').on('touchend', function(evt){
+		this.select(0,this.value.length);
+	});
+	$('.samples textarea').on('focus', function(evt){
+	//	this.select(0,this.value.length);
+	});
+	$('.samples textarea').on('mouseup', function(evt){
+		this.select();
+	});
+	$('.samples textarea').on('touchend', function(evt){
+		this.select();
+	});
+	$('#latest').val(latesttxt);
+	$('#v100').val(v100txt);
+	$('#sample1').val(samptxt1);
+	$('#sample2').val(samptxt2);
+	$('#sample3').val(samptxt3);
+	$('#latest').on('blur', function(evt){
+		$(this).val(latesttxt);
+	});
+	$('#v100').on('blur', function(evt){
+		$(this).val(v100txt);
+	});
+	$('#sample1').on('blur', function(evt){
+		$(this).val(samptxt1);
+	});
+	$('#sample2').on('blur', function(evt){
+		$(this).val(samptxt2);
+	});
+	$('#sample3').on('blur', function(evt){
+		$(this).val(samptxt3);
+	});
+	
+	var samp1 = new Scroller({id:'samp1v', cntid:'samp1c', stopborder: false, handlemode: 0});
+});
+</script>
+<!--script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-40317238-1', 'nolib.jp');
+  ga('send', 'pageview');
+
+</script-->
+</body>
+</html>
