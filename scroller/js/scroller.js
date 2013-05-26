@@ -3,23 +3,21 @@
 	auth: noritomo.suzuki@nolib.jp
 	条件
 		jqueryがincludeされている事
-		main.jsがincludeされている事
 	引数
 		id: ビューID
 		cntid: コンテナID
-		parent: 親がいる場合は引数に渡すこと。ないならnull
 		speed: 自動回転の速度(px/秒)
-		usetranslate: アニメーションモード（0:margin-left 1:translate3d）
+		usetranslate: アニメーションモード（0:top 1:translate3d）
 		friction: 自動移動の減速加速度(px/秒)
 		freetime: 自動移動の減速が発動するまでの時間(ミリ秒)
 		framerate: アニメーションレート(秒間のコマ数）
-		throwtime: 投げる判定誤差（ミリ秒）
 		stopborder: 超過スクロールの遊びを許すか
 		onwheelrange: マウスホイール一回でスクロールする量
 		handlemode: 0:全て 1:マウス 2:タッチ
 		barclass: スクロールバーを独自にデザインしたい場合はクラス名を入れる。デフォルトにしたいならnull
 		issetbar: resize時にスクロールバーを設定し直すか判定する関数
 		autotranslatemode: オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
+		autoadjustwidth: trueの場合、コンテナに自動的にwidth: 100%を指定します
 **/
 if(!Array.indexOf){
 	Array.prototype.indexOf = function(object){
@@ -76,33 +74,31 @@ function Scroller(args){
 	this._cntid = args.cntid;
 	this._this = $('#'+this._id);
 	this._container = $('#'+this._cntid);
-	this._container._parent = null;
 	this.move_mostslow = 300;
 	this.usetranslate = 0;
 	this.move_friction = 40.0;
 	this.move_freetime = 200;
 	this.framerate = 40;
-	this.throwtime = 0;
 	this.isstopborder = true;
 	this.wheelrange = 40;
-	this.handlemode = 0;
+	this.handlemode = 2;
 	this.barclass = null;
 	this.issetbar = null;
 	this.autotranslatemode = true;
+	this.autoadjustwidth = true;
 	
-	if(args.parent!=undefined)this._container._parent = args.parent;
 	if(args.speed!=undefined)this.move_mostslow = parseFloat(args.speed);
 	if(args.usetranslate!=undefined)this.usetranslate = parseFloat(args.usetranslate);
 	if(args.friction!=undefined)this.move_friction = parseFloat(args.friction);
 	if(args.freetime!=undefined)this.move_freetime = parseFloat(args.freetime);
 	if(args.framerate!=undefined)this.framerate = parseFloat(args.framerate);
-	if(args.throwtime!=undefined)this.throwtime = args.throwtime;
 	if(args.stopborder!=undefined)this.isstopborder = args.stopborder;
 	if(args.onwheelrange!=undefined)this.wheelrange = args.onwheelrange;
 	if(args.handlemode!=undefined)this.handlemode = args.handlemode;
 	if(args.barclass!=undefined)this.barclass = args.barclass;
 	if(args.issetbar!=undefined)this.issetbar = args.issetbar;
 	if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;
+	if(args.autoadjustwidth!=undefined)this.autoadjustwidth = args.autoadjustwidth;
 	
 	this._container._scroller = this;
 
@@ -177,20 +173,22 @@ function Scroller(args){
 	this.raise_on_wheel_event_functions = [];
 	
 	if(this.usetranslate == 1){
-		this._container.css('position', 'relative');
 		this.settop = function(tgt, lft, mlft){tgt.css(tgt._scroller.vpre+"transform", "translate3d(0px,"+lft+"px,0px)");};
-		this.gettop = function(tgt){return parseInt(tgt._scroller.getY(tgt.css(tgt._scroller.vpre+'transform')));};
+		this.gettop = function(tgt){return parseFloat(tgt._scroller.getY(tgt.css(tgt._scroller.vpre+'transform')));};
 		this._container.css(this.vpre+'transform-origin-x', 0);
 		this._container.css(this.vpre+'transform-origin-y', 0);
 		this._container.css(this.vpre+'transform', 'translate3d(0px,0px,0px)');
 	}
 	else if(this.usetranslate == 0){
-		this.settop = function(tgt, lft, mlft){tgt.css('marginTop', lft);};
-		this.gettop = function(tgt){return parseInt(tgt.css('marginTop').replace('px', ''));};
+		this.settop = function(tgt, lft, mlft){tgt.css('top', lft);};
+		this.gettop = function(tgt){return parseFloat(tgt.css('top').replace('px', ''));};
+		this._container.css('top', 0);
 	}
 	
 	this._this.css('overflow', 'hidden');
 	this._this.css('position', 'relative');
+	this._container.css('position', 'absolute');
+	if(this.autoadjustwidth)this._container.css('width', '100%');
 	
 	if(this.handletouch){
 		this._container.on('touchstart', {tgt: this._container}, this.page_touchstart);
@@ -206,7 +204,7 @@ function Scroller(args){
 		if(!arg.tgt.isIn(src)){
 			return;
 		}
-		var cntnsize = arg.tgt._container.height();
+		var cntnsize = arg.tgt._container.outerHeight();
 		var viewsize = arg.tgt._this.height();
 		if(cntnsize<=viewsize)return;
 		var nw = arg.tgt.gettop(arg.tgt._container);
@@ -235,7 +233,7 @@ function Scroller(args){
 	
 	this.movebar = false;
 	this.bar_y = 0;
-	if(this.handletouch){
+/**	if(this.handletouch){ **/
 		this.bar.on('touchstart', {tgt: this._container}, function(evt){
 			var t = evt.data.tgt._scroller;
 			t.bar_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
@@ -247,7 +245,7 @@ function Scroller(args){
 			if(t.movebar){
 				var pre_y = t.bar_y;
 				t.bar_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
-				var cntnsize = t._container.height();
+				var cntnsize = t._container.outerHeight();
 				var viewsize = t._this.height();
 				if(cntnsize<=viewsize)return;
 				var nw = t.gettop(t._container);
@@ -269,8 +267,8 @@ function Scroller(args){
 			t.movebar = false;
 			t.bar_y = 0;
 		});
-	}
-	if(this.handlemouse){
+/**	}
+	if(this.handlemouse){ **/
 		this.bar.on('mousedown', {tgt: this._container}, function(evt){
 			var t = evt.data.tgt._scroller;
 			t.bar_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
@@ -282,7 +280,7 @@ function Scroller(args){
 			if(t.movebar){
 				var pre_y = t.bar_y;
 				t.bar_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
-				var cntnsize = t._container.height();
+				var cntnsize = t._container.outerHeight();
 				var viewsize = t._this.height();
 				if(cntnsize<=viewsize)return;
 				var nw = t.gettop(t._container);
@@ -304,7 +302,7 @@ function Scroller(args){
 			t.movebar = false;
 			t.bar_y = 0;
 		});
-	}
+/**	} **/
 	$(window).on('resize', {tgt: this._container}, function(evt){
 		var t = evt.data.tgt._scroller;
 		if(t.issetbar==null || t.issetbar()){
@@ -388,7 +386,7 @@ Scroller.prototype.doMove = function(nw, cntnsize, viewsize){
 Scroller.prototype.setBar = function(){
 	var t = this;
 	if(t._container==undefined)return;
-	var cntnsize = t._container.height();
+	var cntnsize = t._container.outerHeight();
 	var viewsize = t._this.height();
 	if(cntnsize<=viewsize){
 		t.bar.hide();
@@ -408,10 +406,10 @@ Scroller.prototype.setViewHeightFunction = function(f){
 Scroller.prototype.rolling_notate = function(d, once){
 	var t = this;
 	var isborder = false;
-	var deg = parseInt(d);
+	var deg = parseFloat(d);
 	var tgt = t._container;
 
-	var cntnsize = t._container.height();
+	var cntnsize = t._container.outerHeight();
 	var viewsize = t._this.height();
 	if(cntnsize<=viewsize){
 		clearTimeout(t.rolling_anime);
@@ -482,10 +480,10 @@ Scroller.prototype.rolling_notate = function(d, once){
 Scroller.prototype.rolling_to = function(d, to){
 	var t = this;
 	var isborder = false;
-	var deg = parseInt(d);
+	var deg = parseFloat(d);
 	var tgt = t._container;
 
-	var cntnsize = t._container.height();
+	var cntnsize = t._container.outerHeight();
 	var viewsize = t._this.height();
 	if(cntnsize<=viewsize){
 		clearTimeout(t.rolling_anime);
@@ -522,15 +520,15 @@ Scroller.prototype.adjust_position = function(){
 	var t = this;
 	var tgt = t._container;
 	var nw = t.gettop(tgt);
-	var tosize = t._this.height() - t._container.height();
+	var tosize = t._this.height() - t._container.outerHeight();
 	if(nw>0){
-		t.scroll_top();
+		t.scrollTop();
 	}
 	else if(nw<tosize){
-		t.scroll_bottom();
+		t.scrollBottom();
 	}
 };
-Scroller.prototype.scroll_top = function(speed){
+Scroller.prototype.scrollTop = function(speed){
 	var t = this;
 	var tgt = t._container;
 	var nw = t.gettop(tgt);
@@ -541,21 +539,20 @@ Scroller.prototype.scroll_top = function(speed){
 	if(nw>0)deg *= -1;
 	t.rolling_anime = t.rolling_to.applyTimeout(t.interval, t, [deg, 0]);
 };
-Scroller.prototype.scroll_bottom = function(speed){
+Scroller.prototype.scrollBottom = function(speed){
 	var t = this;
 	var tgt = t._container;
 	var nw = t.gettop(tgt);
 	t.reverse = true;
 	t.rolling_speed = (speed==null?t.move_mostslow:speed);
 	var deg = (speed==null?t.move_mostslow:speed) / 1000 * t.interval * -1;
-	var tosize = t._this.height() - t._container.height();
+	var tosize = t._this.height() - t._container.outerHeight();
 	if(nw==tosize)return;
 	if(nw<tosize)deg *= -1;
 	t.rolling_anime = t.rolling_to.applyTimeout(t.interval, t, [deg, tosize]);
 };
 Scroller.prototype.page_touchstart = function(evt){
 	var t = evt.data.tgt._scroller;
-	var p = evt.data.tgt._parent;
 	clearTimeout(t.rolling_anime);
 	t.st_x = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenX;
 	t.move_x = t.st_x;
@@ -574,9 +571,6 @@ Scroller.prototype.page_touchstart = function(evt){
 		t._container.on('mousemove', {tgt: t._container}, t.page_touchmove);
 	}
 	t.reverse = false;
-	if(p!=undefined && p!=null){
-		p.page_touchstart(evt);
-	}
 };
 Scroller.prototype.page_touchend = function(evt){
 	var t = evt.data.tgt._scroller;
@@ -591,11 +585,9 @@ Scroller.prototype.page_touchend = function(evt){
 	if(t.st_time==0)return;
 	t.st_time = 0;
 	var d = new Date();
-	var nw = d.getTime();
+	var nwtm = d.getTime();
 	var len = Math.sqrt(Math.pow(t.ed_x - t.move_x, 2) + Math.pow(t.ed_y - t.move_y, 2));
-	t.rolling_speed = len / (t.ed_time - t.mv_time) * t.interval;/**初期スピード（px毎フレーム）**/
-	
-	var tgt = evt.data.tgt;
+	t.rolling_speed = len / (nwtm - t.mv_time) * t.interval;/**初期スピード（px毎フレーム）**/
 	
 	t.totop = true;
 	if(t.move_y > t.ed_y){
@@ -606,7 +598,7 @@ Scroller.prototype.page_touchend = function(evt){
 	}
 	var mostslow = t.move_mostslow / 1000 * t.interval;
 	if(Math.abs(t.rolling_speed)<mostslow){
-		var cntnsize = t._container.height();
+		var cntnsize = t._container.outerHeight();
 		var viewsize = t._this.height();
 		if(cntnsize>viewsize){
 			var nw = t.gettop(t._container);
@@ -637,13 +629,12 @@ Scroller.prototype.page_touchmove = function(evt){
 	t.move_y = t.ed_y;
 	t.ed_x = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenX;
 	t.ed_y = (evt.originalEvent.touches!=null?evt.originalEvent.touches[0]:evt).screenY;
-	var tgt = evt.data.tgt;
 	var mgl = (t.ed_y - t.move_y);
 	t.totop = mgl>0?false:true;
 	if(t.isstopborder){
-		var cntnsize = t._container.height();
+		var cntnsize = t._container.outerHeight();
 		var viewsize = t._this.height();
-		var nw = t.gettop(tgt);
+		var nw = t.gettop(t._container);
 		if((!t.totop && nw >= 0) || (t.totop && (-1 * nw) >= (cntnsize - viewsize))){
 			evt.preventDefault();
 			return false;
@@ -651,7 +642,7 @@ Scroller.prototype.page_touchmove = function(evt){
 	}
 	t.moved = true;
 	t.rolling(mgl, 'once');
-	evt.preventDefault();
+	if(evt.type='touchmove')evt.preventDefault();
 };
 Scroller.prototype.addWheelEventHandler = function(f, arg){
 	var obj = {};

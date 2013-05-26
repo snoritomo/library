@@ -142,7 +142,7 @@ function Goround(args){
 		tgt._img.attr('src', tgt.images[tgt.nowidx].attr('src'));
 		tgt.view.height(tgt.images[tgt.nowidx].innerHeight);
 	};
-	this.getleft = function(tgt){return parseInt(this.left);};
+	this.getleft = function(tgt){return parseFloat(this.left);};
 	
 	this.rolling = this.rolling_notate;
 	
@@ -224,7 +224,7 @@ Goround.prototype.doClick = function(){
 Goround.prototype.rolling_notate = function(d, once){
 	var t = this;
 	var toleft = d<0?true:false;
-	var deg = Math.abs(parseInt(d));
+	var deg = Math.abs(parseFloat(d));
 	
 	t.setleft(t, deg, toleft);
 	t.doMove();
@@ -287,21 +287,19 @@ Goround.prototype.page_touchend = function(evt){
 	if(t.st_time == 0)return;
 	t.st_time = 0;
 	var d = new Date();
-	var nw = d.getTime();
+	var nwtm = d.getTime();
 	var len = Math.sqrt((t.horizontal?Math.pow(t.ed_x - t.move_x, 2):0) + (t.vertical?Math.pow(t.ed_y - t.move_y, 2):0));
-	t.rolling_speed = len / (t.ed_time - t.mv_time) * t.interval;/**初期スピード（px毎フレーム）**/
+	t.rolling_speed = len / (nwtm - t.mv_time) * t.interval;/**初期スピード（px毎フレーム）**/
 	var isclick = true;
 	if(!mve){
 		isclick = false;
 		evt.preventDefault();
 		t.doClick();
 	}
-	if((t.ed_time - t.mv_time) < (nw - t.ed_time + t.throwtime)){
+	if((t.ed_time - t.mv_time) < (nwtm - t.ed_time + t.throwtime)){
 		t.doStop();
 		return isclick;
 	}
-	var tgt = evt.data.tgt;
-	
 	
 	t.toleft = true;
 	var dx = t.move_x - t.ed_x;
@@ -313,7 +311,7 @@ Goround.prototype.page_touchend = function(evt){
 		else{
 			t.toleft = false;
 		}
-		t.upper = t.cycle?(t.ed_x>(parseInt(t.view.offset().left)+parseInt(t.view.width()/2))?!t.reverse:t.reverse):t.reverse;
+		t.upper = t.cycle?(t.ed_x>(parseFloat(t.view.offset().left)+parseFloat(t.view.width()/2))?!t.reverse:t.reverse):t.reverse;
 	}
 	else{
 		if(t.move_x < t.ed_x){
@@ -322,7 +320,7 @@ Goround.prototype.page_touchend = function(evt){
 		else{
 			t.toleft = false;
 		}
-		t.upper = t.cycle?(t.ed_y>(parseInt(t.view.offset().top)+parseInt(t.view.height()/2))?!t.reverse:t.reverse):t.reverse;
+		t.upper = t.cycle?(t.ed_y>(parseFloat(t.view.offset().top)+parseFloat(t.view.height()/2))?!t.reverse:t.reverse):t.reverse;
 	}
 	var deg = t.rolling_speed * (t.toleft?-1:1);
 
@@ -350,7 +348,7 @@ Goround.prototype.page_touchmove = function(evt){
 		else{
 			t.toleft = false;
 		}
-		t.upper = t.cycle?(t.ed_x>(parseInt(t.view.offset().left)+parseInt(t.view.width()/2))?!t.reverse:t.reverse):t.reverse;
+		t.upper = t.cycle?(t.ed_x>(parseFloat(t.view.offset().left)+parseFloat(t.view.width()/2))?!t.reverse:t.reverse):t.reverse;
 	}
 	else{
 		if(t.move_x < t.ed_x){
@@ -359,7 +357,7 @@ Goround.prototype.page_touchmove = function(evt){
 		else{
 			t.toleft = false;
 		}
-		t.upper = t.cycle?(t.ed_y>(parseInt(t.view.offset().top)+parseInt(t.view.height()/2))?!t.reverse:t.reverse):t.reverse;
+		t.upper = t.cycle?(t.ed_y>(parseFloat(t.view.offset().top)+parseFloat(t.view.height()/2))?!t.reverse:t.reverse):t.reverse;
 	}
 	mgl = mgl * (t.toleft?-1:1);
 	t.moved = true;
