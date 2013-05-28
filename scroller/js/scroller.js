@@ -13,7 +13,7 @@
 		framerate: アニメーションレート(秒間のコマ数）
 		stopborder: 超過スクロールの遊びを許すか
 		onwheelrange: マウスホイール一回でスクロールする量
-		handlemode: 0:全て 1:マウス 2:タッチ
+		handlemode: 0:全て 1:マウス 2:タッチ 9:取らない
 		barclass: スクロールバーを独自にデザインしたい場合はクラス名を入れる。デフォルトにしたいならnull
 		issetbar: resize時にスクロールバーを設定し直すか判定する関数
 		autotranslatemode: オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
@@ -106,6 +106,10 @@ function Scroller(args){
 	this.handletouch = true;
 	if(this.handlemode==1)this.handletouch = false;
 	if(this.handlemode==2)this.handlemouse = false;
+	if(this.handlemode==9){
+		this.handletouch = false;
+		this.handlemouse = false;
+	}
 	
 	this.interval = 1 / this.framerate * 1000;/**アニメーション間隔（ミリ秒）**/
 	this.move_friction = this.move_friction / 1000 * this.interval;/**摩擦係数（px毎フレーム）**/
@@ -171,6 +175,7 @@ function Scroller(args){
 	this.reverse = false;
 	this.prevent_touch_start = true;
 	this.raise_on_wheel_event_functions = [];
+	this.rottime = 0;
 	
 	if(this.usetranslate == 1){
 		this.settop = function(tgt, lft, mlft){tgt.css(tgt._scroller.vpre+"transform", "translate3d(0px,"+lft+"px,0px)");};
@@ -465,8 +470,14 @@ Scroller.prototype.rolling_notate = function(d, once){
 	var dt = new Date();
 	var tim = dt.getTime();
 	if(tim >= (t.move_freetime + t.ed_time) && !t.reverse){
-		t.rolling_speed -= t.move_friction;
+		var spd = t.move_friction;
+		var itvl = tim - t.rottime;
+		if(itvl>t.interval){
+			spd = spd / t.interval * itvl;
+		}
+		t.rolling_speed -= spd;
 	}
+	t.rottime = tim;
 	if(t.rolling_speed<=0 || isborder){
 		clearTimeout(t.rolling_anime);
 		t.rolling_anime = null;
@@ -615,6 +626,7 @@ Scroller.prototype.page_touchend = function(evt){
 		}
 	}
 	
+	t.rottime = nwtm;
 	var deg = t.rolling_speed * (t.totop?-1:1);
 
 	t.rolling_anime = t.rolling.applyTimeout(t.interval, t, [deg, null]);
@@ -642,7 +654,6 @@ Scroller.prototype.page_touchmove = function(evt){
 	}
 	t.moved = true;
 	t.rolling(mgl, 'once');
-	if(evt.type='touchmove')evt.preventDefault();
 };
 Scroller.prototype.addWheelEventHandler = function(f, arg){
 	var obj = {};

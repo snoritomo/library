@@ -13,10 +13,11 @@
 		move_freetime: 自動移動の減速が発動するまでの時間
 		rebounddistance: 弾性突破距離
 		displacement: コンテナの位置を調整する値
-		handlemode: 0:全て 1:マウス 2:タッチ
+		handlemode: 0:全て 1:マウス 2:タッチ 9:取らない
 		autotranslatemode: オペラやベンダープレフィックスの無いブラウザはtranslate3dで動かさない
 		nothidden: viewのoverflow:hiddenを抑制する
 		autoadjustheight: trueの場合、ビューに自動的にコンテナの高さを指定します
+		autoadjustwidth: trueの場合、子要素のロードが終わったらコンテナ位置の調整を自動で行います
 		autofloat: trueの場合、コンテナの子要素にdisplay:block; float:leftが自動的に設定されます
 **/
 if(!Array.indexOf){
@@ -82,6 +83,7 @@ function Roller(args){
 	this.autotranslatemode = true;
 	this.nothidden = false;
 	this.autoadjustheight = true;
+	this.autoadjustwidth = true;
 	this.autofloat = true;
 	
 	if(args.usetranslate!=undefined)this.usetranslate = args.usetranslate;
@@ -94,6 +96,7 @@ function Roller(args){
 	if(args.autotranslatemode!=undefined)this.autotranslatemode = args.autotranslatemode;
 	if(args.nothidden!=undefined)this.nothidden = args.nothidden;
 	if(args.autoadjustheight!=undefined)this.autoadjustheight = args.autoadjustheight;
+	if(args.autoadjustwidth!=undefined)this.autoadjustwidth = args.autoadjustwidth;
 	if(args.autofloat!=undefined)this.autofloat = args.autofloat;
 
 	this.view = $('#' + this._id);
@@ -104,6 +107,10 @@ function Roller(args){
 	this.handletouch = true;
 	if(this.handlemode==1)this.handletouch = false;
 	if(this.handlemode==2)this.handlemouse = false;
+	if(this.handlemode==9){
+		this.handletouch = false;
+		this.handlemouse = false;
+	}
 	
 	this.interval = 1 / this.framerate * 1000;/**アニメーション間隔（ミリ秒）**/
 	this.move_friction = this.move_friction / 1000 * this.interval;/**摩擦係数（px毎フレーム）**/
@@ -178,6 +185,8 @@ function Roller(args){
 	this.rolling_speed = 0.0;
 	this.rolling_anime = null;
 	this.toleft = true;
+	this.rolling_to_time = 0;
+	this.rottime = 0;
 	
 	if(this.handletouch){
 		this.container.on('touchstart', {tgt: this}, this.page_touchstart);
@@ -196,10 +205,12 @@ function Roller(args){
 		wk = this.container.children().get(i);
 		var jqwk = $(wk);
 		this.items.push(jqwk);
-		jqwk.on('load', '', {tgt:this}, function(evt){
-			/**evt.data.tgt.loadedcount++;**/
-			evt.data.tgt.setWidth(true);/**evt.data.tgt.loadedcount>=evt.data.tgt.container.children().size());**/
-		});
+		if(this.autoadjustwidth){
+			jqwk.on('load', '', {tgt:this}, function(evt){
+				/**evt.data.tgt.loadedcount++;**/
+				evt.data.tgt.setWidth(true);/**evt.data.tgt.loadedcount>=evt.data.tgt.container.children().size());**/
+			});
+		}
 		if(this.autofloat)jqwk.css({display: 'block', float: 'left'});
 	}
 };
@@ -348,8 +359,14 @@ Roller.prototype.rolling_notate = function(deg, once){
 	var dt = new Date();
 	var tim = dt.getTime();
 	if(tim >= (t.move_freetime + t.ed_time)){
-		t.rolling_speed -= t.move_friction;
+		var spd = t.move_friction;
+		var itvl = tim - t.rottime;
+		if(itvl>t.interval){
+			spd = spd / t.interval * itvl;
+		}
+		t.rolling_speed -= spd;
 	}
+	t.rottime = tim;
 	if(t.rolling_speed<=0){
 		clearTimeout(t.rolling_anime);
 		t.rolling_anime = null;
@@ -369,19 +386,34 @@ Roller.prototype.moveTo = function(to, duration){
 	}
 	else{
 		var spd = diff / duration * this.interval;
-		this.rolling_to.applyTimeout(this.interval, this, [diff, spd]);
+		var nowd = new Date();
+		this.rolling_to_time = nowd.getTime();
+		this.rolling_to.applyTimeout(this.interval, this, [diff, spd, to]);
 	}
 };
-Roller.prototype.rolling_to = function(to, spd){
-	var d = spd;
+Roller.prototype.rolling_to = function(to, speed, reach){
 	var ani = true;
+	var nowd = new Date();
+	var itvl = nowd.getTime() - this.rolling_to_time;
+	/** アニメーションレートが追い付かないマシンの救済 **/
+	var spd = speed;
+	if(itvl>this.interval){
+		spd = spd / this.interval * itvl;
+	}
+	this.rolling_to_time = nowd.getTime();
 	var nxto = to - spd;
 	if((this.toleft && nxto>=0) || (!this.toleft && nxto<=0)){
-		d = to;
+		spd = to;
 		ani = false;
 	}
-	this.rolling(d, 'once');
-	if(ani)this.rolling_to.applyTimeout(this.interval, this, [nxto, spd]);
+	this.rolling(spd, 'once');
+	if(ani)
+		this.rolling_to.applyTimeout(this.interval, this, [nxto, speed, reach]);
+	else{
+		var firstchild = this.container.children(':first');
+		var secondchild = this.container.children(':eq(1)');
+		this.doStop(firstchild, secondchild, this.getleft(this.container));
+	}
 };
 Roller.prototype.getToLeft = function(times){
 	var w = 0;
@@ -454,6 +486,7 @@ Roller.prototype.page_touchend = function(evt){
 	}
 	var deg = t.rolling_speed * (t.toleft?-1:1);
 
+	t.rottime = nwtm;
 	t.rolling_anime = t.rolling.applyTimeout(t.interval, t, [deg, null]);
 };
 Roller.prototype.page_touchmove = function(evt){
@@ -470,7 +503,6 @@ Roller.prototype.page_touchmove = function(evt){
 	t.toleft = (mgl<0);
 	t.moved = true;
 	t.rolling(mgl, 'once');
-	if(evt.type='touchmove')evt.preventDefault();
 };
 
 
