@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html lang="ja-JP">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="viewport" content="width=device-width,maximum-scale=1.0,minimum-scale=1.0,user-scalable=0" />
+	<title></title>
+</head>
+<body>
+
+<div id="aaa"></div>
+
+<br/>
+<br/>
+
+<img id="bbb"/>
+<br/>
+<br/>
+<button onclick="aaa.stop();bbbb.stop();">止める</button><br/>
+
+<br/>
+<button onclick="aaa.start();bbbb.start();">開始</button><br/><br/><br/><br/>
+
+
+<script type="text/javascript" src="js/cycleimage.js"></script>
+<script type="text/javascript">
+var aaa = new Cycleimage({id: "aaa", path: "img/cycleimage/", startnum: 1, endnum:12, framerate: 20, rotaterate: 14});
+var bbbb = new Cycleimage({id: "bbb", path: "img/cycleimage/", startnum: 1, endnum:12});
+
+aaa.start();
+bbbb.start();
+</script>
+</body>
+</html>
