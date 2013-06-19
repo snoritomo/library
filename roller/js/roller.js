@@ -19,6 +19,7 @@
 		autoadjustheight: trueの場合、ビューに自動的にコンテナの高さを指定します
 		autoadjustwidth: trueの場合、子要素のロードが終わったらコンテナ位置の調整を自動で行います
 		autofloat: trueの場合、コンテナの子要素にdisplay:block; float:leftが自動的に設定されます
+		rotation: trueにすると移動の際に先頭の子要素を後ろに付け替える処理を自動で行います
 **/
 if(!Array.indexOf){
 	Array.prototype.indexOf = function(object){
@@ -85,6 +86,7 @@ function Roller(args){
 	this.autoadjustheight = true;
 	this.autoadjustwidth = true;
 	this.autofloat = true;
+	this.rotation = true;
 	
 	if(args.usetranslate!=undefined)this.usetranslate = args.usetranslate;
 	if(args.framerate!=undefined)this.framerate = parseFloat(args.framerate);
@@ -98,6 +100,7 @@ function Roller(args){
 	if(args.autoadjustheight!=undefined)this.autoadjustheight = args.autoadjustheight;
 	if(args.autoadjustwidth!=undefined)this.autoadjustwidth = args.autoadjustwidth;
 	if(args.autofloat!=undefined)this.autofloat = args.autofloat;
+	if(args.rotation!=undefined)this.rotation = args.rotation;
 
 	this.view = $('#' + this._id);
 	this.container = $('#' + this._cntid);
@@ -167,7 +170,12 @@ function Roller(args){
 	if(!this.nothidden)this.view.css('overflow', 'hidden');
 	
 	
-	this.rolling = this.rolling_notate;
+	if(this.rotation){
+		this.rolling = this.rolling_rotate;
+	}
+	else{
+		this.rolling = this.rolling_notate;
+	}
 	
 	this.onstop = [];
 	this.onskip = [];
@@ -217,7 +225,13 @@ function Roller(args){
 Roller.prototype.stopAnimation = function(){
 	clearTimeout(this.rolling_anime);
 	this.rolling_anime = null;
-	this.doStop(this.container.children(':eq(0)'), this.container.children(':eq(1)'), this.getleft(this.container));
+	if(this.rotation){
+		this.doStop(this.container.children(':eq(0)'), this.container.children(':eq(1)'), this.getleft(this.container));
+	}
+	else{
+		var re = this.getJutOutRight(0);
+		this.doStopNotate(re.ele, re.ele.next(), re.targetx, re.containerx);
+	}
 };
 Roller.prototype.setOnSkip = function(f){
 	this.onskip.push(f);
@@ -249,6 +263,46 @@ Roller.prototype.doStop = function(fchild, schild, containerx){
 	for(var i = 0; i < this.onstop.length; i++){
 		var f = this.onstop[i];
 		f(disp, just+this.displacement);
+	}
+};
+Roller.prototype.doStopNotate = function(fchild, schild, targetx, containerx){
+	var contw = this.container.innerWidth();
+	var fw = this.getWidth(fchild);
+	var just = 0;
+	var disp = null;
+	if(this.toleft){
+		var lw = this.getWidth(this.container.children(':last'));
+		var lim = contw-lw;
+		if(containerx + lim < this.displacement){
+			just = this.displacement - lim;
+			disp = fchild;
+		}
+		else if(containerx + targetx + this.rebounddistance <= this.displacement){
+			just = this.displacement - targetx - fw;
+			disp = schild;
+		}
+		else{
+			just = this.displacement - targetx;
+			disp = fchild;
+		}
+	}
+	else{
+		if(this.displacement >= (containerx * -1)){
+			just = this.displacement;
+			disp = fchild;
+		}
+		else if(containerx + targetx + fw - this.rebounddistance >= this.displacement){
+			just = this.displacement - targetx;
+			disp = fchild;
+		}
+		else{
+			just = this.displacement - targetx -fw;
+			disp = schild;
+		}
+	}
+	for(var i = 0; i < this.onstop.length; i++){
+		var f = this.onstop[i];
+		f(disp, just, targetx, containerx);
 	}
 };
 Roller.prototype.setWidth = function(adjustleft){
@@ -307,7 +361,94 @@ Roller.prototype.getX = function(obj){
 	}
 	return re;
 };
+Roller.prototype.getJutOutRight = function(gap){
+	var re = {};
+	var containerx = this.getleft(this.container);
+	var nowwk = containerx + gap;
+	var targetx = 0;
+	var t = this;
+	var stop = false;
+	var ele;
+	this.container.children().each(function(){
+		if(stop)return;
+		ele = $(this);
+		var ww = t.getWidth(ele);
+		if(containerx+targetx+ww>=t.displacement){
+			stop = true;
+			return;
+		}
+		targetx += ww;
+	});
+	re.ele = ele;
+	re.targetx = targetx;
+	re.containerx = containerx;
+	return re;
+};
 Roller.prototype.rolling_notate = function(deg, once){
+	var t = this;
+	var nowwk = t.getleft(t.container);
+	var pidx = 0;
+	var aidx = 0;
+	var ele;
+	var doskipflg = false;
+	var to = nowwk + deg;
+	var firstchild;
+	var targetx = 0;
+	var ov = false;
+	var er = false;
+	t.container.children().each(function(){
+		if(ov && er)return;
+		ele = $(this);
+		var ww = t.getWidth(ele);
+		if(!ov){
+			if((nowwk+deg+ww)>=t.displacement){
+				ov = true;
+			}
+			pidx++;
+			firstchild = ele;
+			targetx += ww;
+		}
+		if(!er){
+			if((nowwk+ww)>=t.displacement){
+				er = false;
+			}
+			aidx++;
+		}
+		nowwk += ww;
+	});
+	var secondchild = firstchild.next();
+	if(pidx!=aidx)doskipflg = true;
+	
+	t.setleft(t.container, to);
+	if(doskipflg)t.doSkip(once==null && t.rolling_anime!=null, firstchild, to);
+	
+	if(once==null && t.rolling_anime==null){return;}
+	if(once!=null){
+		clearTimeout(t.rolling_anime);
+		t.rolling_anime = null;
+		return;
+	}
+	var dt = new Date();
+	var tim = dt.getTime();
+	if(tim >= (t.move_freetime + t.ed_time)){
+		var spd = t.move_friction;
+		var itvl = tim - t.rottime;
+		if(itvl>t.interval){
+			spd = spd / t.interval * itvl;
+		}
+		t.rolling_speed -= spd;
+	}
+	t.rottime = tim;
+	if(t.rolling_speed<=0){
+		clearTimeout(t.rolling_anime);
+		t.rolling_anime = null;
+		t.doStopNotate(firstchild, secondchild, targetx, to);
+		return;
+	}
+	var d = t.rolling_speed * (t.toleft?-1:1);
+	t.rolling_anime = t.rolling.applyTimeout(t.interval, t, [d, null]);
+};
+Roller.prototype.rolling_rotate = function(deg, once){
 	var t = this;
 	var to = t.getleft(t.container) + deg;
 	var firstchild = t.container.children(':first');
@@ -407,12 +548,19 @@ Roller.prototype.rolling_to = function(to, speed, reach){
 		ani = false;
 	}
 	this.rolling(spd, 'once');
-	if(ani)
+	if(ani){
 		this.rolling_to.applyTimeout(this.interval, this, [nxto, speed, reach]);
+	}
 	else{
 		var firstchild = this.container.children(':first');
 		var secondchild = this.container.children(':eq(1)');
-		this.doStop(firstchild, secondchild, this.getleft(this.container));
+		if(this.rotation){
+			this.doStop(firstchild, secondchild, this.getleft(this.container));
+		}
+		else{
+			var re = this.getJutOutRight(0);
+			this.doStopNotate(re.ele, re.ele.next(), re.targetx, re.containerx);
+		}
 	}
 };
 Roller.prototype.getToLeft = function(times){
