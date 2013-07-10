@@ -97,8 +97,9 @@ function Cycleimage(arg){
 	else{
 		var chl = this._this.childNodes;
 		for(var i = 0; i < chl.length; i++){
-			if(chl[i].tagName.toLowerCase()=='img'){
-				this._img = chl[i];
+			var c = chl[i];
+			if(c.tagName !=null && c.tagName.toLowerCase()=='img'){
+				this._img = c;
 				break;
 			}
 		}
