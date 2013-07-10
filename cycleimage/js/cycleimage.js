@@ -133,6 +133,10 @@ Cycleimage.prototype.stop = function(){
 	this._this.style.display = 'none';
 	this.anime = null;
 };
+Cycleimage.prototype.setRotateRate = function(newrate){
+	this.rotaterate = newrate;
+	this.interval = 1 / this.rotaterate;
+};
 Cycleimage.prototype.getImageObject = function(){
 	var t = Math.round((new Date().getTime()-this.starttime) * this.rotaterate / 1000);
 	var ig = this.images[t % this.frmnum];
