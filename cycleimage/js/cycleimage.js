@@ -12,6 +12,7 @@
 		startnum: 画像開始フレーム
 		endnum: 画像最終フレーム
 		digit: フレーム番号の桁数
+		reverse: 逆回転させる
 **/
 if(!Array.indexOf){
 	Array.prototype.indexOf = function(object){
@@ -72,6 +73,7 @@ function Cycleimage(arg){
 	this.startnum = 0;
 	this.endnum = 20;
 	this.digit = 3;
+	this.reverse = false;
 	
 	if(arg!=null){
 		if(arg.id != undefined)this.id = arg.id;
@@ -82,6 +84,7 @@ function Cycleimage(arg){
 		if(arg.startnum != undefined)this.startnum = arg.startnum;
 		if(arg.endnum != undefined)this.endnum = arg.endnum;
 		if(arg.digit != undefined)this.digit = arg.digit;
+		if(arg.reverse!=undefined)this.reverse = arg.reverse;
 	}
 	
 	this.anime = null;
@@ -124,6 +127,7 @@ function Cycleimage(arg){
 		this._img = igwk;
 		this._this.appendChild(this._img);
 	}
+	this.nowidx = 0;
 	this._this.style.display = 'none';
 }
 Cycleimage.prototype.start = function(){
@@ -138,10 +142,28 @@ Cycleimage.prototype.setRotateRate = function(newrate){
 	this.rotaterate = newrate;
 	this.interval = 1 / this.rotaterate;
 };
+Cycleimage.prototype.doReverse = function(){
+	this.reverse = !this.reverse;
+};
 Cycleimage.prototype.getImageObject = function(){
+	var proct = new Date().getTime();
+	var t = Math.round((proct-this.starttime) * this.rotaterate / 1000) % this.frmnum;
+	if(t>0){
+		this.nowidx += this.reverse?-1*t:t;
+		if(this.nowidx<0)
+			this.nowidx += this.frmnum;
+		else if(this.nowidx>=this.frmnum)
+			this.nowidx -= this.frmnum;
+		this.starttime = proct;
+	}
+	return this.images[this.nowidx];
+	
+	/**
 	var t = Math.round((new Date().getTime()-this.starttime) * this.rotaterate / 1000);
-	var ig = this.images[t % this.frmnum];
+	this.nowidx = this.reverse?this.frmnum - (t % this.frmnum) - 1:t % this.frmnum;
+	var ig = this.images[this.nowidx];
 	return ig;
+	**/
 };
 Cycleimage.prototype.animate = function(){
 	if(this.anime == null)return;
