@@ -40,7 +40,11 @@
 			$('#view').height($(window).height()-60);
 		});
 		//container.setOnTop(function(){alert(container.rolling_anime);});
-		container.setOnBottom(function(){appendText();});
+		container.test_mode = ' jusmine ';
+		container.setOnBottom(function(){appendText(this.test_mode);});
+		container.setOnTop(function(){alert(' top '+this.test_mode);});
+		container.setOnStop(function(){$('#abab').html(' stop '+this.test_mode);});
+		container.setOnMove(function(nw, cntnsize, viewsize){$('#abab').html(this.test_mode+nw+':'+cntnsize+' - '+viewsize);});
 		
 		$('#box').css('-webkit-transform', 'translate3d(1px,2px,3px)');
 		$('#box').css('-moz-transform', 'translate3d(1px,2px,3px)');
@@ -51,9 +55,9 @@
 			jsn += ','+aa+':'+trn[aa];
 		}
 	});
-	function appendText(){
+	function appendText(txt){
 		var id = new Date().getTime();
-		$('#fld').append('<p id="'+id+'" style="border: solid 1px #666666;padding:5px;height:80px;"><a href="linktest.html">リンクテスト</a><br/>スクロールプラグインテスト</p>');
+		$('#fld').append('<p id="'+id+'" style="border: solid 1px #666666;padding:5px;height:80px;"><a href="linktest.html">リンクテスト</a><br/>スクロールプラグインテスト'+txt+'</p>');
 	}
 </script>
 </html>

@@ -367,25 +367,25 @@ Scroller.prototype.setOnMove = function(f){
 Scroller.prototype.doBottom = function(){
 	for(var i = 0; i < this.onbottom.length; i++){
 		var f = this.onbottom[i];
-		f();
+		f.apply(this, []);
 	}
 };
 Scroller.prototype.doTop = function(){
 	for(var i = 0; i < this.ontop.length; i++){
 		var f = this.ontop[i];
-		f();
+		f.apply(this, []);
 	}
 };
 Scroller.prototype.doStop = function(){
 	for(var i = 0; i < this.onstop.length; i++){
 		var f = this.onstop[i];
-		f();
+		f.apply(this, []);
 	}
 };
 Scroller.prototype.doMove = function(nw, cntnsize, viewsize){
 	for(var i = 0; i < this.onmove.length; i++){
 		var f = this.onmove[i];
-		f(nw, cntnsize, viewsize);
+		f.apply(this, [nw, cntnsize, viewsize]);
 	}
 };
 Scroller.prototype.setBar = function(){

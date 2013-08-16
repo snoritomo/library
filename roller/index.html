@@ -36,11 +36,59 @@
 			<img src="img/9.png" />
 		</div>
 	</div>
+	<div id="console"></div>
+	<div id="view2">
+		<div id="container2">
+			<img src="img/0.png" />
+			<img src="img/1.png" />
+			<img src="img/2.png" />
+			<img src="img/3.png" />
+			<a href="linktest.html"><img src="img/4.png" border="0"/></a>
+			<img src="img/5.png" />
+			<img src="img/6.png" />
+			<img src="img/7.png" />
+			<img src="img/8.png" />
+			<img src="img/9.png" />
+		</div>
+	</div>
+	<div id="console2"></div>
 </body>
 <script type="text/javascript">
-var roller;
+var roller, roller2;
 $(document).ready(function(){
-	roller = new Roller({id:"view",cntid:"container",usetranslate:1});
+	roller = new Roller({id:"view",cntid:"container",framerate: 60});
+	$('#container').on('mousemove', function(evt){
+		//ドラッグ時の範囲選択を抑制
+		evt.preventDefault();
+	});
+	$('#container > img').on('mousedown', function(evt){
+		//画像ドラッグ時で保存する機能を抑制
+		evt.preventDefault();
+	});
+	roller.text_mode = ' alah ';
+	roller.setOnSkip(function(inertia, fchild, containerx){
+		$('#console').html(this.text_mode + inertia+':'+fchild.attr('src')+' < '+containerx);
+	});
+	roller.setOnStop(function(disp, just){
+		$('#console').html(this.text_mode + disp.attr('src')+':'+just);
+	});
+	
+	roller2 = new Roller({id:"view2",cntid:"container2",framerate: 60,rotation:false});
+	$('#container2').on('mousemove', function(evt){
+		//ドラッグ時の範囲選択を抑制
+		evt.preventDefault();
+	});
+	$('#container2 > img').on('mousedown', function(evt){
+		//画像ドラッグ時で保存する機能を抑制
+		evt.preventDefault();
+	});
+	roller2.text_mode = ' alie ';
+	roller2.setOnSkip(function(inertia, fchild, containerx){
+		$('#console2').html(this.text_mode + inertia+':'+fchild.attr('src')+' < '+containerx);
+	});
+	roller2.setOnStop(function(disp, just){
+		$('#console2').html(this.text_mode + disp.attr('src')+':'+just);
+	});
 });
 </script>
 </html>

@@ -40,11 +40,15 @@ $(document).ready(function(){
 		endnum: 36,
 		freetime: 500,
 		friction: 80.0});
-	goround.setOnStop(function(){
-		$('#output').html($('#output').html()+'stop!');
+	goround.test_mode = ' michael';
+	goround.setOnStop(function(idx, img){
+		$('#output').html(idx+':'+img.attr('src')+' stop!' + this.test_mode);
 	});
-	goround.setOnClick(function(){
-		$('#output').html($('#output').html()+'click!');
+	goround.setOnClick(function(idx, img){
+		alert(idx+':'+img.attr('src')+' click!' + this.test_mode);
+	});
+	goround.setOnMove(function(idx, img){
+		$('#output').html(idx+':'+img.attr('src')+' move!' + this.test_mode);
 	});
 });
 </script>

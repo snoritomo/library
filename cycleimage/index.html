@@ -10,24 +10,32 @@
 <body>
 
 <div id="aaa"></div>
-
+<div id="aaaidx"></div>
 <br/>
 <br/>
 
 <img id="bbb"/>
+<div id="bbbidx"></div>
 <br/>
 <br/>
-<button onclick="aaa.stop();bbbb.stop();">止める</button><br/>
+<button onclick="aaa.stop();bbbb.stop(true);">止める</button><br/>
 
 <br/>
-<button onclick="aaa.start();bbbb.start();">開始</button><br/><br/><br/><br/>
+<button onclick="aaa.start();bbbb.start(true);">開始</button><br/><br/><br/><br/>
 
 
 <script type="text/javascript" src="js/cycleimage.js"></script>
 <script type="text/javascript">
-var aaa = new Cycleimage({id: "aaa", path: "img/cycleimage/", startnum: 1, endnum:12, framerate: 20, rotaterate: 14});
-var bbbb = new Cycleimage({id: "bbb", path: "img/cycleimage/", startnum: 1, endnum:12});
-
+var aaa = new Cycleimage({id: "aaa", path: "img/cycleimage/", startnum: 1, endnum:12, framerate: 20, rotaterate: 4});
+var bbbb = new Cycleimage({id: "bbb", path: "img/cycleimage/", startnum: 1, endnum:12, framerate: 20, rotaterate: 14});
+aaa.dummy_code = ' is aaa';
+bbbb.dummy_code = ' is bbb';
+aaa.setOnChange(function(idx, imgsrc){
+	document.getElementById('aaaidx').innerHTML = this.dummy_code + ' ' + idx + ':' + imgsrc;
+});
+bbbb.setOnChange(function(idx, imgsrc){
+	document.getElementById('bbbidx').innerHTML = this.dummy_code + ' ' + idx + ':' + imgsrc;
+});
 aaa.start();
 bbbb.start();
 </script>

@@ -239,7 +239,7 @@ Roller.prototype.setOnSkip = function(f){
 Roller.prototype.doSkip = function(inertia, fchild, containerx){
 	for(var i = 0; i < this.onskip.length; i++){
 		var f = this.onskip[i];
-		f(inertia, fchild, containerx);
+		f.apply(this, [inertia, fchild, containerx]);
 	}
 };
 Roller.prototype.setOnStop = function(f){
@@ -262,7 +262,7 @@ Roller.prototype.doStop = function(fchild, schild, containerx){
 	}
 	for(var i = 0; i < this.onstop.length; i++){
 		var f = this.onstop[i];
-		f(disp, just+this.displacement);
+		f.apply(this, [disp, just+this.displacement]);
 	}
 };
 Roller.prototype.doStopNotate = function(fchild, schild, targetx, containerx){
@@ -302,7 +302,7 @@ Roller.prototype.doStopNotate = function(fchild, schild, targetx, containerx){
 	}
 	for(var i = 0; i < this.onstop.length; i++){
 		var f = this.onstop[i];
-		f(disp, just, targetx, containerx);
+		f.apply(this, [disp, just, targetx, containerx]);
 	}
 };
 Roller.prototype.setWidth = function(adjustleft){

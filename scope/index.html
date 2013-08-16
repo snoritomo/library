@@ -19,11 +19,16 @@
 <body>
 	<div id="vw"></div>
 	<div id="sam"></div>
+	<div id="console"></div>
 <script type="text/javascript" src="js/jquery.js" ></script>
 <script type="text/javascript" src="js/scope.js" ></script>
 <script type="text/javascript">
 	$(document).ready(function(){
 		var scope = new Scope({id:'vw', samid:'sam', src:'img/m_kaw.jpg', scopeclass:'scp', usetranslate:1, viewheight: 200, viewwidth: 250, samwidth: 180});
+		scope.test_mode = ' scopen ';
+		scope.setOnMove(function(scopeleft, scopetop, imageleft, imagetop){
+			$('#console').html(this.test_mode+'sl:'+scopeleft+', st:'+scopetop+', il:'+imageleft+', it:'+imagetop);
+		});
 	});
 </script>
 </body>

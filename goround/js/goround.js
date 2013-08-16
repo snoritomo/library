@@ -200,7 +200,7 @@ Goround.prototype.setOnMove = function(f){
 Goround.prototype.doMove = function(){
 	for(var i = 0; i < this.onmove.length; i++){
 		var f = this.onmove[i];
-		f(this.nowidx, this._img);
+		f.apply(this, [this.nowidx, this._img]);
 	}
 };
 Goround.prototype.setOnStop = function(f){
@@ -209,7 +209,7 @@ Goround.prototype.setOnStop = function(f){
 Goround.prototype.doStop = function(){
 	for(var i = 0; i < this.onstop.length; i++){
 		var f = this.onstop[i];
-		f(this.nowidx, this._img);
+		f.apply(this, [this.nowidx, this._img]);
 	}
 };
 Goround.prototype.setOnClick = function(f){
@@ -218,7 +218,7 @@ Goround.prototype.setOnClick = function(f){
 Goround.prototype.doClick = function(){
 	for(var i = 0; i < this.onclick.length; i++){
 		var f = this.onclick[i];
-		f(this.nowidx, this._img);
+		f.apply(this, [this.nowidx, this._img]);
 	}
 };
 Goround.prototype.rolling_notate = function(d, once){

@@ -155,7 +155,7 @@ Scope.prototype.setOnMove = function(f){
 Scope.prototype.doMove = function(scopeleft, scopetop, imageleft, imagetop){
 	for(var i = 0; i < this.onmove.length; i++){
 		var f = this.onmove[i];
-		f(scopeleft, scopetop, imageleft, imagetop);
+		f.apply(this, [scopeleft, scopetop, imageleft, imagetop]);
 	}
 };
 Scope.prototype.moveScope = function(left, top){

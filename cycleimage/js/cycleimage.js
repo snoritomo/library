@@ -23,7 +23,7 @@ if(!Array.indexOf){
 		}
 		return -1;
 	};
-}
+};
 if(!Function.applyTimeout){
 	Function.prototype.applyTimeout = function (ms, self, args)
 	{
@@ -34,7 +34,7 @@ if(!Function.applyTimeout){
 		},
 		ms);
 	};
-}
+};
 if(!Function.callTimeout){
 	Function.prototype.callTimeout = function (ms, self)
 	{
@@ -43,7 +43,7 @@ if(!Function.callTimeout){
 			self,
 			Array.prototype.slice.call(arguments, 2));
 	};
-}
+};
 if(!Function.applyInterval){
 	Function.prototype.applyInterval = function (ms, self, args)
 	{
@@ -54,7 +54,7 @@ if(!Function.applyInterval){
 			},
 		ms);
 	};
-}
+};
 if(!Function.callInterval){
 	Function.prototype.callInterval = function (ms, self)
 	{
@@ -63,7 +63,7 @@ if(!Function.callInterval){
 			self,
 			Array.prototype.slice.call(arguments, 2));
 	};
-}
+};
 function Cycleimage(arg){
 	this.id = '';
 	this.path = 'img/';
@@ -88,6 +88,7 @@ function Cycleimage(arg){
 	}
 	
 	this.anime = null;
+	this.onchange = [];
 	
 	this.interval = 1 / this.rotaterate;
 	this.frmnum = this.endnum - this.startnum + 1;
@@ -129,13 +130,26 @@ function Cycleimage(arg){
 	}
 	this.nowidx = 0;
 	this._this.style.display = 'none';
-}
-Cycleimage.prototype.start = function(){
+};
+Cycleimage.prototype.setOnChange = function(f){
+	this.onchange.push(f);
+};
+Cycleimage.prototype.doChange = function(idx, imgsrc){
+	for(var i = 0; i < this.onchange.length; i++){
+		var f = this.onchange[i];
+		f.apply(this, [idx, imgsrc]);
+	}
+};
+Cycleimage.prototype.start = function(reset){
 	this._this.style.display = 'block';
+	if(reset){
+		this.nowidx = 0;
+	}
+	this.starttime = new Date().getTime();
 	this.anime = this.animate.applyTimeout(this.interval, this, []);
 };
-Cycleimage.prototype.stop = function(){
-	this._this.style.display = 'none';
+Cycleimage.prototype.stop = function(hide){
+	if(hide)this._this.style.display = 'none';
 	this.anime = null;
 };
 Cycleimage.prototype.setRotateRate = function(newrate){
@@ -168,7 +182,10 @@ Cycleimage.prototype.getImageObject = function(){
 Cycleimage.prototype.animate = function(){
 	if(this.anime == null)return;
 	var wk = this.getImageObject();
-	this._img.src = wk.src;
-	this.anime = this.animate.applyTimeout(this.interval, this, []);
+	if(this._img.src!=wk.src){
+		this._img.src = wk.src;
+		this.doChange(this.nowidx, wk.src);
+	}
+	if(this.anime!=null)this.anime = this.animate.applyTimeout(this.interval, this, []);
 };
 
