@@ -329,13 +329,15 @@ Roller.prototype.setWidth = function(adjustleft){
 };
 Roller.prototype.getWidth = function(tgt){
 	var w = 0;
-	w += tgt.width();
-	w += parseFloat(tgt.css("padding-left").replace('px', ''));
-	w += parseFloat(tgt.css("padding-right").replace('px', ''));
-	w += parseFloat(tgt.css("margin-left").replace('px', ''));
-	w += parseFloat(tgt.css("margin-right").replace('px', ''));
-	w += parseFloat(tgt.css("border-left-width").replace('px', ''));
-	w += parseFloat(tgt.css("border-right-width").replace('px', ''));
+	if(tgt.size()>0){
+		w += tgt.width();
+		w += parseFloat(tgt.css("padding-left").replace('px', ''));
+		w += parseFloat(tgt.css("padding-right").replace('px', ''));
+		w += parseFloat(tgt.css("margin-left").replace('px', ''));
+		w += parseFloat(tgt.css("margin-right").replace('px', ''));
+		w += parseFloat(tgt.css("border-left-width").replace('px', ''));
+		w += parseFloat(tgt.css("border-right-width").replace('px', ''));
+	}
 	return w;
 };
 Roller.prototype.getX = function(obj){
