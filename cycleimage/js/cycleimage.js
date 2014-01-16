@@ -89,6 +89,7 @@ function Cycleimage(arg){
 	
 	this.anime = null;
 	this.onchange = [];
+	this.stoptarget = -1;
 	
 	this.interval = 1 / this.rotaterate;
 	this.frmnum = this.endnum - this.startnum + 1;
@@ -140,8 +141,11 @@ Cycleimage.prototype.doChange = function(idx, imgsrc){
 		f.apply(this, [idx, imgsrc]);
 	}
 };
-Cycleimage.prototype.start = function(reset){
+Cycleimage.prototype.start = function(reset, stoptarget){
 	this._this.style.display = 'block';
+	if(stoptarget!=null){
+		this.stoptarget = stoptarget - this.startnum;
+	}
 	if(reset){
 		this.nowidx = 0;
 	}
@@ -151,6 +155,10 @@ Cycleimage.prototype.start = function(reset){
 Cycleimage.prototype.stop = function(hide){
 	if(hide)this._this.style.display = 'none';
 	this.anime = null;
+	this.stoptarget = -1;
+};
+Cycleimage.prototype.setStopTarget = function(idx){
+	this.stoptarget = idx - this.startnum;
 };
 Cycleimage.prototype.setRotateRate = function(newrate){
 	this.rotaterate = newrate;
@@ -159,11 +167,38 @@ Cycleimage.prototype.setRotateRate = function(newrate){
 Cycleimage.prototype.doReverse = function(){
 	this.reverse = !this.reverse;
 };
+Cycleimage.prototype.setReverse = function(rev){
+	this.reverse = rev;
+};
 Cycleimage.prototype.getImageObject = function(){
 	var proct = new Date().getTime();
 	var t = Math.round((proct-this.starttime) * this.rotaterate / 1000) % this.frmnum;
 	if(t>0){
-		this.nowidx += this.reverse?-1*t:t;
+		if(this.stoptarget >= 0){
+			if(this.reverse){
+				if((this.nowidx-t)<=this.stoptarget){
+					this.nowidx = this.stoptarget;
+					this.anime = null;
+					this.stoptarget = -1;
+				}
+				else{
+					this.nowidx -= t;
+				}
+			}
+			else{
+				if((this.nowidx+t)>=this.stoptarget){
+					this.nowidx = this.stoptarget;
+					this.anime = null;
+					this.stoptarget = -1;
+				}
+				else{
+					this.nowidx += t;
+				}
+			}
+		}
+		else{
+			this.nowidx += this.reverse?-1*t:t;
+		}
 		if(this.nowidx<0)
 			this.nowidx += this.frmnum;
 		else if(this.nowidx>=this.frmnum)
