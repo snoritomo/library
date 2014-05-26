@@ -60,22 +60,23 @@
 }
 }
 .dater_suggest_list{
+	box-sizing: content-box;
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 .dater_suggest_list li{
+	box-sizing: content-box;
 	cursor: pointer;
-	height: 14px;
 	font-size: 11px;
 	padding: 2px 0 2px 0;
 	margin: 0 0 2px 0;
 	text-indent: 15px;
 }
-.dater_suggest_list li.dater_suggest_list_selected{
-	background-color: #FFF0E6;
+.dater_suggest_list_selected{
+	background-color: #FFF0E6 !important;
 }
-.dater_suggest_list li.dater_suggest_list_hover{
+.dater_suggest_list_hover{
 	background-color: rgba(0, 0, 0, 0.14902);
 }
 @media screen and (min-width: 0px) and (max-device-width: 640px) {
@@ -92,6 +93,8 @@
 }
 @media screen and (min-width: 0px) and (max-width: 640px) {
 .dater_year_box{
+	font-size: 16px;
+	box-sizing: content-box;
 	border: solid 1px rgba(0, 0, 0, 0.14902);
 	width: 77px;
 	height: 19px;
@@ -110,6 +113,8 @@
 }
 @media screen and (min-width: 641px)  {
 .dater_year_box{
+	font-size: 16px;
+	box-sizing: content-box;
 	float: left;
 	border: solid 1px rgba(0, 0, 0, 0.14902);
 	width: 77px;
@@ -118,11 +123,9 @@
 	border-radius: 4px;
 }
 }
-.dater_calendar_header{
-	height: 19px;
-	font-size: 16px;
-}
 .dater_year_prev{
+	font-size: 16px;
+	box-sizing: content-box;
 	float: left;
 	width: 16px;
 	height: 16px;
@@ -131,12 +134,16 @@
 	border-radius: 4px;
 }
 .dater_year_prev:hover{
+	font-size: 16px;
+	box-sizing: content-box;
 	width: 14px;
 	height: 14px;
 	border: solid 1px #444444;
 	background: #E5E5E5 url(button-down.png) 4px 4px no-repeat;
 }
 .dater_yaer_next{
+	font-size: 16px;
+	box-sizing: content-box;
 	float: left;
 	width: 16px;
 	height: 16px;
@@ -145,19 +152,28 @@
 	border-radius: 4px;
 }
 .dater_yaer_next:hover{
+	font-size: 16px;
+	box-sizing: content-box;
 	width: 14px;
 	height: 14px;
 	border: solid 1px #444444;
 	background: #E5E5E5 url(button-up.png) 4px 4px no-repeat;
 }
 .dater_year{
+	font-size: 16px;
+	box-sizing: content-box;
 	float: left;
 	width: 35px;
+	height: 16px;
 	margin: 0 5px 0 5px;
 	text-align: center;
+	vertical-align: baseline;
+	line-height: 16px;
 }
 @media screen and (min-width: 0px) and (max-width: 640px) {
 .dater_month_box{
+	font-size: 16px;
+	box-sizing: content-box;
 	border: solid 1px rgba(0, 0, 0, 0.14902);
 	width: 66px;
 	height: 19px;
@@ -167,6 +183,7 @@
 	margin: 5px auto 8px auto;
 }
 .dater_month_box:after{
+	box-sizing: content-box;
 	content: ".";
 	display: block;
 	height: 0;
@@ -177,6 +194,8 @@
 }
 @media screen and (min-width: 641px)  {
 .dater_month_box{
+	font-size: 16px;
+	box-sizing: content-box;
 	float: left;
 	border: solid 1px rgba(0, 0, 0, 0.14902);
 	width: 66px;
@@ -187,6 +206,8 @@
 }
 }
 .dater_month_prev{
+	font-size: 16px;
+	box-sizing: content-box;
 	float: left;
 	width: 16px;
 	height: 16px;
@@ -195,12 +216,16 @@
 	border-radius: 4px;
 }
 .dater_month_prev:hover{
+	font-size: 16px;
+	box-sizing: content-box;
 	width: 14px;
 	height: 14px;
 	border: solid 1px #444444;
 	background: #E5E5E5 url(button-left.png) 4px 4px no-repeat;
 }
 .dater_month_next{
+	font-size: 16px;
+	box-sizing: content-box;
 	float: left;
 	width: 16px;
 	height: 16px;
@@ -209,24 +234,34 @@
 	border-radius: 4px;
 }
 .dater_month_next:hover{
+	font-size: 16px;
+	box-sizing: content-box;
 	width: 14px;
 	height: 14px;
 	border: solid 1px #444444;
 	background: #E5E5E5 url(button-right.png) 4px 4px no-repeat;
 }
 .dater_month{
+	font-size: 16px;
+	box-sizing: content-box;
 	float: left;
 	width: 24px;
+	height: 16px;
 	margin: 0 5px 0 5px;
 	text-align: center;
+	vertical-align: baseline;
+	vertical-align: baseline;
+	line-height: 16px;
 }
 .dater_calendar_block{
+	box-sizing: content-box;
 	float: left;
 	width: 113px;
 	margin-left: 10px;
 	margin-top: 5px;
 }
 .dater_calendar_header{
+	font-size: 14px;
 	text-align: center;
 	color: #666666;
 }
@@ -240,24 +275,16 @@
 	font-size: 10px;
 	text-align: center;
 	color: #999999;
-	padding: 1px 1px 1px 1px;
-	width: 14px;
-	height: 12px;
-	font-weight: bold;
-	vertical-align: middle;
-	line-height: normal;
 }
 .dater_calendar td{
+	box-sizing: content-box;
 	font-size: 10px;
 	width: 15px;
-	height: 13px;
 	border: solid 1px rgba(0, 0, 0, 0.14902);
 	background-color: #FFFFFF;
 	cursor: pointer;
 	text-align: right;
-	vertical-align: middle;
-	line-height: normal;
-	padding: 1px 2px 1px 1px;
+	padding-right: 2px;
 }
 table.dater_calendar tr > .dater_calendar_sunday{
 	color: #772222;
