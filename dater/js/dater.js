@@ -275,10 +275,10 @@ function Dater(args){
 Dater.prototype.openConsole = function(){
 	var t = this;
 	this._console.fadeIn(100, function(){t._input.select();});
-}
+};
 Dater.prototype.closeConsole = function(){
 	this._console.fadeOut(100);
-}
+};
 Dater.prototype.calcDay = function(refdate, addDays){
 	var targetSec = refdate.getTime() + (addDays * 86400000);
 	var re = new Date();
