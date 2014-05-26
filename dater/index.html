@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=0">
+	<title></title>
+</head>
+<body>
+	<form method="get" action="index.html">
+	<div>
+		<label>開始日付</label>
+		<input id="dater" type="text" name="inputdate1" /><br/>
+	</div>
+	<div>
+		<label>終了日付</label>
+		<input id="dater2" type="text" name="inputdate2" /><br/>
+	</div>
+	<div>
+		<label>ほげ日付</label>
+		<input id="dater3" type="text" name="inputdate3" /><br/>
+	</div>
+	<input type="submit" value="送信" />
+	</form>
+</body>
+<link rel="stylesheet" href="res/dater.css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/dater.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	var dtr1 = new Dater({id: "dater", suggestbasedcalendar: true, calweeklang: 'ja', calmin: (isMobile()?0:-1), calmax: (isMobile()?0:1)});
+	var dtr2 = new Dater({id: "dater2", informat: 1, outformat: 1, outdemiliter: ' ', outstrmonth: 1, sendformat: 1, sendstrmonth: 1, calmin: (isMobile()?0:-1), calmax: (isMobile()?0:1)});
+	var dtr3 = new Dater({id: "dater3", informat: 2, outformat: 2, outdemiliter: '/', outstrmonth: 0, sendformat: 2, calmin: (isMobile()?0:-1), calmax: (isMobile()?0:1)});
+});
+function isMobile(){
+	var userAgent = window.navigator.userAgent.toLowerCase();
+	if(userAgent.indexOf('mobile') != -1)
+		return true;
+	else
+		return false;
+}
+</script>
+</html>
