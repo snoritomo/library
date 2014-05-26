@@ -127,6 +127,7 @@
 .dater_calendar_header{
 	height: 19px;
 	font-size: 16px;
+	background-color: #f3f3f3;
 }
 .dater_year_prev{
 	font-size: 16px;
