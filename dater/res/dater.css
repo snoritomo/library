@@ -87,6 +87,10 @@
 .dater_suggest_list li.dater_suggest_list_hover{
 	background-color: rgba(0, 0, 0, 0.14902);
 }
+.dater_suggest_list li.dater_suggest_list_disable{
+	cursor: not-allowed;
+	background-color: #999999;
+}
 @media screen and (min-width: 0px) and (max-device-width: 640px) {
 .dater_calendar_control{
 	margin-left: 0px;
@@ -328,5 +332,9 @@ table.dater_calendar tr > .dater_calendar_onday{
 }
 .dater_calendar td.dater_calendar_hover_day{
 	background-color: rgba(0, 0, 0, 0.14902);
+}
+.dater_calendar td.dater_calendar_disable_day{
+	cursor: not-allowed;
+	background-color: #999999;
 }
 

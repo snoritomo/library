@@ -21,6 +21,12 @@
 		sendydigit: (4)送信時の年桁数
 		sendmzero: (true)送信時の月を０埋めするか
 		senddzero: (true)送信時の日を０埋めするか
+		daykeyby: (0)日付キーのフォーマット。0:yyyymmdd 1:ddmmyyyy 2:mmddyyyy
+		disables: ([])選択不可日付のリスト。日付キーの配列
+		disablesaturdays: (false)土曜を選択不可にするか
+		disablesundays: (false)日曜を選択不可にするか
+		specialdayslist: ({})サジェストリスト用特殊クラス付与日付のリスト。日付キー：クラス名の配列
+		specialdayscal: ({})カレンダー用特殊クラス付与日付のリスト。日付キー：クラス名の配列
 		calmin: (-1)表示するカレンダーの最初の月。今月からの相対月数
 		calmax: (1)表示するカレンダーの最後の月。今月からの相対月数
 		calweeklang: (en)カレンダーの曜日の表示言語
@@ -38,6 +44,7 @@
 		suggest_list_class: (dater_suggest_list)入力に対する日付候補一覧につけられるclass
 		suggest_list_selected_class: (dater_suggest_list_selected)選択中の日付候補につけられるclass
 		suggest_list_hover_class: (dater_suggest_list_hover)マウスhoverしているliにつけられるclass
+		suggest_list_disable_class: (dater_suggest_list_disable)選択不可日付のliにつけられるclass
 		calendar_block_class: (dater_calendar_block)カレンダー領域につけられるclass
 		calendar_control_class: (dater_calendar_control)カレンダーコントロールボックスにつけられるclass
 		year_box_class: (dater_year_box)年領域につけられるclass
@@ -57,6 +64,7 @@
 		calendar_selected_day_class: (dater_calendar_selected_day)選択された日付のtdにつけられるclass
 		calendar_out_of_month_class: (dater_calendar_out_of_month)テーブル内の月外日付のtdにつけられるclass
 		calendar_hover_day_class: (dater_calendar_hover_day)マウスhoverしているtdにつけられるclass
+		calendar_disable_day_class: (dater_calendar_disable_day)選択不可日付のtdにつけられるclass
 **/
 function Dater(args){
 	this._id = args.id;
@@ -77,6 +85,12 @@ function Dater(args){
 	this.sendydigit = 4;
 	this.sendmzero = true;
 	this.senddzero = true;
+	this.daykeyby = 0;
+	this.disables = [];
+	this.disablesaturdays = false;
+	this.disablesundays = false;
+	this.specialdayslist = {};
+	this.specialdayscal = {};
 	this.console = {ydigit: 4, strmonth: 0, mzero: true, dzero: false};
 	this.ydig = -4;
 	this.mdig = -2;
@@ -96,6 +110,7 @@ function Dater(args){
 	this.suggest_list_class = 'dater_suggest_list';
 	this.suggest_list_selected_class = 'dater_suggest_list_selected';
 	this.suggest_list_hover_class = 'dater_suggest_list_hover';
+	this.suggest_list_disable_class = 'dater_suggest_list_disable';
 	this.calendar_block_class = 'dater_calendar_block';
 	this.calendar_control_class = 'dater_calendar_control';
 	this.year_box_class = 'dater_year_box';
@@ -115,6 +130,7 @@ function Dater(args){
 	this.calendar_selected_day_class = 'dater_calendar_selected_day';
 	this.calendar_out_of_month_class = 'dater_calendar_out_of_month';
 	this.calendar_hover_day_class = 'dater_calendar_hover_day';
+	this.calendar_disable_day_class = 'dater_calendar_disable_day';
 	
 	if(args.inputname!=undefined)this.inputname = args.inputname;
 	if(args.suggestbasedcalendar!=undefined)this.suggestbasedcalendar = args.suggestbasedcalendar;
@@ -132,6 +148,12 @@ function Dater(args){
 	if(args.sendydigit!=undefined)this.sendydigit = args.sendydigit;
 	if(args.sendmzero!=undefined)this.sendmzero = args.sendmzero;
 	if(args.senddzero!=undefined)this.senddzero = args.senddzero;
+	if(args.daykeyby!=undefined)this.daykeyby = args.daykeyby;
+	if(args.disables!=undefined)this.disables = args.disables;
+	if(args.disablesaturdays!=undefined)this.disablesaturdays = args.disablesaturdays;
+	if(args.disablesundays!=undefined)this.disablesundays = args.disablesundays;
+	if(args.specialdayslist!=undefined)this.specialdayslist = args.specialdayslist;
+	if(args.specialdayscal!=undefined)this.specialdayscal = args.specialdayscal;
 	if(args.calmin!=undefined)this.calmin = args.calmin;
 	if(args.calmax!=undefined)this.calmax = args.calmax;
 	if(args.calweeklang!=undefined)this.calweeklang = args.calweeklang;
@@ -150,6 +172,7 @@ function Dater(args){
 	if(args.suggest_list_class!=undefined)this.suggest_list_class = args.suggest_list_class;
 	if(args.suggest_list_selected_class!=undefined)this.suggest_list_selected_class = args.suggest_list_selected_class;
 	if(args.suggest_list_hover_class!=undefined)this.suggest_list_hover_class = args.suggest_list_hover_class;
+	if(args.suggest_list_disable_class!=undefined)this.suggest_list_disable_class = args.suggest_list_disable_class;
 	if(args.calendar_block_class!=undefined)this.calendar_block_class = args.calendar_block_class;
 	if(args.calendar_control_class!=undefined)this.calendar_control_class = args.calendar_control_class;
 	if(args.year_box_class!=undefined)this.year_box_class = args.year_box_class;
@@ -169,6 +192,7 @@ function Dater(args){
 	if(args.calendar_selected_day_class!=undefined)this.calendar_selected_day_class = args.calendar_selected_day_class;
 	if(args.calendar_out_of_month_class!=undefined)this.calendar_out_of_month_class = args.calendar_out_of_month_class;
 	if(args.calendar_hover_day_class!=undefined)this.calendar_hover_day_class = args.calendar_hover_day_class;
+	if(args.calendar_disable_day_class!=undefined)this.calendar_disable_day_class = args.calendar_disable_day_class;
 	
 	this.today = new Date();
 	this.yy = this.today.getFullYear();
@@ -463,6 +487,19 @@ Dater.prototype.drawCalendar = function(){
 			for(var k = 0; k < 7; k++){
 				var td = $(document.createElement('td'));
 				tr.append(td);
+				var ykey = (this.yfill + curdate.getFullYear()).slice(this.ydig);
+				var mkey = (this.mfill + (curdate.getMonth()+1)).slice(this.mdig);
+				var dkey = (this.dfill + curdate.getDate()).slice(this.ddig);
+				var daykey = '';
+				if(this.daykeyby==0){
+					daykey = ykey+mkey+dkey;
+				}
+				else if(this.daykeyby==1){
+					daykey = dkey+mkey+ykey;
+				}
+				else if(this.daykeyby==2){
+					daykey = mkey+dkey+ykey;
+				}
 				if(k==0){
 					td.addClass(this.calendar_sunday_class);
 				}
@@ -482,14 +519,22 @@ Dater.prototype.drawCalendar = function(){
 				if(this.trgdate!=null && curdate.getFullYear()==this.trgdate.getFullYear() && curdate.getMonth()==this.trgdate.getMonth() && curdate.getDate()==this.trgdate.getDate()){
 					td.addClass(this.calendar_selected_day_class);
 				}
+				if(daykey in this.specialdayscal){
+					td.addClass(this.specialdayscal[daykey]);
+				}
 				var d = (this.console.dzero?(this.dfill + (curdate.getDate())).slice(this.ddig):(curdate.getDate()));
 				td.html(d);
 				td.attr('yy', curdate.getFullYear());
 				td.attr('mm', curdate.getMonth());
 				td.attr('dd', curdate.getDate());
-				td.on('click', {tgt: this}, this.calendar_on_click);
-				td.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.calendar_hover_day_class);});
-				td.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.calendar_hover_day_class);});
+				if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+					td.addClass(this.calendar_disable_day_class);
+				}
+				else{
+					td.on('click', {tgt: this}, this.calendar_on_click);
+					td.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.calendar_hover_day_class);});
+					td.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.calendar_hover_day_class);});
+				}
 				curdate = this.calcDay(curdate, 1);
 			}
 			tbl.append(tr);
@@ -520,6 +565,10 @@ Dater.prototype.drawList = function(){
 			yyyy = this.todayyy;
 			mmmm = this.todaymm;
 		}
+		var ykey = '';
+		var mkey = '';
+		var dkey = '';
+		var daykey = '';
 		if(txt.length==0){
 		}
 		else if(txt.length==1){
@@ -531,25 +580,71 @@ Dater.prototype.drawList = function(){
 				li.attr('yy', itm.getFullYear());
 				li.attr('mm', itm.getMonth());
 				li.attr('dd', itm.getDate());
-				li.on('click', {tgt: this}, this.list_on_click);
-				li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-				li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+				
+				ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+				mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+				dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+				if(this.daykeyby==0){
+					daykey = ykey+mkey+dkey;
+				}
+				else if(this.daykeyby==1){
+					daykey = dkey+mkey+ykey;
+				}
+				else if(this.daykeyby==2){
+					daykey = mkey+dkey+ykey;
+				}
+				if(daykey in this.specialdayslist){
+					li.addClass(this.specialdayslist[daykey]);
+				}
+				var k = itm.getDay();
+				if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+					li.addClass(this.suggest_list_disable_class);
+				}
+				else{
+					li.on('click', {tgt: this}, this.list_on_click);
+					li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+					li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+				}
+				
 				this._console.list.append(li);
 			}
 			else if(t.length==2){
 				var ed = this.getMonthEndDay(yyyy, mmmm + 1);
 				var dd = parseInt(t);
 				var ad = null;
+				var itm = null;
 				if(t<=ed){
-					var aditm = new Date(yyyy, mmmm, dd);
+					itm = new Date(yyyy, mmmm, dd);
 					ad = $(document.createElement('li'));
-					ad.html(this.getDateString(aditm, 0));
-					ad.attr('yy', aditm.getFullYear());
-					ad.attr('mm', aditm.getMonth());
-					ad.attr('dd', aditm.getDate());
-					ad.on('click', {tgt: this}, this.list_on_click);
-					ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					ad.html(this.getDateString(itm, 0));
+					ad.attr('yy', itm.getFullYear());
+					ad.attr('mm', itm.getMonth());
+					ad.attr('dd', itm.getDate());
+				
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						ad.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						ad.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						ad.on('click', {tgt: this}, this.list_on_click);
+						ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				var m;
 				var d;
@@ -561,7 +656,7 @@ Dater.prototype.drawList = function(){
 					m = parseInt(t.charAt(0))-1;
 					d = parseInt(t.charAt(1));
 				}
-				var itm = new Date(yyyy, m, d);
+				itm = new Date(yyyy, m, d);
 				var li = null;
 				if(itm.getMonth()==m && itm.getDate()==d){
 					li = $(document.createElement('li'));
@@ -569,9 +664,31 @@ Dater.prototype.drawList = function(){
 					li.attr('yy', itm.getFullYear());
 					li.attr('mm', itm.getMonth());
 					li.attr('dd', itm.getDate());
-					li.on('click', {tgt: this}, this.list_on_click);
-					li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li.on('click', {tgt: this}, this.list_on_click);
+						li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(ad!=null){
 					this._console.list.append(ad);
@@ -599,9 +716,31 @@ Dater.prototype.drawList = function(){
 					ad.attr('yy', itm.getFullYear());
 					ad.attr('mm', itm.getMonth());
 					ad.attr('dd', itm.getDate());
-					ad.on('click', {tgt: this}, this.list_on_click);
-					ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+				
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						ad.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						ad.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						ad.on('click', {tgt: this}, this.list_on_click);
+						ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(this.informat==1){
 					m = parseInt(t.slice(1))-1;
@@ -619,9 +758,31 @@ Dater.prototype.drawList = function(){
 					li.attr('yy', itm.getFullYear());
 					li.attr('mm', itm.getMonth());
 					li.attr('dd', itm.getDate());
-					li.on('click', {tgt: this}, this.list_on_click);
-					li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li.on('click', {tgt: this}, this.list_on_click);
+						li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(ad!=null){
 					this._console.list.append(ad);
@@ -649,9 +810,31 @@ Dater.prototype.drawList = function(){
 					ad.attr('yy', itm.getFullYear());
 					ad.attr('mm', itm.getMonth());
 					ad.attr('dd', itm.getDate());
-					ad.on('click', {tgt: this}, this.list_on_click);
-					ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+				
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						ad.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						ad.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						ad.on('click', {tgt: this}, this.list_on_click);
+						ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				var y;
 				if(this.informat==0){
@@ -677,9 +860,31 @@ Dater.prototype.drawList = function(){
 					li.attr('yy', itm.getFullYear());
 					li.attr('mm', itm.getMonth());
 					li.attr('dd', itm.getDate());
-					li.on('click', {tgt: this}, this.list_on_click);
-					li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li.on('click', {tgt: this}, this.list_on_click);
+						li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(this.informat==0){
 					y = t.slice(0, 1);
@@ -704,9 +909,31 @@ Dater.prototype.drawList = function(){
 					li1.attr('yy', itm.getFullYear());
 					li1.attr('mm', itm.getMonth());
 					li1.attr('dd', itm.getDate());
-					li1.on('click', {tgt: this}, this.list_on_click);
-					li1.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li1.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li1.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li1.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li1.on('click', {tgt: this}, this.list_on_click);
+						li1.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li1.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(this.informat==0){
 					y = t.slice(0, 1);
@@ -731,9 +958,31 @@ Dater.prototype.drawList = function(){
 					li2.attr('yy', itm.getFullYear());
 					li2.attr('mm', itm.getMonth());
 					li2.attr('dd', itm.getDate());
-					li2.on('click', {tgt: this}, this.list_on_click);
-					li2.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li2.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li2.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li2.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li2.on('click', {tgt: this}, this.list_on_click);
+						li2.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li2.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(ad!=null){
 					this._console.list.append(ad);
@@ -775,9 +1024,31 @@ Dater.prototype.drawList = function(){
 					ad.attr('yy', itm.getFullYear());
 					ad.attr('mm', itm.getMonth());
 					ad.attr('dd', itm.getDate());
-					ad.on('click', {tgt: this}, this.list_on_click);
-					ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+				
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						ad.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						ad.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						ad.on('click', {tgt: this}, this.list_on_click);
+						ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(this.informat==0){
 					y = t.slice(0, 2);
@@ -802,9 +1073,31 @@ Dater.prototype.drawList = function(){
 					li.attr('yy', itm.getFullYear());
 					li.attr('mm', itm.getMonth());
 					li.attr('dd', itm.getDate());
-					li.on('click', {tgt: this}, this.list_on_click);
-					li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li.on('click', {tgt: this}, this.list_on_click);
+						li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(this.informat==0){
 					y = t.slice(0, 2);
@@ -829,9 +1122,31 @@ Dater.prototype.drawList = function(){
 					li1.attr('yy', itm.getFullYear());
 					li1.attr('mm', itm.getMonth());
 					li1.attr('dd', itm.getDate());
-					li1.on('click', {tgt: this}, this.list_on_click);
-					li1.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li1.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li1.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li1.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li1.on('click', {tgt: this}, this.list_on_click);
+						li1.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li1.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(this.informat==0){
 					y = t.slice(0, 3);
@@ -856,9 +1171,31 @@ Dater.prototype.drawList = function(){
 					li2.attr('yy', itm.getFullYear());
 					li2.attr('mm', itm.getMonth());
 					li2.attr('dd', itm.getDate());
-					li2.on('click', {tgt: this}, this.list_on_click);
-					li2.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li2.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li2.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li2.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li2.on('click', {tgt: this}, this.list_on_click);
+						li2.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li2.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(ad!=null){
 					this._console.list.append(ad);
@@ -900,9 +1237,31 @@ Dater.prototype.drawList = function(){
 					ad.attr('yy', itm.getFullYear());
 					ad.attr('mm', itm.getMonth());
 					ad.attr('dd', itm.getDate());
-					ad.on('click', {tgt: this}, this.list_on_click);
-					ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+				
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						ad.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						ad.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						ad.on('click', {tgt: this}, this.list_on_click);
+						ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(this.informat==0){
 					y = t.slice(0, 3);
@@ -927,9 +1286,31 @@ Dater.prototype.drawList = function(){
 					li.attr('yy', itm.getFullYear());
 					li.attr('mm', itm.getMonth());
 					li.attr('dd', itm.getDate());
-					li.on('click', {tgt: this}, this.list_on_click);
-					li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li.on('click', {tgt: this}, this.list_on_click);
+						li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(this.informat==0){
 					y = t.slice(0, 3);
@@ -954,9 +1335,31 @@ Dater.prototype.drawList = function(){
 					li1.attr('yy', itm.getFullYear());
 					li1.attr('mm', itm.getMonth());
 					li1.attr('dd', itm.getDate());
-					li1.on('click', {tgt: this}, this.list_on_click);
-					li1.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li1.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li1.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li1.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li1.on('click', {tgt: this}, this.list_on_click);
+						li1.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li1.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(this.informat==0){
 					y = t.slice(0, 4);
@@ -981,9 +1384,31 @@ Dater.prototype.drawList = function(){
 					li2.attr('yy', itm.getFullYear());
 					li2.attr('mm', itm.getMonth());
 					li2.attr('dd', itm.getDate());
-					li2.on('click', {tgt: this}, this.list_on_click);
-					li2.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li2.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li2.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li2.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li2.on('click', {tgt: this}, this.list_on_click);
+						li2.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li2.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(ad!=null){
 					this._console.list.append(ad);
@@ -1025,9 +1450,31 @@ Dater.prototype.drawList = function(){
 					ad.attr('yy', itm.getFullYear());
 					ad.attr('mm', itm.getMonth());
 					ad.attr('dd', itm.getDate());
-					ad.on('click', {tgt: this}, this.list_on_click);
-					ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+				
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						ad.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						ad.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						ad.on('click', {tgt: this}, this.list_on_click);
+						ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(this.informat==0){
 					y = t.slice(0, 4);
@@ -1052,9 +1499,31 @@ Dater.prototype.drawList = function(){
 					li.attr('yy', itm.getFullYear());
 					li.attr('mm', itm.getMonth());
 					li.attr('dd', itm.getDate());
-					li.on('click', {tgt: this}, this.list_on_click);
-					li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li.on('click', {tgt: this}, this.list_on_click);
+						li.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(this.informat==0){
 					y = t.slice(0, 4);
@@ -1079,9 +1548,31 @@ Dater.prototype.drawList = function(){
 					li1.attr('yy', itm.getFullYear());
 					li1.attr('mm', itm.getMonth());
 					li1.attr('dd', itm.getDate());
-					li1.on('click', {tgt: this}, this.list_on_click);
-					li1.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					li1.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						li1.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						li1.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						li1.on('click', {tgt: this}, this.list_on_click);
+						li1.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						li1.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(ad!=null){
 					this._console.list.append(ad);
@@ -1120,9 +1611,31 @@ Dater.prototype.drawList = function(){
 					ad.attr('yy', itm.getFullYear());
 					ad.attr('mm', itm.getMonth());
 					ad.attr('dd', itm.getDate());
-					ad.on('click', {tgt: this}, this.list_on_click);
-					ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-					ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+				
+					ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+					mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+					dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+					if(this.daykeyby==0){
+						daykey = ykey+mkey+dkey;
+					}
+					else if(this.daykeyby==1){
+						daykey = dkey+mkey+ykey;
+					}
+					else if(this.daykeyby==2){
+						daykey = mkey+dkey+ykey;
+					}
+					if(daykey in this.specialdayslist){
+						ad.addClass(this.specialdayslist[daykey]);
+					}
+					var k = itm.getDay();
+					if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+						ad.addClass(this.suggest_list_disable_class);
+					}
+					else{
+						ad.on('click', {tgt: this}, this.list_on_click);
+						ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+						ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+					}
 				}
 				if(ad!=null){
 					this._console.list.append(ad);
@@ -1152,9 +1665,31 @@ Dater.prototype.drawList = function(){
 				ad.attr('yy', itm.getFullYear());
 				ad.attr('mm', itm.getMonth());
 				ad.attr('dd', itm.getDate());
-				ad.on('click', {tgt: this}, this.list_on_click);
-				ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-				ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+				
+				ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+				mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+				dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+				if(this.daykeyby==0){
+					daykey = ykey+mkey+dkey;
+				}
+				else if(this.daykeyby==1){
+					daykey = dkey+mkey+ykey;
+				}
+				else if(this.daykeyby==2){
+					daykey = mkey+dkey+ykey;
+				}
+				if(daykey in this.specialdayslist){
+					ad.addClass(this.specialdayslist[daykey]);
+				}
+				var k = itm.getDay();
+				if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+					ad.addClass(this.suggest_list_disable_class);
+				}
+				else{
+					ad.on('click', {tgt: this}, this.list_on_click);
+					ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+					ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+				}
 			}
 			if(ad!=null){
 				this._console.list.append(ad);
@@ -1188,9 +1723,31 @@ Dater.prototype.drawList = function(){
 				ad.attr('yy', itm.getFullYear());
 				ad.attr('mm', itm.getMonth());
 				ad.attr('dd', itm.getDate());
-				ad.on('click', {tgt: this}, this.list_on_click);
-				ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
-				ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+				
+				ykey = (this.yfill + itm.getFullYear()).slice(this.ydig);
+				mkey = (this.mfill + (itm.getMonth()+1)).slice(this.mdig);
+				dkey = (this.dfill + itm.getDate()).slice(this.ddig);
+				if(this.daykeyby==0){
+					daykey = ykey+mkey+dkey;
+				}
+				else if(this.daykeyby==1){
+					daykey = dkey+mkey+ykey;
+				}
+				else if(this.daykeyby==2){
+					daykey = mkey+dkey+ykey;
+				}
+				if(daykey in this.specialdayslist){
+					ad.addClass(this.specialdayslist[daykey]);
+				}
+				var k = itm.getDay();
+				if((k==0 && this.disablesundays) || (k==6 && this.disablesaturdays) || (this.disables.indexOf(daykey) >= 0)){
+					ad.addClass(this.suggest_list_disable_class);
+				}
+				else{
+					ad.on('click', {tgt: this}, this.list_on_click);
+					ad.on('mouseenter', {tgt: this}, function(evt){$(this).addClass(evt.data.tgt.suggest_list_hover_class);});
+					ad.on('mouseleave', {tgt: this}, function(evt){$(this).removeClass(evt.data.tgt.suggest_list_hover_class);});
+				}
 			}
 			if(ad!=null){
 				this._console.list.append(ad);
