@@ -1,72 +1,72 @@
-�X�N���[���[
+スクローラー
 
-�����̃��C�u�����̎��Ԃ�js/scroller.js�݂̂ŁA���Ƃ̓T���v���ł��B
+※このライブラリの実態はjs/scroller.jsのみで、あとはサンプルです。
 
-����API�̓r���[�ƃR���e�i�Ƃ��ċL�q��������q�ɂȂ����^�O�ɑ΂��āA
-�r���[�̗̈�����R���e�i���X�N���[�����O����悤�Ȍ��ʂ�����������̂ł��B
+このAPIはビューとコンテナとして記述した入れ子になったタグに対して、
+ビューの領域内をコンテナがスクローリングするような効果を持たせるものです。
 
-����API��jquery�����[�h���Ă��鎖��O��ɍ쐬����Ă��܂��B
-���̏�Ԃ�scroller.js�����[�h���Ă�������
+このAPIはjqueryをロードしている事を前提に作成されています。
+その状態でscroller.jsをロードしてください
 
 <script src="js/jquery.js" type="text/javascript" ></script>
 <script src="js/scroller.js" type="text/javascript" ></script>
 
-�y�������@�z
+【実装方法】
 <div id="xxx"><div id="yyy"></div></div>
 
-�̂悤�ȃ^�O���L�q���A$(document).ready()���ŁA
+のようなタグを記述し、$(document).ready()内で、
 
 container = new Scroller(agrs);
 
-�ƋL�q���܂��B�����͂��ꂼ��
+と記述します。引数はそれぞれ
 
-		id: �r���[ID
-		cntid: �R���e�iID
-		parent: �e������ꍇ�͈����ɓn�����ƁB�Ȃ��Ȃ�null
-		speed: ������]�̑��x�i�s�N�Z���^�b�j
-		usetranslate: �A�j���[�V�������[�h�i0:margin-left 1:translate3d�j
-		friction: �����ړ��̌��������x�B�i�~���b�j
-		freetime: �����ړ��̌�������������܂ł̎��ԁi�~���b�j
-		framerate: �A�j���[�V�������[�g�i�b�P�ʉ񐔁j
-		clickplay: �N���b�N�Ƃ݂Ȃ��V�т͈̔́i�s�N�Z���j
-		clickplaytime: �N���b�N�ƔF�����鎞�Ԃ͈̔́i�~���b�j
-		stopborder: ���߃X�N���[���̗V�т�������
-		onwheelrange: �}�E�X�z�C�[�����ŃX�N���[������ʁi�s�N�Z���j
-		handlemouse: �}�E�X�X���C�v�ŃX�N���[�����邩
-		barclass: �X�N���[���o�[��Ǝ��Ƀf�U�C���������ꍇ�̓N���X��������B�f�t�H���g�ɂ������Ȃ�null
-		issetbar: resize���ɃX�N���[���o�[��ݒ肵���������肷��֐�
+		id: ビューID
+		cntid: コンテナID
+		parent: 親がいる場合は引数に渡すこと。ないならnull
+		speed: 自動回転の速度（ピクセル／秒）
+		usetranslate: アニメーションモード（0:margin-left 1:translate3d）
+		friction: 自動移動の減速加速度。（ミリ秒）
+		freetime: 自動移動の減速が発動するまでの時間（ミリ秒）
+		framerate: アニメーションレート（秒単位回数）
+		clickplay: クリックとみなす遊びの範囲（ピクセル）
+		clickplaytime: クリックと認識する時間の範囲（ミリ秒）
+		stopborder: 超過スクロールの遊びを許すか
+		onwheelrange: マウスホイール一回でスクロールする量（ピクセル）
+		handlemouse: マウススワイプでスクロールするか
+		barclass: スクロールバーを独自にデザインしたい場合はクラス名を入れる。デフォルトにしたいならnull
+		issetbar: resize時にスクロールバーを設定し直すか判定する関数
 	
-�ł��B
+です。
 
-view�ƌĂ΂��̈�̍������w�肷��K�v������܂��B
-����͊֐��̌`�œo�^����K�v������A
+viewと呼ばれる領域の高さを指定する必要があります。
+これは関数の形で登録する必要があり、
 
 container.setViewHeightFunction(function(){
 	$('#xxx').height($(window).height()-60);
 });
 
-�̂悤�ɋL�q���܂��B
-���̂悤�Ȍ`�ɂȂ��Ă���̂́A�r���[�̍��������I�ɕω�����ꍇ�ɑΉ����邽�߂ł��B
-�Œ�l�ŗǂ���Ί֐����Ńr���[�ɌŒ�l��ݒ肷��悤�ɂ��Ă��������B
-�܂��A���̑��̏������ꏏ�ɋL�q���鎖���ł��܂��B
+のように記述します。
+このような形になっているのは、ビューの高さが動的に変化する場合に対応するためです。
+固定値で良ければ関数内でビューに固定値を設定するようにしてください。
+また、その他の処理を一緒に記述する事もできます。
 
-��ԏ�ɃX�N���[���������ƈ�ԉ��ɃX�N���[���������A�X�N���[���������̃C�x���g�n���h����
-�ݒ肷�鎖���ł��܂��B���ꂼ��
+一番上にスクロールした時と一番下にスクロールした時、スクロールした時のイベントハンドラを
+設定する事ができます。それぞれ
 
 container.setOnTop(function(){alert('top');});
 container.setOnBottom(function(){alert('bottom');});
 container.setOnMove(function(){alert('move');});
 
-�̂悤�ɋL�q���܂��B
+のように記述します。
 
-�R���e�i�̍������ύX���ꂽ���ɂ͕K���ȉ��̊֐����Ăяo���Ă�������
+コンテナの高さが変更された時には必ず以下の関数を呼び出してください
 
 container.setBar();
 
-��L�֐��̓X�N���[���o�[���Đݒ肷��֐��ɂȂ��Ă���A���݂̃R���e���c�̑傫����
-�\���ʒu����K�؂ȃX�N���[���o�[���ĕ\�����܂��B
+上記関数はスクロールバーを再設定する関数になっており、現在のコンテンツの大きさと
+表示位置から適切なスクロールバーを再表示します。
 
-�܂��A�X�N���[���o�[�̃f�t�H���g�̃X�^�C���͈ȉ��̂悤�ɂȂ��Ă��܂��B
+また、スクロールバーのデフォルトのスタイルは以下のようになっています。
 
 width:3px;
 position:absolute;
@@ -80,15 +80,15 @@ box-shadow: 0px 0px 1px 1px rgba(180,180,180,1);
 -ms-border-radius : 2px;
 border-radius : 2px;
 
-�X�N���[���o�[��id="[�r���[��ID]_bar"��div�ō\������Ă����L�X�^�C����style������
-�L�q����Ă��܂��B�N���X�����w�肵���ꍇ��style�����̑����class�����Ɏw�肳�ꂽ
-�N���X�������ߍ��܂��悤�ɂȂ��Ă���A��L�f�t�H���g�̃X�^�C���͍폜����܂��B
-����ɕ��G�ȍ\���̃X�N���[���o�[���K�v�ȏꍇ�́A$('#[�r���[��ID]_bar')���g�p����
-�X�N���[���[�쐬���ɍ�肱��ł��������B���������ł�height��top�������삵�܂���̂�
-���R�ȍ\�����\���Ǝv���܂��B�܂��A��ID�̗v�f�����ɒǉ�����Ă����ꍇ�͍쐬���܂���B
+スクロールバーはid="[ビューのID]_bar"のdivで構成されており上記スタイルがstyle属性に
+記述されています。クラス名を指定した場合はstyle属性の代わりにclass属性に指定された
+クラス名が埋め込まれるようになっており、上記デフォルトのスタイルは削除されます。
+さらに複雑な構成のスクロールバーが必要な場合は、$('#[ビューのID]_bar')を使用して
+スクローラー作成時に作りこんでください。内部処理ではheightとtopしか操作しませんので
+自由な構成が可能だと思います。また、同IDの要素が既に追加されていた場合は作成しません。
 
-resize���ɃX�N���[���o�[�ĕ`��֐�container.setBar();���Ă΂�܂����A�����}��������
-�ꍇ�͑�P�R�����ɔ���p�̊֐��i�߂�l��true�Ȃ���s�j��n�����Ŏ����ł��܂��B����
-���s�v�ł����null��ݒ肵�Ă��������B
+resize時にスクロールバー再描画関数container.setBar();が呼ばれますが、これを抑制したい
+場合は第１３引数に判定用の関数（戻り値がtrueなら実行）を渡す事で実現できます。判定
+が不要であればnullを設定してください。
 
 

@@ -1,87 +1,95 @@
-ƒfƒCƒ^[
+ãƒ‡ã‚¤ã‚¿ãƒ¼
 
-¦‚±‚Ìƒ‰ƒCƒuƒ‰ƒŠ‚ÌÀ‘Ô‚Íjs/dater.js‚ÆresˆÈ‰º‚ÌƒŠƒ\[ƒX‚Å\¬‚³‚êA‚ ‚Æ‚ÍƒTƒ“ƒvƒ‹‚Å‚·B
+â€»ã“ã®ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®å®Ÿæ…‹ã¯js/dater.jsã¨resä»¥ä¸‹ã®ãƒªã‚½ãƒ¼ã‚¹ã§æ§‹æˆã•ã‚Œã€ã‚ã¨ã¯ã‚µãƒ³ãƒ—ãƒ«ã§ã™ã€‚
 
-‚±‚ÌAPI‚Í“ú•t“ü—Í‚ğ’¼Š´“I‚És‚¤–‚ğ–Ú•W‚Éì¬‚µ‚½ƒtƒH[ƒ€•”•i‚ÌƒGƒ“ƒnƒ“ƒXƒ‰ƒCƒuƒ‰ƒŠ‚Å‚·
+ã“ã®APIã¯æ—¥ä»˜å…¥åŠ›ã‚’ç›´æ„Ÿçš„ã«è¡Œã†äº‹ã‚’ç›®æ¨™ã«ä½œæˆã—ãŸãƒ•ã‚©ãƒ¼ãƒ éƒ¨å“ã®ã‚¨ãƒ³ãƒãƒ³ã‚¹ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã§ã™
 
-‚±‚ÌAPI‚Íjquery‚ğƒ[ƒh‚µ‚Ä‚¢‚é–‚ğ‘O’ñ‚Éì¬‚³‚ê‚Ä‚¢‚Ü‚·B
-‚»‚Ìó‘Ô‚Ådater.js‚Ædater.css‚ğƒ[ƒh‚µ‚Ä‚­‚¾‚³‚¢
+ã“ã®APIã¯jqueryã‚’ãƒ­ãƒ¼ãƒ‰ã—ã¦ã„ã‚‹äº‹ã‚’å‰æã«ä½œæˆã•ã‚Œã¦ã„ã¾ã™ã€‚
+ãã®çŠ¶æ…‹ã§dater.jsã¨dater.cssã‚’ãƒ­ãƒ¼ãƒ‰ã—ã¦ãã ã•ã„
 
 <link rel="stylesheet" href="res/dater.css" />
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/dater.js"></script>
 
-yÀ‘••û–@z
+ã€å®Ÿè£…æ–¹æ³•ã€‘
 		<input id="dater" type="text" name="inputdate" />
 
-‚Ì‚æ‚¤‚Èƒ^ƒO‚ğ‹Lq‚µA$(document).ready()“à‚ÅA
+ã®ã‚ˆã†ãªã‚¿ã‚°ã‚’è¨˜è¿°ã—ã€$(document).ready()å†…ã§ã€
 
 var dtr = new Dater(agrs);
 
-‚Æ‹Lq‚µ‚Ü‚·Bˆø”‚Í‚»‚ê‚¼‚ê
+ã¨è¨˜è¿°ã—ã¾ã™ã€‚å¼•æ•°ã¯ãã‚Œãã‚Œ
 
-	id: i•K{jinput‚Ìid
-	suggestbasedcalendar: (true)’¼Ú“ü—Í‚µ‚½‚Æ‚«‚Ìsuggest list‚Ìƒx[ƒX”NŒ“ú‚ğƒJƒŒƒ“ƒ_[ƒx[ƒX‚É‚·‚é
-	inputname: (id+'_')input‚ª•ÏX‚³‚ê‚éname‘®«
-	informat: (0)“ü—Í‚Ì”»’èƒtƒH[ƒ}ƒbƒgB0:yyyymmdd 1:ddmmyyyy 2:mmddyyyy
-	outformat: (0)•\¦‚ÌƒtƒH[ƒ}ƒbƒgB0:yyyymmdd 1:ddmmyyyy 2:mmddyyyy
-	outdemiliter: (-)•\¦‚Ì‹æØ‚è•¶š
-	outstrmonth: (0)•\¦‚ÌŒ•\¦B0:”’l 1:•¶š
-	outydigit: (4)•\¦‚Ì”NŒ…”
-	outmzero: (true)•\¦‚ÌŒ‚ğ‚O–„‚ß‚·‚é‚©
-	outdzero: (true)•\¦‚Ì“ú‚ğ‚O–„‚ß‚·‚é‚©
-	sendformat: (0)‘—M‚ÌƒtƒH[ƒ}ƒbƒgB0:yyyymmdd 1:ddmmyyyy 2:mmddyyyy
-	senddemiliter: (-)‘—M‚Ì‹æØ‚è•¶š
-	sendstrmonth: (0)‘—M‚ÌŒ•\¦B0:”’l 1:•¶š
-	sendydigit: (4)‘—M‚Ì”NŒ…”
-	sendmzero: (true)‘—M‚ÌŒ‚ğ‚O–„‚ß‚·‚é‚©
-	senddzero: (true)‘—M‚Ì“ú‚ğ‚O–„‚ß‚·‚é‚©
-	calmin: (-1)•\¦‚·‚éƒJƒŒƒ“ƒ_[‚ÌÅ‰‚ÌŒB¡Œ‚©‚ç‚Ì‘Š‘ÎŒ”
-	calmax: (1)•\¦‚·‚éƒJƒŒƒ“ƒ_[‚ÌÅŒã‚ÌŒB¡Œ‚©‚ç‚Ì‘Š‘ÎŒ”
-	calweeklang: (en)ƒJƒŒƒ“ƒ_[‚Ì—j“ú‚Ì•\¦Œ¾Œê
-	console: ƒRƒ“ƒ\[ƒ‹İ’èƒIƒuƒWƒFƒNƒg
-		ydigit: (4)”NŒ…”
-		strmonth: (1)Œ•\¦B0:”’l 1:•¶š
-		mzero: (true)Œ‚ğ‚O–„‚ß‚·‚é‚©
-		dzero: (true)“ú‚ğ‚O–„‚ß‚·‚é‚©
-	input_class: (dater_input)ƒeƒLƒXƒgƒ{ƒbƒNƒX‚É‚Â‚¯‚ç‚ê‚éclass
-	console_class: (dater_console)•\¦‚³‚ê‚éƒRƒ“ƒgƒ[ƒ‹ƒ{ƒbƒNƒX‚É‚Â‚¯‚ç‚ê‚éclass
-	console_left_pane_class: (dater_console_left)ƒRƒ“ƒgƒ[ƒ‹ƒ{ƒbƒNƒX‚Ì¶ƒyƒCƒ“‚É‚Â‚¯‚ç‚ê‚éclass
-	console_right_pane_class: (dater_console_right)ƒRƒ“ƒgƒ[ƒ‹ƒ{ƒbƒNƒX‚Ì‰EƒyƒCƒ“‚É‚Â‚¯‚ç‚ê‚éclass
-	suggest_list_class: (dater_suggest_list)“ü—Í‚É‘Î‚·‚é“ú•tŒó•âˆê——‚É‚Â‚¯‚ç‚ê‚éclass
-	suggest_list_selected_class: (dater_suggest_list_selected)‘I‘ğ’†‚Ì“ú•tŒó•â‚É‚Â‚¯‚ç‚ê‚éclass
-	suggest_list_hover_class: (dater_suggest_list_hover)ƒ}ƒEƒXhover‚µ‚Ä‚¢‚éli‚É‚Â‚¯‚ç‚ê‚éclass
-	calendar_block_class: (dater_calendar_block)ƒJƒŒƒ“ƒ_[—Ìˆæ‚É‚Â‚¯‚ç‚ê‚éclass
-	calendar_control_class: (dater_calendar_control)ƒJƒŒƒ“ƒ_[ƒRƒ“ƒgƒ[ƒ‹ƒ{ƒbƒNƒX‚É‚Â‚¯‚ç‚ê‚éclass
-	year_box_class: (dater_year_box)”N—Ìˆæ‚É‚Â‚¯‚ç‚ê‚éclass
-	year_prev_class: (dater_year_prev)”N‚Ì¶‘¤ƒ{ƒ^ƒ“‚É‚Â‚¯‚ç‚ê‚éclass
-	year_next_class: (dater_yaer_next)”N‚Ì‰E‘¤ƒ{ƒ^ƒ“‚É‚Â‚¯‚ç‚ê‚éclass
-	year_class: (dater_year)”N‚ğ•\¦‚·‚é—Ìˆæ‚É‚Â‚¯‚ç‚ê‚éclass
-	month_box_class: (dater_month_box)Œ—Ìˆæ‚É‚Â‚¯‚ç‚ê‚éclass
-	month_prev_class: (dater_month_prev)Œ‚Ì¶‘¤ƒ{ƒ^ƒ“‚É‚Â‚¯‚ç‚ê‚éclass
-	month_next_class: (dater_month_next)Œ‚Ì‰E‘¤ƒ{ƒ^ƒ“‚É‚Â‚¯‚ç‚ê‚éclass
-	month_class: (dater_month)Œ‚ğ•\¦‚·‚é—Ìˆæ‚É‚Â‚¯‚ç‚ê‚éclass
-	calendar_header_class: (dater_calendar_header)‚PŒ‚ÌƒJƒŒƒ“ƒ_[‚Ì‰½Œ‚©‚ğ•\‚·•”•ª‚É‚Â‚¯‚ç‚ê‚éclass
-	calendar_class: (dater_calendar)ƒJƒŒƒ“ƒ_[ƒe[ƒuƒ‹‚É‚Â‚¯‚ç‚ê‚éclass
-	calendar_sunday_class: (dater_calendar_sunday)“ú—j‚Ìtd‚É‚Â‚¯‚ç‚ê‚éclass
-	calendar_saturday_class: (dater_calendar_saturday)“y—j‚Ìtd‚É‚Â‚¯‚ç‚ê‚éclass
-	calendar_onday_class: (dater_calendar_onday)•½“ú‚Ìtd‚É‚Â‚¯‚ç‚ê‚éclass
-	calendar_today_class: (dater_calendar_today)¡“ú‚Ìtd‚É‚Â‚¯‚ç‚ê‚éclass
-	calendar_selected_day_class: (dater_calendar_selected_day)‘I‘ğ‚³‚ê‚½“ú•t‚Ìtd‚É‚Â‚¯‚ç‚ê‚éclass
-	calendar_out_of_month_class: (dater_calendar_out_of_month)ƒe[ƒuƒ‹“à‚ÌŒŠO“ú•t‚Ìtd‚É‚Â‚¯‚ç‚ê‚éclass
-	calendar_hover_day_class: (dater_calendar_hover_day)ƒ}ƒEƒXhover‚µ‚Ä‚¢‚étd‚É‚Â‚¯‚ç‚ê‚éclass
+	id: ï¼ˆå¿…é ˆï¼‰inputã®id
+	suggestbasedcalendar: (true)ç›´æ¥å…¥åŠ›ã—ãŸã¨ãã®suggest listã®ãƒ™ãƒ¼ã‚¹å¹´æœˆæ—¥ã‚’ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ãƒ™ãƒ¼ã‚¹ã«ã™ã‚‹
+	inputname: (id+'_')inputãŒå¤‰æ›´ã•ã‚Œã‚‹nameå±æ€§
+	displayicon: (true)ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¢ã‚¤ã‚³ãƒ³ã‚’ã‚¤ãƒ³ãƒ—ãƒƒãƒˆã®å³ã«è¡¨ç¤ºã™ã‚‹ã‹
+	informat: (0)å…¥åŠ›æ™‚ã®åˆ¤å®šãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã€‚0:yyyymmdd 1:ddmmyyyy 2:mmddyyyy
+	outformat: (0)è¡¨ç¤ºã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã€‚0:yyyymmdd 1:ddmmyyyy 2:mmddyyyy
+	outdemiliter: (-)è¡¨ç¤ºã®åŒºåˆ‡ã‚Šæ–‡å­—
+	outstrmonth: (0)è¡¨ç¤ºã®æœˆè¡¨ç¤ºã€‚0:æ•°å€¤ 1:æ–‡å­—
+	outydigit: (4)è¡¨ç¤ºã®å¹´æ¡æ•°
+	outmzero: (true)è¡¨ç¤ºã®æœˆã‚’ï¼åŸ‹ã‚ã™ã‚‹ã‹
+	outdzero: (true)è¡¨ç¤ºã®æ—¥ã‚’ï¼åŸ‹ã‚ã™ã‚‹ã‹
+	sendformat: (0)é€ä¿¡æ™‚ã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã€‚0:yyyymmdd 1:ddmmyyyy 2:mmddyyyy
+	senddemiliter: (-)é€ä¿¡æ™‚ã®åŒºåˆ‡ã‚Šæ–‡å­—
+	sendstrmonth: (0)é€ä¿¡æ™‚ã®æœˆè¡¨ç¤ºã€‚0:æ•°å€¤ 1:æ–‡å­—
+	sendydigit: (4)é€ä¿¡æ™‚ã®å¹´æ¡æ•°
+	sendmzero: (true)é€ä¿¡æ™‚ã®æœˆã‚’ï¼åŸ‹ã‚ã™ã‚‹ã‹
+	senddzero: (true)é€ä¿¡æ™‚ã®æ—¥ã‚’ï¼åŸ‹ã‚ã™ã‚‹ã‹
+	calmin: (-1)è¡¨ç¤ºã™ã‚‹ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã®æœ€åˆã®æœˆã€‚ä»Šæœˆã‹ã‚‰ã®ç›¸å¯¾æœˆæ•°
+	calmax: (1)è¡¨ç¤ºã™ã‚‹ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã®æœ€å¾Œã®æœˆã€‚ä»Šæœˆã‹ã‚‰ã®ç›¸å¯¾æœˆæ•°
+	calweeklang: (en)ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã®æ›œæ—¥ã®è¡¨ç¤ºè¨€èª
+	console: ã‚³ãƒ³ã‚½ãƒ¼ãƒ«è¨­å®šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+		ydigit: (4)å¹´æ¡æ•°
+		strmonth: (1)æœˆè¡¨ç¤ºã€‚0:æ•°å€¤ 1:æ–‡å­—
+		mzero: (true)æœˆã‚’ï¼åŸ‹ã‚ã™ã‚‹ã‹
+		dzero: (true)æ—¥ã‚’ï¼åŸ‹ã‚ã™ã‚‹ã‹
+	input_class: (dater_input)ãƒ†ã‚­ã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	icon_class: (dater_icon)ã‚¢ã‚¤ã‚³ãƒ³imgã‚¿ã‚°ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	icon_src: (res/dater-icon.png)ã‚¢ã‚¤ã‚³ãƒ³ç”»åƒã®URL
+	console_class: (dater_console)è¡¨ç¤ºã•ã‚Œã‚‹ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ãƒœãƒƒã‚¯ã‚¹ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	console_left_pane_class: (dater_console_left)ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ãƒœãƒƒã‚¯ã‚¹ã®å·¦ãƒšã‚¤ãƒ³ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	console_right_pane_class: (dater_console_right)ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ãƒœãƒƒã‚¯ã‚¹ã®å³ãƒšã‚¤ãƒ³ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	suggest_list_class: (dater_suggest_list)å…¥åŠ›ã«å¯¾ã™ã‚‹æ—¥ä»˜å€™è£œä¸€è¦§ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	suggest_list_selected_class: (dater_suggest_list_selected)é¸æŠä¸­ã®æ—¥ä»˜å€™è£œã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	suggest_list_hover_class: (dater_suggest_list_hover)ãƒã‚¦ã‚¹hoverã—ã¦ã„ã‚‹liã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	calendar_block_class: (dater_calendar_block)ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼é ˜åŸŸã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	calendar_control_class: (dater_calendar_control)ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ãƒœãƒƒã‚¯ã‚¹ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	year_box_class: (dater_year_box)å¹´é ˜åŸŸã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	year_prev_class: (dater_year_prev)å¹´ã®å·¦å´ãƒœã‚¿ãƒ³ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	year_next_class: (dater_yaer_next)å¹´ã®å³å´ãƒœã‚¿ãƒ³ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	year_class: (dater_year)å¹´ã‚’è¡¨ç¤ºã™ã‚‹é ˜åŸŸã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	month_box_class: (dater_month_box)æœˆé ˜åŸŸã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	month_prev_class: (dater_month_prev)æœˆã®å·¦å´ãƒœã‚¿ãƒ³ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	month_next_class: (dater_month_next)æœˆã®å³å´ãƒœã‚¿ãƒ³ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	month_class: (dater_month)æœˆã‚’è¡¨ç¤ºã™ã‚‹é ˜åŸŸã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	calendar_header_class: (dater_calendar_header)ï¼‘æœˆã®ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ã®ä½•æœˆã‹ã‚’è¡¨ã™éƒ¨åˆ†ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	calendar_class: (dater_calendar)ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	calendar_sunday_class: (dater_calendar_sunday)æ—¥æ›œã®tdã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	calendar_saturday_class: (dater_calendar_saturday)åœŸæ›œã®tdã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	calendar_onday_class: (dater_calendar_onday)å¹³æ—¥ã®tdã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	calendar_today_class: (dater_calendar_today)ä»Šæ—¥ã®tdã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	calendar_selected_day_class: (dater_calendar_selected_day)é¸æŠã•ã‚ŒãŸæ—¥ä»˜ã®tdã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	calendar_out_of_month_class: (dater_calendar_out_of_month)ãƒ†ãƒ¼ãƒ–ãƒ«å†…ã®æœˆå¤–æ—¥ä»˜ã®tdã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+	calendar_hover_day_class: (dater_calendar_hover_day)ãƒã‚¦ã‚¹hoverã—ã¦ã„ã‚‹tdã«ã¤ã‘ã‚‰ã‚Œã‚‹class
 	
-‚Å‚·B
+ã§ã™ã€‚
 
-ƒtƒH[ƒJƒX‚µ‚½‚ÆŠO‚ê‚½‚ÌƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚ğ‚»‚ê‚¼‚ê“o˜^‚Å‚«‚Ü‚·
+ãƒ•ã‚©ãƒ¼ã‚«ã‚¹ã—ãŸæ™‚ã¨å¤–ã‚ŒãŸæ™‚ã®ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã‚’ãã‚Œãã‚Œç™»éŒ²ã§ãã¾ã™
 
 container.setOnFocus(function(){alert('focus');});
 container.setOnBlur(function(){alert('blur');});
 
-‚Ì‚æ‚¤‚É‹Lq‚µ‚Ü‚·B
+ã®ã‚ˆã†ã«è¨˜è¿°ã—ã¾ã™ã€‚
 
-ƒXƒ^ƒCƒ‹‚Ì•ÏX‚Íˆø”‚É‚Ä‚»‚ê‚¼‚ê‚ ‚Ä‚ª‚í‚ê‚Ä‚¢‚éclass‚ğ•ÏX‚µ‚½‚èAdater.css‚ğ’¼Ú
-•ÒW‚·‚é‚±‚Æ‚Ås‚¤–‚ªo—ˆ‚Ü‚·B
+ã‚¹ã‚¿ã‚¤ãƒ«ã®å¤‰æ›´ã¯å¼•æ•°ã«ã¦ãã‚Œãã‚Œã‚ã¦ãŒã‚ã‚Œã¦ã„ã‚‹classã‚’å¤‰æ›´ã—ãŸã‚Šã€dater.cssã‚’ç›´æ¥
+ç·¨é›†ã™ã‚‹ã“ã¨ã§è¡Œã†äº‹ãŒå‡ºæ¥ã¾ã™ã€‚
+
+
+ã€å±•é–‹ã™ã‚‹ã¨ãã®æ³¨æ„ã€‘
+ã¾ãŸã€cssãƒ•ã‚¡ã‚¤ãƒ«ã‚„ç”»åƒãªã©ã®ãƒªã‚½ãƒ¼ã‚¹ãƒ•ã‚¡ã‚¤ãƒ«ã®é…ç½®å ´æ‰€ã‚’å¤‰æ›´ã—ãŸéš›ã«ã¯csså†…ã®urlã‚„ã€
+å¼•æ•°ã®icon_srcã‚’ä½¿ã£ã¦é©åˆ‡ãªå ´æ‰€ã‚’æŒ‡å®šã™ã‚‹ã‚ˆã†ã«ã—ã¦ãã ã•ã„ã€‚
 
 
 

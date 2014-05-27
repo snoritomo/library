@@ -1,43 +1,43 @@
-���[�h�}�X�N
+ロードマスク
 
-����API�͎w�肳�ꂽ�u���b�N�v�f���̉摜�S�Ă����[�h�����܂�
-�}�X�L���O���邽�߂�API�ł��B
+このAPIは指定されたブロック要素内の画像全てがロードされるまで
+マスキングするためのAPIです。
 
-����API��jquery�����[�h���Ă��鎖��O��ɍ쐬����Ă��܂��B
-���̏�Ԃ�scroller.js�����[�h���Ă�������
+このAPIはjqueryをロードしている事を前提に作成されています。
+その状態でscroller.jsをロードしてください
 
 <script src="js/jquery.js" type="text/javascript" ></script>
 <script src="js/loadmask.js" type="text/javascript" ></script>
 
-�y�������@�z
-<div id="xxx">���e�������e����<img src="bbb.png"/><img src="aaa.jpg"/></div>
+【実装方法】
+<div id="xxx">リテラルリテラル<img src="bbb.png"/><img src="aaa.jpg"/></div>
 
-�̂悤�ȃ^�O�ɑ΂��A��L���ǂݍ��܂ꂽ���_�i�ŏ�����L�q����Ă���Ȃ�jQuery���[�h���L�q��A
-JavaScript�Œǉ�������Ȃ�ǉ�����j�Ɉȉ��̂悤�ɌĂяo���Ďg�p���܂�
+のようなタグに対し、上記が読み込まれた時点（最初から記述されているならjQueryロードかつ記述後、
+JavaScriptで追加したらなら追加直後）に以下のように呼び出して使用します
 
 new Loadmask(args);
 
-�ƋL�q���܂��B�����͂��ꂼ��
+と記述します。引数はそれぞれ
 
-		id: �}�X�N�������u���b�N�v�f��ID
-		class: �}�X�N�̃X�^�C�����L�q����class
-		loadingtimeout: �}�X�N�����̃A�j���[�V�����֐�
-		animate: �^�C���A�E�g�Ƃ݂Ȃ��ă}�X�N���O���܂ł̎���
+		id: マスクしたいブロック要素のID
+		class: マスクのスタイルを記述したclass
+		loadingtimeout: マスク除去のアニメーション関数
+		animate: タイムアウトとみなしてマスクを外すまでの時間
 	
-�ł��B
+です。
 
-����API�͎w�肵���u���b�N�v�f��position:relative��CSS��ݒ肵�܂�
-�̂Œ��ӂ��Ă�������
+このAPIは指定したブロック要素にposition:relativeのCSSを設定します
+ので注意してください
 
-�w�肵���u���b�N�v�f�̒��g�ɉ摜���Ȃ��ꍇ�͑����ɃA�j���[�V������
-�������܂��B
+指定したブロック要素の中身に画像がない場合は即座にアニメーションを
+発動します。
 
-�摜�̃����N�؂��ǂݍ��ݐ悪�摜�łȂ��ꍇ���̂��߂Ƀ}�X�L���O�^�C���A�E�g���Ԃ�
-�ݒ肵�܂��B���̎��Ԃ��o�߂���ƕK���A�j���[�V�����𔭓����܂��B
+画像のリンク切れや読み込み先が画像でない場合等のためにマスキングタイムアウト時間を
+設定します。この時間を経過すると必ずアニメーションを発動します。
 
-�}�X�N�̃X�^�C����class���쐬���Ĉ����ɗ^����悤�ɂ��Ă��������i�f�t�H���g�X�^�C���͂���܂���j
+マスクのスタイルはclassを作成して引数に与えるようにしてください（デフォルトスタイルはありません）
 
-�A�j���[�V�����͊֐����w�肵�܂��B�����ł̓}�X�N�����̃A�j���[�V���������łȂ��A
-�R�[���o�b�N�̂悤�ȏ������L�q���鎖���ł��܂��B
+アニメーションは関数を指定します。内部ではマスク除去のアニメーションだけでなく、
+コールバックのような処理を記述する事もできます。
 
 
