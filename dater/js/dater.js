@@ -7,6 +7,7 @@
 		id: （必須）inputのid
 		suggestbasedcalendar: (true)直接入力したときのsuggest listのベース年月日をカレンダーベースにする
 		inputname: (id+'_')inputが変更されるname属性
+		displayicon: (true)カレンダーアイコンをインプットの右に表示するか
 		informat: (0)入力時の判定フォーマット。0:yyyymmdd 1:ddmmyyyy 2:mmddyyyy
 		outformat: (0)表示のフォーマット。0:yyyymmdd 1:ddmmyyyy 2:mmddyyyy
 		outdemiliter: (-)表示の区切り文字
@@ -29,6 +30,8 @@
 			mzero: (true)月を０埋めするか
 			dzero: (true)日を０埋めするか
 		input_class: (dater_input)テキストボックスにつけられるclass
+		icon_class: (dater_icon)アイコンimgタグにつけられるclass
+		icon_src: (res/dater-icon.png)アイコン画像のURL
 		console_class: (dater_console)表示されるコントロールボックスにつけられるclass
 		console_left_pane_class: (dater_console_left)コントロールボックスの左ペインにつけられるclass
 		console_right_pane_class: (dater_console_right)コントロールボックスの右ペインにつけられるclass
@@ -60,6 +63,7 @@ function Dater(args){
 	this._input = $('#'+this._id);
 	this.inputname = this._input.attr('name')+'_';
 	this.suggestbasedcalendar = true;
+	this.displayicon = true;
 	this.informat = 0;
 	this.outformat = 0;
 	this.outdemiliter = '-';
@@ -84,6 +88,8 @@ function Dater(args){
 	this.calmax = 1;
 	this.calweeklang = 'en';
 	this.input_class = 'dater_input';
+	this.icon_class = 'dater_icon';
+	this.icon_src = 'res/dater-icon.png';
 	this.console_class = 'dater_console';
 	this.console_left_pane_class = 'dater_console_left';
 	this.console_right_pane_class = 'dater_console_right';
@@ -112,6 +118,7 @@ function Dater(args){
 	
 	if(args.inputname!=undefined)this.inputname = args.inputname;
 	if(args.suggestbasedcalendar!=undefined)this.suggestbasedcalendar = args.suggestbasedcalendar;
+	if(args.displayicon!=undefined)this.displayicon = args.displayicon;
 	if(args.informat!=undefined)this.informat = args.informat;
 	if(args.outformat!=undefined)this.outformat = args.outformat;
 	if(args.outdemiliter!=undefined)this.outdemiliter = args.outdemiliter;
@@ -135,6 +142,8 @@ function Dater(args){
 		if(args.console.dzero!=undefined)this.console.dzero = args.console.dzero;
 	}
 	if(args.input_class!=undefined)this.input_class = args.input_class;
+	if(args.icon_class!=undefined)this.icon_class = args.icon_class;
+	if(args.icon_src!=undefined)this.icon_src = args.icon_src;
 	if(args.console_class!=undefined)this.console_class = args.console_class;
 	if(args.console_left_pane_class!=undefined)this.console_left_pane_class = args.console_left_pane_class;
 	if(args.console_right_pane_class!=undefined)this.console_right_pane_class = args.console_right_pane_class;
@@ -232,6 +241,8 @@ function Dater(args){
 	this._send.attr('name', this._input.attr('name'));
 	this._input.attr('name', this.inputname);
 	
+	this._input.addClass(this.input_class);
+	
 	this._console = $(document.createElement('div'));
 	this._console.addClass(this.console_class);
 	var lft = $(document.createElement('div'));
@@ -253,7 +264,22 @@ function Dater(args){
 	
 	this._input.after(this._console);
 	
-	this._input.addClass(this.input_class);
+	if(this.displayicon){
+		this._icon = $(document.createElement('img'));
+		this._icon.attr('src', this.icon_src);
+		this._icon.css('position', 'absolute');
+		this._icon.css('top', this._input.position().top);
+		this._icon.css('left', this._input.position().left + this._input.outerWidth());
+		this._icon.height(this._input.outerHeight());
+		this._icon.on('click', {tgt: this}, this.doFocus);
+		this._icon.addClass(this.icon_class);
+		this._icon.on('load', {tgt: this}, function(evt){
+			var dater = evt.data.tgt;
+			dater._input.css('marginRight', parseInt(dater._input.css('marginRight').replace('px', '')) + parseInt(dater._icon.outerWidth()));
+		});
+		
+		this._input.after(this._icon);
+	}
 	
 	this._input.on('focus', {tgt: this}, this.doFocus);
 	this._input.on('keyup', {tgt: this}, this.doKeyup);
@@ -268,6 +294,15 @@ function Dater(args){
 		this._console.on('mousedown', {tgt: this}, function(evt){var dater = evt.data.tgt;dater.cancelblur = true;dater.mouseuponinput = true;});
 		$(document).on('mouseup', {tgt: this}, function(evt){var dater = evt.data.tgt;dater.cancelblur = false;dater.doBlur(evt);dater.mouseuponinput = false;});
 	}
+	$(window).on('resize', {tgt: this}, function(evt){
+		var dater = evt.data.tgt;
+		dater._console.css('top', dater._input.position().top + dater._input.height);
+		dater._console.css('left', dater._input.position().left);
+		if(dater.displayicon){
+			dater._icon.css('top', dater._input.position().top);
+			dater._icon.css('left', dater._input.position().left + dater._input.outerWidth());
+		}
+	});
 	
 	this.drawCalendar();
 	this._console.hide();
@@ -456,7 +491,13 @@ Dater.prototype.drawList = function(){
 	this.listindex = null;
 	try{
 		this._console.list.html('');
-		var txt = this._input.val().split(/\D/, 3);
+		var srcs = this._input.val().toLowerCase();
+		if(this.outstrmonth == 1){
+			for(var i = this.mons.length-1; i >= 0; i--){
+				srcs = srcs.replace(this.mons[i].toLowerCase(), (this.mfill + (i+1)).slice(this.mdig), 'g');
+			}
+		}
+		var txt = srcs.split(/\D/, 3);
 		var yyyy;
 		var mmmm;
 		if(this.suggestbasedcalendar){
@@ -1059,7 +1100,7 @@ Dater.prototype.drawList = function(){
 					m = parseInt(t.slice(0, 2))-1;
 					d = parseInt(t.slice(2, 4));
 				}
-				var itm = new Date(String(yyyy).slice(0, 1)+y, m, d);
+				var itm = new Date(y, m, d);
 				var ad = null;
 				if(itm.getMonth()==m && itm.getDate()==d){
 					ad = $(document.createElement('li'));
@@ -1216,6 +1257,7 @@ Dater.prototype.doBlur = function(evt){
 			dater.dd = dater.today.getDate();
 			dater._input.val('');
 			dater._send.val('');
+			dater.drawCalendar();
 		}
 		else if(dater.trgdate!=null){
 			dater.setDate(dater.trgdate.getFullYear(), dater.trgdate.getMonth(), dater.trgdate.getDate());
