@@ -296,16 +296,28 @@ function Dater(args){
 	}
 	$(window).on('resize', {tgt: this}, function(evt){
 		var dater = evt.data.tgt;
-		dater._console.css('top', dater._input.position().top + dater._input.height);
-		dater._console.css('left', dater._input.position().left);
-		if(dater.displayicon){
-			dater._icon.css('top', dater._input.position().top);
-			dater._icon.css('left', dater._input.position().left + dater._input.outerWidth());
-		}
+		dater.adjust_items(dater);
+	});
+	$(window).on('load', {tgt: this}, function(evt){
+		var dater = evt.data.tgt;
+		dater.adjust_items(dater);
 	});
 	
+	this.drawList();
 	this.drawCalendar();
+	var sugs = this._console.list.children();
+	if(sugs.size()==1){
+		this.setDate(parseInt(sugs.attr('yy')), parseInt(sugs.attr('mm')), parseInt(sugs.attr('dd')));
+	}
 	this._console.hide();
+};
+Dater.prototype.adjust_items = function(dater){
+	dater._console.css('top', dater._input.position().top + dater._input.height);
+	dater._console.css('left', dater._input.position().left);
+	if(dater.displayicon){
+		dater._icon.css('top', dater._input.position().top);
+		dater._icon.css('left', dater._input.position().left + dater._input.outerWidth());
+	}
 };
 Dater.prototype.openConsole = function(){
 	var t = this;
