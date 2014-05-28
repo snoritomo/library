@@ -1,12 +1,4 @@
 .dater_input{
-/**
-	border-radius: 4px;
-	padding: 2px 0 2px 0;
-	font-size: 12px;
-	font-family: Helvetica, Arial, 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
-	text-indent: 6px;
-	width: 85px;
-**/
 }
 .dater_icon{
 	border: 0;
@@ -89,7 +81,7 @@
 }
 .dater_suggest_list li.dater_suggest_list_disable{
 	cursor: not-allowed;
-	background-color: #999999;
+	background-color: #B3B3B3;
 }
 @media screen and (min-width: 0px) and (max-device-width: 640px) {
 .dater_calendar_control{
@@ -313,10 +305,10 @@
 
 }
 table.dater_calendar tr > .dater_calendar_sunday{
-	color: #772222;
+	color: #E06F6F;
 }
 table.dater_calendar tr > .dater_calendar_saturday{
-	color: #222277;
+	color: #0000CC;
 }
 table.dater_calendar tr > .dater_calendar_onday{
 }
@@ -335,6 +327,6 @@ table.dater_calendar tr > .dater_calendar_onday{
 }
 .dater_calendar td.dater_calendar_disable_day{
 	cursor: not-allowed;
-	background-color: #999999;
+	background-color: #B3B3B3;
 }
 

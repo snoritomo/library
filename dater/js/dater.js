@@ -209,7 +209,7 @@ function Dater(args){
 	this.onfocus = [];
 	this.onblur = [];
 	this.cancelblur = true;
-	this.mouseuponinput = false;
+	this.mouseondater = false;
 	
 	this.months = new Array(12);
 	this.months[0] = "January";
@@ -297,10 +297,7 @@ function Dater(args){
 		this._icon.height(this._input.outerHeight());
 		this._icon.on('click', {tgt: this}, this.doFocus);
 		this._icon.addClass(this.icon_class);
-		this._icon.on('load', {tgt: this}, function(evt){
-			var dater = evt.data.tgt;
-			dater._input.css('marginRight', parseInt(dater._input.css('marginRight').replace('px', '')) + parseInt(dater._icon.outerWidth()));
-		});
+		this._icon.on('load', {tgt: this}, this.doIconLoad);
 		
 		this._input.after(this._icon);
 	}
@@ -310,22 +307,16 @@ function Dater(args){
 	this._input.on('keydown', {tgt: this}, this.doKeydown);
 	if(document.ontouchstart !== undefined){
 		this._input.on('touchend', {tgt: this}, this.doMouseup);
-		this._console.on('touchstart', {tgt: this}, function(evt){var dater = evt.data.tgt;dater.cancelblur = true;dater.mouseuponinput = true;});
-		$(document).on('touchend', {tgt: this}, function(evt){var dater = evt.data.tgt;dater.cancelblur = false;dater.doBlur(evt);dater.mouseuponinput = false;});
+		this._console.on('touchstart', {tgt: this}, this.doConsoleMousedown);
+		$(document).on('touchend', {tgt: this}, this.doDocumentMouseup);
 	}
 	else{
 		this._input.on('mouseup', {tgt: this}, this.doMouseup);
-		this._console.on('mousedown', {tgt: this}, function(evt){var dater = evt.data.tgt;dater.cancelblur = true;dater.mouseuponinput = true;});
-		$(document).on('mouseup', {tgt: this}, function(evt){var dater = evt.data.tgt;dater.cancelblur = false;dater.doBlur(evt);dater.mouseuponinput = false;});
+		this._console.on('mousedown', {tgt: this}, this.doConsoleMousedown);
+		$(document).on('mouseup', {tgt: this}, this.doDocumentMouseup);
 	}
-	$(window).on('resize', {tgt: this}, function(evt){
-		var dater = evt.data.tgt;
-		dater.adjust_items(dater);
-	});
-	$(window).on('load', {tgt: this}, function(evt){
-		var dater = evt.data.tgt;
-		dater.adjust_items(dater);
-	});
+	$(window).on('resize', {tgt: this}, this.doWindowResize);
+	$(window).on('load', {tgt: this}, this.doWindowLoad);
 	
 	this.drawList();
 	this.drawCalendar();
@@ -1782,6 +1773,7 @@ Dater.prototype.setOnFocus = function(f){
 };
 Dater.prototype.doFocus = function(evt){
 	var dater = evt.data.tgt;
+	if(dater._console.css('display')!='none')return;
 	for(var i = 0; i < dater.onfocus.length; i++){
 		var f = dater.onfocus[i];
 		f.apply(dater, []);
@@ -1809,7 +1801,7 @@ Dater.prototype.setOnBlur = function(f){
 Dater.prototype.doBlur = function(evt){
 	var dater = evt.data.tgt;
 	if(dater.cancelblur)return;
-	if(dater.mouseuponinput)return;
+	if(dater.mouseondater)return;
 	for(var i = 0; i < dater.onblur.length; i++){
 		var f = dater.onblur[i];
 		f.apply(dater, []);
@@ -1847,7 +1839,30 @@ Dater.prototype.doBlur = function(evt){
 };
 Dater.prototype.doMouseup = function(evt){
 	var dater = evt.data.tgt;
-	dater.mouseuponinput = true;
+	dater.mouseondater = true;
+};
+Dater.prototype.doConsoleMousedown = function(evt){
+	var dater = evt.data.tgt;
+	dater.cancelblur = true;
+	dater.mouseondater = true;
+};
+Dater.prototype.doDocumentMouseup = function(evt){
+	var dater = evt.data.tgt;
+	dater.cancelblur = false;
+	dater.doBlur(evt);
+	dater.mouseondater = false;
+};
+Dater.prototype.doWindowResize = function(evt){
+	var dater = evt.data.tgt;
+	dater.adjust_items(dater);
+};
+Dater.prototype.doWindowLoad = function(evt){
+	var dater = evt.data.tgt;
+	dater.adjust_items(dater);
+};
+Dater.prototype.doIconLoad = function(evt){
+	var dater = evt.data.tgt;
+	dater._input.css('marginRight', parseInt(dater._input.css('marginRight').replace('px', '')) + parseInt(dater._icon.outerWidth()));
 };
 Dater.prototype.doKeyup = function(evt){
 	var dater = evt.data.tgt;
@@ -1886,7 +1901,7 @@ Dater.prototype.doKeydown = function(evt){
 	var dater = evt.data.tgt;
 	if(evt.keyCode==9){
 		dater.cancelblur = false;
-		dater.mouseuponinput = false;
+		dater.mouseondater = false;
 		dater.doBlur(evt);
 	}
 };
