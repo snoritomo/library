@@ -315,6 +315,7 @@ function Dater(args){
 		this._console.on('mousedown', {tgt: this}, this.doConsoleMousedown);
 		$(document).on('mouseup', {tgt: this}, this.doDocumentMouseup);
 	}
+	$(document).on('keydown', {tgt: this}, this.doDocumentKeydown);
 	$(window).on('resize', {tgt: this}, this.doWindowResize);
 	$(window).on('load', {tgt: this}, this.doWindowLoad);
 	
@@ -330,7 +331,7 @@ Dater.prototype.adjust_items = function(dater){
 	dater._console.css('top', dater._input.position().top + dater._input.height);
 	dater._console.css('left', dater._input.position().left);
 	if(dater.displayicon){
-		dater._icon.css('top', dater._input.position().top);
+		dater._icon.css('top', dater._input.position().top + parseInt(dater._input.css('marginTop').replace('px', '')));
 		dater._icon.css('left', dater._input.position().left + dater._input.outerWidth());
 	}
 };
@@ -1806,19 +1807,19 @@ Dater.prototype.doBlur = function(evt){
 		var f = dater.onblur[i];
 		f.apply(dater, []);
 	}
-	if(dater.inputflg){
+	if(dater._input.val()==''){
+		dater.trgdate = null;
+		dater.yy = dater.today.getFullYear();
+		dater.mm = dater.today.getMonth();
+		dater.dd = dater.today.getDate();
+		dater._input.val('');
+		dater._send.val('');
+		dater.drawCalendar();
+	}
+	else if(dater.inputflg){
 		var sugs = dater._console.list.children();
-		if(sugs.size()==1){
+		if(sugs.size()==1 && !sugs.hasClass(this.suggest_list_disable_class)){
 			dater.setDate(parseInt(sugs.attr('yy')), parseInt(sugs.attr('mm')), parseInt(sugs.attr('dd')));
-		}
-		else if(dater._input.val()==''){
-			dater.trgdate = null;
-			dater.yy = dater.today.getFullYear();
-			dater.mm = dater.today.getMonth();
-			dater.dd = dater.today.getDate();
-			dater._input.val('');
-			dater._send.val('');
-			dater.drawCalendar();
 		}
 		else if(dater.trgdate!=null){
 			dater.setDate(dater.trgdate.getFullYear(), dater.trgdate.getMonth(), dater.trgdate.getDate());
@@ -1845,6 +1846,14 @@ Dater.prototype.doConsoleMousedown = function(evt){
 	var dater = evt.data.tgt;
 	dater.cancelblur = true;
 	dater.mouseondater = true;
+};
+Dater.prototype.doDocumentKeydown = function(evt){
+	var dater = evt.data.tgt;
+	if(dater._console.css('display')!='none' && evt.keyCode==9){
+		dater.cancelblur = false;
+		dater.mouseondater = false;
+		dater.doBlur(evt);
+	}
 };
 Dater.prototype.doDocumentMouseup = function(evt){
 	var dater = evt.data.tgt;
@@ -1898,8 +1907,8 @@ Dater.prototype.doKeyup = function(evt){
 	}
 };
 Dater.prototype.doKeydown = function(evt){
-	var dater = evt.data.tgt;
 	if(evt.keyCode==9){
+		var dater = evt.data.tgt;
 		dater.cancelblur = false;
 		dater.mouseondater = false;
 		dater.doBlur(evt);
