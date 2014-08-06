@@ -386,6 +386,12 @@ Roller.prototype.getJutOutRight = function(gap){
 	re.containerx = containerx;
 	return re;
 };
+Roller.prototype.purgeEvents = function(){
+	this.container.off('touchstart', this.page_touchstart);
+	$(document).off('touchend', this.page_touchend);
+	this.container.off('mousedown', this.page_touchstart);
+	$(document).off('mouseup', this.page_touchend);
+};
 Roller.prototype.rolling_notate = function(deg, once){
 	var t = this;
 	var nowwk = t.getleft(t.container);

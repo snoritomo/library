@@ -4,32 +4,48 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=0">
 	<title></title>
+	
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+<style type="text/css">
+table td.bright_cal{
+	background-color: #AAAA66;
+}
+ul li.bright_list{
+	background-color: #AA66AA;
+}
+</style>
 </head>
 <body>
 	<form method="get" action="index.html">
 	<div>
 		<label>開始日付</label>
-		<input id="dater" type="text" name="inputdate1" /><br/>
+		<input id="dater" type="text" name="inputdate1" /><span id="disp1"></span><br/>
 	</div>
 	<div>
 		<label>終了日付</label>
-		<input id="dater2" type="text" name="inputdate2" /><br/>
+		<input id="dater2" type="text" name="inputdate2" value="78" style="height: 45px;" /><span id="disp2"></span><br/>
 	</div>
 	<div>
 		<label>ほげ日付</label>
-		<input id="dater3" type="text" name="inputdate3" /><br/>
+		<input id="dater3" type="text" name="inputdate3" /><span id="disp3"></span><br/>
 	</div>
 	<input type="submit" value="送信" />
 	</form>
 </body>
 <link rel="stylesheet" href="res/dater.css" />
 <script type="text/javascript" src="js/jquery.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/dater.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-	var dtr1 = new Dater({id: "dater", suggestbasedcalendar: true, calweeklang: 'ja', calmin: (isMobile()?0:-1), calmax: (isMobile()?0:1)});
-	var dtr2 = new Dater({id: "dater2", informat: 1, outformat: 1, outdemiliter: ' ', outstrmonth: 1, sendformat: 1, sendstrmonth: 1, calmin: (isMobile()?0:-1), calmax: (isMobile()?0:1)});
+	var dtr1 = new Dater({id: "dater", suggestbasedcalendar: true, calweeklang: 'ja', calmin: (isMobile()?0:-1), calmax: (isMobile()?0:1), disablesundays: true, disables: ['20140520', '20140521'], specialdayslist: {'20140513':'bright_list', '20140514':'bright_list'}, specialdayscal: {'20140513':'bright_cal', '20140514':'bright_cal'}});
+	var dtr2 = new Dater({id: "dater2", hiddenid: 'aaaa', informat: 1, outformat: 1, outdemiliter: ' ', outstrmonth: 1, sendformat: 1, sendstrmonth: 1, calmin: (isMobile()?0:-1), calmax: (isMobile()?0:1), disablesaturdays: true});
 	var dtr3 = new Dater({id: "dater3", informat: 2, outformat: 2, outdemiliter: '/', outstrmonth: 0, sendformat: 2, calmin: (isMobile()?0:-1), calmax: (isMobile()?0:1)});
+	
+	setInterval("disp1()", 200);
+	setInterval("disp2()", 200);
+	setInterval("disp3()", 200);
 });
 function isMobile(){
 	var userAgent = window.navigator.userAgent.toLowerCase();
@@ -37,6 +53,15 @@ function isMobile(){
 		return true;
 	else
 		return false;
+}
+function disp1(){
+	$('#disp1').html($('#dater_hidden').val());
+}
+function disp2(){
+	$('#disp2').html($('#aaaa').val());
+}
+function disp3(){
+	$('#disp3').html($('#dater3_hidden').val());
 }
 </script>
 </html>

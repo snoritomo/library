@@ -7,6 +7,7 @@
 		id: （必須）inputのid
 		suggestbasedcalendar: (true)直接入力したときのsuggest listのベース年月日をカレンダーベースにする
 		inputname: (id+'_')inputが変更されるname属性
+		hiddenid: (id+'_hidden')追加されるhidden要素に設定されるid属性
 		displayicon: (true)カレンダーアイコンをインプットの右に表示するか
 		informat: (0)入力時の判定フォーマット。0:yyyymmdd 1:ddmmyyyy 2:mmddyyyy
 		outformat: (0)表示のフォーマット。0:yyyymmdd 1:ddmmyyyy 2:mmddyyyy
@@ -70,6 +71,7 @@ function Dater(args){
 	this._id = args.id;
 	this._input = $('#'+this._id);
 	this.inputname = this._input.attr('name')+'_';
+	this.hiddenid = args.id+'_hidden';
 	this.suggestbasedcalendar = true;
 	this.displayicon = true;
 	this.informat = 0;
@@ -133,6 +135,7 @@ function Dater(args){
 	this.calendar_disable_day_class = 'dater_calendar_disable_day';
 	
 	if(args.inputname!=undefined)this.inputname = args.inputname;
+	if(args.hiddenid!=undefined)this.hiddenid = args.hiddenid;
 	if(args.suggestbasedcalendar!=undefined)this.suggestbasedcalendar = args.suggestbasedcalendar;
 	if(args.displayicon!=undefined)this.displayicon = args.displayicon;
 	if(args.informat!=undefined)this.informat = args.informat;
@@ -260,7 +263,7 @@ function Dater(args){
 	}
 	
 	this._send = $(document.createElement('input'));
-	this._send.attr('id', this._id+'_hidden');
+	this._send.attr('id', this.hiddenid);
 	this._send.attr('type', 'hidden');
 	this._send.attr('name', this._input.attr('name'));
 	this._input.attr('name', this.inputname);
