@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=0">
+	<title></title>
+	
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+<style type="text/css">
+table td.bright_cal{
+	background-color: #AAAA66;
+}
+ul li.bright_list{
+	background-color: #AA66AA;
+}
+</style>
+</head>
+<body>
+	<form method="get" action="index.html">
+	<div>
+		<label>２択</label>
+		<div id="dl_01" name="estate_01_opened"></div>
+		<ul id="opened_01" class="list_drop_down">
+			<li value="0">公開</li>
+			<li value="1">非公開</li>
+		</ul>
+		<span id="disp1"></span><br/>
+	</div>
+	<div>
+		<label>５択</label>
+		<div id="dl_02" name="estate_02_opened"></div>
+		<ul id="opened_02" class="list_drop_down">
+			<li >ジョナサン</li>
+			<li >ジョセフ</li>
+			<li >承太郎</li>
+			<li >仗助</li>
+			<li >ジョバーナ</li>
+		</ul>
+		<span id="disp2"></span><br/>
+	</div>
+	<div>
+		<label>マウスオーバー</label>
+		<div id="dl_03" name="estate_03_opened"></div>
+		<ul id="opened_03" class="list_drop_down">
+			<li >ジョナサン</li>
+			<li >ジョセフ</li>
+			<li >承太郎</li>
+			<li >仗助</li>
+			<li >ジョバーナ</li>
+		</ul>
+		<span id="disp3"></span><br/>
+	</div>
+	<input type="submit" value="送信" />
+	</form>
+</body>
+<link rel="stylesheet" href="drop/res/drop.css" />
+<link rel="stylesheet" href="drop/res/drop.theme.css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="drop/js/drop.js"></script>
+<script type="text/javascript">
+var drop01;
+var drop02;
+var drop03;
+$(document).ready(function(){
+	drop01 = new Drop({
+		labelid: 'dl_01',
+		listid: 'opened_01',
+		duration: 100
+	});
+	drop02 = new Drop({
+		labelid: 'dl_02',
+		listid: 'opened_02'
+	});
+	drop03 = new Drop({
+		labelid: 'dl_03',
+		listid: 'opened_03',
+		droponmouseover: true,
+		uponmouseleave: true
+	});
+	
+	setInterval("disp1()", 200);
+	setInterval("disp2()", 200);
+	setInterval("disp3()", 200);
+});
+function isMobile(){
+	var userAgent = window.navigator.userAgent.toLowerCase();
+	if(userAgent.indexOf('mobile') != -1)
+		return true;
+	else
+		return false;
+}
+function disp1(){
+	$('#disp1').html($('#dl_01_hidden').val());
+}
+function disp2(){
+	$('#disp2').html($('#dl_02_hidden').val());
+}
+function disp3(){
+	$('#disp3').html($('#dl_03_hidden').val());
+}
+</script>
+</html>

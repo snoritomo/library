@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=0">
+	<title></title>
+	
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+<style type="text/css">
+table td.bright_cal{
+	background-color: #AAAA66;
+}
+ul li.bright_list{
+	background-color: #AA66AA;
+}
+article p{
+	font-size: 14px;
+	line-height: 24px;
+}
+.tabindex_on{
+	background-color: #444444;
+	color: #ffffff;
+}
+</style>
+</head>
+<body>
+
+<nav>
+	<div id="idx01" class="tabindex_on">最初のコンテンツ</div>
+	<div id="idx02">２番目</div>
+	<div id="idx03">３番目</div>
+	<div id="idx04">ブービー</div>
+	<div id="idx05">ラストコンテンツ</div>
+</nav>
+
+<div id="container">
+
+<section id="sec01">
+	<article>
+		<h3>小さな物語</h3>
+		<div>
+			<p>ここはどこだろう？</p>
+			<p>気が付くと私はてっぺんが全く見えないたくさんの柱に囲まれていた</p>
+			<p>余りにも高すぎて、見えるはずの空も見えない</p>
+			<p>そこで自分があおむけに倒れている事に気が付いた</p>
+			<p>…なぜ私は倒れているんだろう？</p>
+			<p>そう気がついたと同時に体を起こそうとしたが私の体はいう事を聞かない</p>
+			<p>何かに体中を押さえつけられているようだった。しかし、首も動かないので確認できない</p>
+			<p>辺りを見回そうと必死で眼球と瞼の筋肉を酷使するが見えるのは空を覆う柱だけだった。</p>
+		</div>
+	</article>
+</section>
+
+<section id="sec02">
+	<div>
+		<img src="Desert.jpg"/>
+	</div>
+</section>
+
+<section id="sec03">
+	<div style="width: 600px; height: 800px; background-color: #88aa99; border-radius: 5px;">&nbsp;</div>
+</section>
+
+<section id="sec04">
+	<h3>４番、それは誇り</h3>
+</section>
+
+<section id="sec05">
+	<img src="Tulips.jpg" />
+</section>
+
+</div>
+
+</body>
+<link rel="stylesheet" href="drop/res/drop.css" />
+<link rel="stylesheet" href="drop/res/drop.theme.css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/styless-tabs.js"></script>
+<script type="text/javascript">
+var tab1;
+$(document).ready(function(){
+	tab1 = new StylessTabs({
+		contentcontainerid: 'container',
+		indexcontentids: {
+			idx01: 'sec01',
+			idx02: 'sec02',
+			idx03: 'sec03',
+			idx04: 'sec04',
+			idx05: 'sec05',
+		},
+		invisiblehidecontent: true
+	});
+	tab1.setOnContentChange(function(tabindex, content){
+		$('nav > div').each(function(){
+			$(this).removeClass('tabindex_on');
+		});
+		tabindex.addClass('tabindex_on');
+	});
+});
+</script>
+</html>

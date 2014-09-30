@@ -1,0 +1,15 @@
+.__drop_label_theme{
+	padding: 4px 8px 3px 10px;
+	background-color: #ffffff;
+	border: 1px solid #e3e2e1;
+	cursor: pointer;
+}
+.__drop_list_item_theme{
+	padding: 4px 8px 3px 10px;
+	border-bottom: 1px solid rgba(202, 199, 192, 1);
+	background-color: rgba(225, 223, 219, 1);
+	cursor: pointer;
+}
+.__drop_list_item_theme:hover{
+	background-color: rgba(245, 243, 239, 1);
+}

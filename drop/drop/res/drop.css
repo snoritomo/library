@@ -1,0 +1,26 @@
+.__drop_label{
+	position: relative;
+	display: inline-block;
+}
+.__drop_list{,
+	overflow: hidden;
+	display: none;
+	position: absolute;
+	display: inline-block;
+	list-style: none;
+	z-index: 1000;
+	margin: 0;
+	padding: 0;
+}
+.__drop_list_item{
+	margin: 0;
+	padding: 0 8px 0 0;
+}
+img.__drop_triangle{
+	position: absolute;
+	top: 0;
+	right: 8px;
+	bottom: 0;
+	margin: auto 0 auto 0;
+}
+

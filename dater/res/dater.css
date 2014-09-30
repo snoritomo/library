@@ -97,7 +97,6 @@
 }
 @media screen and (min-width: 0px) and (max-width: 640px) {
 .dater_year_box{
-	font-size: 16px;
 	box-sizing: content-box;
 	border: solid 1px rgba(0, 0, 0, 0.14902);
 	width: 77px;
@@ -117,7 +116,6 @@
 }
 @media screen and (min-width: 641px)  {
 .dater_year_box{
-	font-size: 16px;
 	box-sizing: content-box;
 	float: left;
 	border: solid 1px rgba(0, 0, 0, 0.14902);
@@ -134,7 +132,6 @@
 	background-color: #f3f3f3;
 }
 .dater_year_prev{
-	font-size: 16px;
 	box-sizing: content-box;
 	float: left;
 	width: 16px;
@@ -144,7 +141,6 @@
 	border-radius: 4px;
 }
 .dater_year_prev:hover{
-	font-size: 16px;
 	box-sizing: content-box;
 	width: 14px;
 	height: 14px;
@@ -152,7 +148,6 @@
 	background: #E5E5E5 url(button-down.png) 4px 4px no-repeat;
 }
 .dater_yaer_next{
-	font-size: 16px;
 	box-sizing: content-box;
 	float: left;
 	width: 16px;
@@ -162,7 +157,6 @@
 	border-radius: 4px;
 }
 .dater_yaer_next:hover{
-	font-size: 16px;
 	box-sizing: content-box;
 	width: 14px;
 	height: 14px;
@@ -170,7 +164,7 @@
 	background: #E5E5E5 url(button-up.png) 4px 4px no-repeat;
 }
 .dater_year{
-	font-size: 16px;
+	font-size: 12px;
 	box-sizing: content-box;
 	float: left;
 	width: 35px;
@@ -182,7 +176,6 @@
 }
 @media screen and (min-width: 0px) and (max-width: 640px) {
 .dater_month_box{
-	font-size: 16px;
 	box-sizing: content-box;
 	border: solid 1px rgba(0, 0, 0, 0.14902);
 	width: 66px;
@@ -204,7 +197,6 @@
 }
 @media screen and (min-width: 641px)  {
 .dater_month_box{
-	font-size: 16px;
 	box-sizing: content-box;
 	float: left;
 	border: solid 1px rgba(0, 0, 0, 0.14902);
@@ -216,7 +208,6 @@
 }
 }
 .dater_month_prev{
-	font-size: 16px;
 	box-sizing: content-box;
 	float: left;
 	width: 16px;
@@ -226,7 +217,6 @@
 	border-radius: 4px;
 }
 .dater_month_prev:hover{
-	font-size: 16px;
 	box-sizing: content-box;
 	width: 14px;
 	height: 14px;
@@ -234,7 +224,6 @@
 	background: #E5E5E5 url(button-left.png) 4px 4px no-repeat;
 }
 .dater_month_next{
-	font-size: 16px;
 	box-sizing: content-box;
 	float: left;
 	width: 16px;
@@ -244,7 +233,6 @@
 	border-radius: 4px;
 }
 .dater_month_next:hover{
-	font-size: 16px;
 	box-sizing: content-box;
 	width: 14px;
 	height: 14px;
@@ -252,7 +240,7 @@
 	background: #E5E5E5 url(button-right.png) 4px 4px no-repeat;
 }
 .dater_month{
-	font-size: 16px;
+	font-size: 12px;
 	box-sizing: content-box;
 	float: left;
 	width: 24px;
