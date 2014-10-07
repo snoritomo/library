@@ -194,7 +194,6 @@ StylessTabs.prototype.getMaxWidth = function(){
 		var cval = this.contents[ckey];
 		if(cval.css==undefined)continue;
 		if(cval.outerWidth()>re)re = cval.outerWidth();
-		cval.css({width: this.contentsmaxwidth});
 	}
 	return re;
 };
