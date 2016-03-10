@@ -1752,15 +1752,27 @@ Dater.prototype.drawList = function(){
 };
 Dater.prototype.calendar_on_click = function(evt){
 	var dater = evt.data.tgt;
+	var pre = dater.trgdate==null ? '' : dater.getDateString(dater.trgdate, 0);
 	var t = $(this);
 	dater.setDate(parseInt(t.attr('yy')), parseInt(t.attr('mm')), parseInt(t.attr('dd')));
 	dater.closeConsole();
+	var aft = dater.trgdate==null ? '' : dater.getDateString(dater.trgdate, 0);
+	for(var i = 0; i < dater.onblur.length; i++){
+		var f = dater.onblur[i];
+		f.apply(dater, [pre, aft]);
+	}
 };
 Dater.prototype.list_on_click = function(evt){
 	var dater = evt.data.tgt;
+	var pre = dater.trgdate==null ? '' : dater.getDateString(dater.trgdate, 0);
 	var t = $(this);
 	dater.setDate(parseInt(t.attr('yy')), parseInt(t.attr('mm')), parseInt(t.attr('dd')));
 	dater.closeConsole();
+	var aft = dater.trgdate==null ? '' : dater.getDateString(dater.trgdate, 0);
+	for(var i = 0; i < dater.onblur.length; i++){
+		var f = dater.onblur[i];
+		f.apply(dater, [pre, aft]);
+	}
 };
 Dater.prototype.setDate = function(yy, mm, dd){
 	this.yy = yy;
@@ -1778,10 +1790,6 @@ Dater.prototype.setOnFocus = function(f){
 Dater.prototype.doFocus = function(evt){
 	var dater = evt.data.tgt;
 	if(dater._console.css('display')!='none')return;
-	for(var i = 0; i < dater.onfocus.length; i++){
-		var f = dater.onfocus[i];
-		f.apply(dater, []);
-	}
 	dater.cancelblur = false;
 	dater.openConsole();
 	if(dater.trgdate!=null){
@@ -1798,6 +1806,10 @@ Dater.prototype.doFocus = function(evt){
 		dater._input.val(txt);
 	}
 	dater.drawList();
+	for(var i = 0; i < dater.onfocus.length; i++){
+		var f = dater.onfocus[i];
+		f.apply(dater, []);
+	}
 };
 Dater.prototype.setOnBlur = function(f){
 	this.onblur.push(f);
@@ -1806,10 +1818,7 @@ Dater.prototype.doBlur = function(evt){
 	var dater = evt.data.tgt;
 	if(dater.cancelblur)return;
 	if(dater.mouseondater)return;
-	for(var i = 0; i < dater.onblur.length; i++){
-		var f = dater.onblur[i];
-		f.apply(dater, []);
-	}
+	var pre = dater.trgdate==null ? '' : dater.getDateString(dater.trgdate, 0);
 	if(dater._input.val()==''){
 		dater.trgdate = null;
 		dater.yy = dater.today.getFullYear();
@@ -1840,6 +1849,12 @@ Dater.prototype.doBlur = function(evt){
 		if(dater.trgdate!=null)dater.setDate(dater.trgdate.getFullYear(), dater.trgdate.getMonth(), dater.trgdate.getDate());
 	}
 	dater.closeConsole();
+	var aft = dater.trgdate==null ? '' : dater.getDateString(dater.trgdate, 0);
+	if(dater._input.find(':focus').size()<=0)return;
+	for(var i = 0; i < dater.onblur.length; i++){
+		var f = dater.onblur[i];
+		f.apply(dater, [pre, aft]);
+	}
 };
 Dater.prototype.doMouseup = function(evt){
 	var dater = evt.data.tgt;
