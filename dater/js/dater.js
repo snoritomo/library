@@ -72,6 +72,7 @@ function Dater(args){
 	this._input = $('#'+this._id);
 	this.inputname = this._input.attr('name')+'_';
 	this.hiddenid = args.id+'_hidden';
+	this.nextcontrol = null;
 	this.suggestbasedcalendar = true;
 	this.displayicon = true;
 	this.informat = 0;
@@ -136,6 +137,7 @@ function Dater(args){
 	
 	if(args.inputname!=undefined)this.inputname = args.inputname;
 	if(args.hiddenid!=undefined)this.hiddenid = args.hiddenid;
+	if(args.nextcontrol!=undefined)this.nextcontrol = args.nextcontrol;
 	if(args.suggestbasedcalendar!=undefined)this.suggestbasedcalendar = args.suggestbasedcalendar;
 	if(args.displayicon!=undefined)this.displayicon = args.displayicon;
 	if(args.informat!=undefined)this.informat = args.informat;
@@ -213,6 +215,7 @@ function Dater(args){
 	this.onblur = [];
 	this.cancelblur = true;
 	this.mouseondater = false;
+	this.tabpressed = false;
 	
 	this.months = new Array(12);
 	this.months[0] = "January";
@@ -1761,6 +1764,7 @@ Dater.prototype.calendar_on_click = function(evt){
 		var f = dater.onblur[i];
 		f.apply(dater, [pre, aft]);
 	}
+	if(dater.nextcontrol!=null)dater.nextcontrol.select();
 };
 Dater.prototype.list_on_click = function(evt){
 	var dater = evt.data.tgt;
@@ -1773,6 +1777,7 @@ Dater.prototype.list_on_click = function(evt){
 		var f = dater.onblur[i];
 		f.apply(dater, [pre, aft]);
 	}
+	if(dater.nextcontrol!=null)dater.nextcontrol.select();
 };
 Dater.prototype.setDate = function(yy, mm, dd){
 	this.yy = yy;
@@ -1814,6 +1819,12 @@ Dater.prototype.doFocus = function(evt){
 Dater.prototype.setOnBlur = function(f){
 	this.onblur.push(f);
 };
+Dater.prototype.setValue = function(str){
+	if(!isNaN(Date.parse(str))){
+		var trg = new Date(str);
+		this.setDate(trg.getFullYear(), trg.getMonth(), trg.getDate());
+	}
+};
 Dater.prototype.doBlur = function(evt){
 	var dater = evt.data.tgt;
 	if(dater.cancelblur)return;
@@ -1850,7 +1861,7 @@ Dater.prototype.doBlur = function(evt){
 	}
 	dater.closeConsole();
 	var aft = dater.trgdate==null ? '' : dater.getDateString(dater.trgdate, 0);
-	if(dater._input.find(':focus').size()<=0)return;
+	if(dater._input.find(':focus').size()<=0 && !dater.tabpressed)return;
 	for(var i = 0; i < dater.onblur.length; i++){
 		var f = dater.onblur[i];
 		f.apply(dater, [pre, aft]);
@@ -1929,6 +1940,8 @@ Dater.prototype.doKeydown = function(evt){
 		var dater = evt.data.tgt;
 		dater.cancelblur = false;
 		dater.mouseondater = false;
+		dater.tabpressed = true;
 		dater.doBlur(evt);
+		dater.tabpressed = false;
 	}
 };
