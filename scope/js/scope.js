@@ -68,7 +68,7 @@ function Scope(args){
 	
 	this.onmove = [];
 	
-	if($('#'+this._imgid).size()<=0)this._this.append('<img id="' + this._imgid + '" src="'+this.src+'" class="' + this.imageclass + '"/>');
+	if($('#'+this._imgid).length<=0)this._this.append('<img id="' + this._imgid + '" src="'+this.src+'" class="' + this.imageclass + '"/>');
 	this._this.css({position: 'relative', overflow:'hidden'});
 	this._image = $('#' + this._imgid);
 	this._image.width(this._this.width() / this.scoperate);
@@ -76,8 +76,8 @@ function Scope(args){
 		var t = evt.data.tgt;
 	});
 	this._image.css({position: 'absolute'});
-	if($('#'+this._samimgid).size()<=0)this._sam.append('<img id="' + this._samimgid + '" src="'+this.src+'" class="' + this.samimageclass + '"/>');
-	if($('#'+this._scopeid).size()<=0)this._sam.append('<div id="' + this._scopeid + '" class="' + this.scopeclass + '"></div>');
+	if($('#'+this._samimgid).length<=0)this._sam.append('<img id="' + this._samimgid + '" src="'+this.src+'" class="' + this.samimageclass + '"/>');
+	if($('#'+this._scopeid).length<=0)this._sam.append('<div id="' + this._scopeid + '" class="' + this.scopeclass + '"></div>');
 	this._sam.css({position: 'relative'});
 	this._samimage = $('#' + this._samimgid);
 	this._samimage.width(this._sam.width());

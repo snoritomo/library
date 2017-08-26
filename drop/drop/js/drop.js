@@ -86,7 +86,7 @@ function Drop(args){
 	this.label.append(this.triangle);
 	
 	this.items = [];
-	for(var i = 1; i <= this.list.children().size(); i++){
+	for(var i = 1; i <= this.list.children().length; i++){
 		var t = this.list.children(':nth-child('+i+')');
 		t.attr('data-index', i);
 		if(t.attr('value')==undefined)t.attr('value', t.html());
@@ -103,7 +103,7 @@ function Drop(args){
 		}
 	}
 	else{
-		for(var i = 1; i <= this.list.children().size(); i++){
+		for(var i = 1; i <= this.list.children().length; i++){
 			var t = this.list.children(':nth-child('+i+')');
 			if(t.html()==this.text){
 				this.hidden.val(t.attr('value'));

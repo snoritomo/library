@@ -207,7 +207,7 @@ function Roller(args){
 	
 	this.items = [];
 	var wk;
-	var len = this.container.children().size();
+	var len = this.container.children().length;
 	/**this.loadedcount = 0;**/
 	for(var i = 0; i < len; i++){
 		wk = this.container.children().get(i);
@@ -216,7 +216,7 @@ function Roller(args){
 		if(this.autoadjustwidth){
 			jqwk.on('load', '', {tgt:this}, function(evt){
 				/**evt.data.tgt.loadedcount++;**/
-				evt.data.tgt.setWidth(true);/**evt.data.tgt.loadedcount>=evt.data.tgt.container.children().size());**/
+				evt.data.tgt.setWidth(true);/**evt.data.tgt.loadedcount>=evt.data.tgt.container.children().length);**/
 			});
 		}
 		if(this.autofloat)jqwk.css({display: 'block', float: 'left'});
@@ -329,7 +329,7 @@ Roller.prototype.setWidth = function(adjustleft){
 };
 Roller.prototype.getWidth = function(tgt){
 	var w = 0;
-	if(tgt.size()>0){
+	if(tgt.length>0){
 		w += tgt.width();
 		w += parseFloat(tgt.css("padding-left").replace('px', ''));
 		w += parseFloat(tgt.css("padding-right").replace('px', ''));
@@ -581,7 +581,7 @@ Roller.prototype.getToLeft = function(times){
 };
 Roller.prototype.getToRight = function(times){
 	var w = 0;
-	var sz = this.container.children().size()-1;
+	var sz = this.container.children().length-1;
 	for(var i = sz; sz - i < times; i--){
 		var tmp = this.container.children(':eq('+i+')');
 		w += this.getWidth(tmp);

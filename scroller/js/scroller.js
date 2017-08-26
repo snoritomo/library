@@ -226,7 +226,7 @@ function Scroller(args){
 		}
 	}, {tgt: this});
 	
-	if($('#'+this._id+'_bar').size()<=0){
+	if($('#'+this._id+'_bar').length<=0){
 		if(this.barclass==null){
 			this._this.append('<div id="'+this._id+'_bar" style="width:3px;position:absolute;right:2px;background-color:#DDDDDD;cursor:pointer;box-shadow: 0px 0px 1px 1px rgba(180,180,180,1);-webkit-border-radius : 2px;-moz-border-radius : 2px;-o-border-radius : 2px;-ms-border-radius : 2px;border-radius : 2px;"></div>');
 		}

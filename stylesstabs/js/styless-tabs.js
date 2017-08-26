@@ -57,9 +57,9 @@ function StylessTabs(args){
 	var digheight = 0;
 	for(var key in this._indexcontentids){
 		var tabindex = $('#'+key);
-		if(tabindex==null || tabindex.size()<=0)continue;
+		if(tabindex==null || tabindex.length<=0)continue;
 		var content = $('#'+this._indexcontentids[key]);
-		if(content==null || content.size()<=0)continue;
+		if(content==null || content.length<=0)continue;
 		
 		content.css({
 			zIndex: this.defaultzindex - (cnt==0?0:this.zindexinterval),
