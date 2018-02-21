@@ -328,7 +328,7 @@ function Dater(args){
 	this.drawList();
 	this.drawCalendar();
 	var sugs = this._console.list.children();
-	if(sugs.size()==1){
+	if(sugs.length==1){
 		this.setDate(parseInt(sugs.attr('yy')), parseInt(sugs.attr('mm')), parseInt(sugs.attr('dd')));
 	}
 	this._console.hide();
@@ -1841,7 +1841,7 @@ Dater.prototype.doBlur = function(evt){
 	}
 	else if(dater.inputflg){
 		var sugs = dater._console.list.children();
-		if(sugs.size()==1 && !sugs.hasClass(this.suggest_list_disable_class)){
+		if(sugs.length==1 && !sugs.hasClass(this.suggest_list_disable_class)){
 			dater.setDate(parseInt(sugs.attr('yy')), parseInt(sugs.attr('mm')), parseInt(sugs.attr('dd')));
 		}
 		else if(dater.trgdate!=null){
@@ -1861,7 +1861,7 @@ Dater.prototype.doBlur = function(evt){
 	}
 	dater.closeConsole();
 	var aft = dater.trgdate==null ? '' : dater.getDateString(dater.trgdate, 0);
-	if(dater._input.find(':focus').size()<=0 && !dater.tabpressed)return;
+	if(dater._input.find(':focus').length<=0 && !dater.tabpressed)return;
 	for(var i = 0; i < dater.onblur.length; i++){
 		var f = dater.onblur[i];
 		f.apply(dater, [pre, aft]);
@@ -1901,12 +1901,13 @@ Dater.prototype.doWindowLoad = function(evt){
 Dater.prototype.doIconLoad = function(evt){
 	var dater = evt.data.tgt;
 	dater._input.css('marginRight', parseInt(dater._input.css('marginRight').replace('px', '')) + parseInt(dater._icon.outerWidth()));
+	dater.adjust_items(dater);
 };
 Dater.prototype.doKeyup = function(evt){
 	var dater = evt.data.tgt;
 	if(evt.keyCode==38){
 		if(dater.listindex==null || dater.listindex<=0){
-			dater.listindex = dater._console.list.children().size()-1;
+			dater.listindex = dater._console.list.children().length-1;
 		}
 		else{
 			dater.listindex--;
@@ -1918,7 +1919,7 @@ Dater.prototype.doKeyup = function(evt){
 		dater.inputflg = false;
 	}
 	else if(evt.keyCode==40){
-		if(dater.listindex==null || dater.listindex>=dater._console.list.children().size()-1){
+		if(dater.listindex==null || dater.listindex>=dater._console.list.children().length-1){
 			dater.listindex = 0;
 		}
 		else{
