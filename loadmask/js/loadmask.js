@@ -77,7 +77,7 @@ function Loadmask(args){
 	this.covered.append('<div id="'+this.maskid+'" style="position:absolute;top:0;left:0;width:100%;height:100%;" '+this.class+'></div>');
 	this.mask = $('#'+this.maskid);
 	this.images = this.covered.find('img');
-	this.imagecnt = this.images.size();
+	this.imagecnt = this.images.length;
 	this.loadedcnt = 0;
 	if(this.imagecnt<=0){
 		this.loaded({data:{ldmask:this}});

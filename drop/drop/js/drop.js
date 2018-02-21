@@ -1,25 +1,25 @@
 /**
 	drop
 	auth: noritomo.suzuki@kikisoftware.com
-	ğŒ
-		jquery‚ªinclude‚³‚ê‚Ä‚¢‚é–
-	ˆø”
-		labelid: i•K{j•\¦ƒ‰ƒxƒ‹‚Ìid
-		listid: i•K{jƒŠƒXƒgƒRƒ“ƒeƒi‚Ìid
-		labelclass: (__drop_label)•\¦ƒ‰ƒxƒ‹‚É‚Â‚¯‚ç‚ê‚éclass
-		listclass: (__drop_list)ƒŠƒXƒgƒRƒ“ƒeƒi‚É•t‚¯‚ç‚ê‚éclass
-		listitemclass: (__drop_list_item)ƒŠƒXƒgƒAƒCƒeƒ€‚É•t‚¯‚ç‚ê‚éclass
-		triangleurl: (drop/res/triangle.png)‰E‘¤‚É•\¦‚·‚é‰æ‘œ
-		triangleclass: (__drop_triangle)‰E‘¤‚É•\¦‚·‚é‰æ‘œ‚É•t‚¯‚ç‚ê‚éclass
-		innertag: (div)©“®ì¬‚³‚ê‚éA‘I‘ğ’†‚Ì•\¦‚ğ‚·‚é—v‘f‚Ìƒ^ƒO–¼
-		innerid: (labelid+'_inner')‘I‘ğ’†‚Ì•\¦‚ğ‚·‚é—v‘f‚Ìid
-		hiddenid: (labelid+'_hidden')ƒtƒH[ƒ€‘—M‚Ég—p‚³‚ê‚éinput[hidden]‚Ìid
-		settopvaluedefault: (true)•\¦ƒ‰ƒxƒ‹‚Ì‹LÚ‚ª‚È‚¢‚Æ‚«‚ÉAˆê”Ôã‚Ì—v‘f‚ğ‰Šú•\¦‚·‚é‚©
-		duration: (200)ƒhƒƒbƒvƒAƒjƒ[ƒVƒ‡ƒ“‚Ì“®ìŠÔ
-		droponmouseover: (false)ƒ}ƒEƒXƒI[ƒo[‚ÅƒŠƒXƒg‚ğ“WŠJ‚³‚¹‚é‚©
-		uponmouseleave: (false)ƒ}ƒEƒXƒŠ[ƒu‚ÅƒŠƒXƒg‚ğ•Â‚¶‚é‚©
-		labelthemeclass: (__drop_label_theme)ƒe[ƒ}—pB‘I‘ğ’†‚Ì•\¦‚ğ‚·‚é—v‘f‚É•t‚¯‚ç‚ê‚éclass
-		listitemthemeclass: (__drop_list_item_theme)ƒe[ƒ}—pBƒŠƒXƒgƒAƒCƒeƒ€‚É•t‚¯‚ç‚ê‚éclass
+	æ¡ä»¶
+		jqueryãŒincludeã•ã‚Œã¦ã„ã‚‹äº‹
+	å¼•æ•°
+		labelid: ï¼ˆå¿…é ˆï¼‰è¡¨ç¤ºãƒ©ãƒ™ãƒ«ã®id
+		listid: ï¼ˆå¿…é ˆï¼‰ãƒªã‚¹ãƒˆã‚³ãƒ³ãƒ†ãƒŠã®id
+		labelclass: (__drop_label)è¡¨ç¤ºãƒ©ãƒ™ãƒ«ã«ã¤ã‘ã‚‰ã‚Œã‚‹class
+		listclass: (__drop_list)ãƒªã‚¹ãƒˆã‚³ãƒ³ãƒ†ãƒŠã«ä»˜ã‘ã‚‰ã‚Œã‚‹class
+		listitemclass: (__drop_list_item)ãƒªã‚¹ãƒˆã‚¢ã‚¤ãƒ†ãƒ ã«ä»˜ã‘ã‚‰ã‚Œã‚‹class
+		triangleurl: (drop/res/triangle.png)å³å´ã«è¡¨ç¤ºã™ã‚‹ç”»åƒ
+		triangleclass: (__drop_triangle)å³å´ã«è¡¨ç¤ºã™ã‚‹ç”»åƒã«ä»˜ã‘ã‚‰ã‚Œã‚‹class
+		innertag: (div)è‡ªå‹•ä½œæˆã•ã‚Œã‚‹ã€é¸æŠä¸­ã®è¡¨ç¤ºã‚’ã™ã‚‹è¦ç´ ã®ã‚¿ã‚°å
+		innerid: (labelid+'_inner')é¸æŠä¸­ã®è¡¨ç¤ºã‚’ã™ã‚‹è¦ç´ ã®id
+		hiddenid: (labelid+'_hidden')ãƒ•ã‚©ãƒ¼ãƒ é€ä¿¡ã«ä½¿ç”¨ã•ã‚Œã‚‹input[hidden]ã®id
+		settopvaluedefault: (true)è¡¨ç¤ºãƒ©ãƒ™ãƒ«ã®è¨˜è¼‰ãŒãªã„ã¨ãã«ã€ä¸€ç•ªä¸Šã®è¦ç´ ã‚’åˆæœŸè¡¨ç¤ºã™ã‚‹ã‹
+		duration: (200)ãƒ‰ãƒ­ãƒƒãƒ—ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å‹•ä½œæ™‚é–“
+		droponmouseover: (false)ãƒã‚¦ã‚¹ã‚ªãƒ¼ãƒãƒ¼ã§ãƒªã‚¹ãƒˆã‚’å±•é–‹ã•ã›ã‚‹ã‹
+		uponmouseleave: (false)ãƒã‚¦ã‚¹ãƒªãƒ¼ãƒ–ã§ãƒªã‚¹ãƒˆã‚’é–‰ã˜ã‚‹ã‹
+		labelthemeclass: (__drop_label_theme)ãƒ†ãƒ¼ãƒç”¨ã€‚é¸æŠä¸­ã®è¡¨ç¤ºã‚’ã™ã‚‹è¦ç´ ã«ä»˜ã‘ã‚‰ã‚Œã‚‹class
+		listitemthemeclass: (__drop_list_item_theme)ãƒ†ãƒ¼ãƒç”¨ã€‚ãƒªã‚¹ãƒˆã‚¢ã‚¤ãƒ†ãƒ ã«ä»˜ã‘ã‚‰ã‚Œã‚‹class
 **/
 function Drop(args){
 	this._labelid = '';
@@ -86,7 +86,7 @@ function Drop(args){
 	this.label.append(this.triangle);
 	
 	this.items = [];
-	for(var i = 1; i <= this.list.children().size(); i++){
+	for(var i = 1; i <= this.list.children().length; i++){
 		var t = this.list.children(':nth-child('+i+')');
 		t.attr('data-index', i);
 		if(t.attr('value')==undefined)t.attr('value', t.html());
@@ -103,7 +103,7 @@ function Drop(args){
 		}
 	}
 	else{
-		for(var i = 1; i <= this.list.children().size(); i++){
+		for(var i = 1; i <= this.list.children().length; i++){
 			var t = this.list.children(':nth-child('+i+')');
 			if(t.html()==this.text){
 				this.hidden.val(t.attr('value'));
